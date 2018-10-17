@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const keystore = require('wanchain-keystore');
 const Web3 = require('web3');
 
 const config = require('./config');
