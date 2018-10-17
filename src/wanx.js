@@ -16,12 +16,12 @@ class WanX {
     this.config = config.get(network, conf);
 
     if (! this.config.web3wan) {
-      const provider = new Web3.providers.HttpProvider(this.config.wanNodeURI);
+      const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
       this.config.web3wan = new Web3(provider);
     }
 
     if (! this.config.web3eth) {
-      const provider = new Web3.providers.HttpProvider(this.config.ethNodeURI);
+      const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
       this.config.web3eth = new Web3(provider);
     }
   }

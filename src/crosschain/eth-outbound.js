@@ -174,7 +174,6 @@ class CrosschainETH_Outbound extends CrosschainBase {
 
   getStoremanFee(storeman, value) {
     const to = this.config.wanHtlcAddr;
-
     const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
 
     const data = '0x' + sig.substr(0, 8)
