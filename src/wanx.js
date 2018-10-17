@@ -26,20 +26,7 @@ class WanX {
     }
   }
 
-  // send(opts) {
-  //   const {
-  //     password,
-  //     nonce,
-  //     from,
-  //     to,
-  //     value,
-  //     gas = 4700000,
-  //     gasPrice = 180e9,
-  //     data = '',
-  //   } = opts;
-  // }
-
-  sendCrosschain(type, inbound, opts) {
+  send(type, inbound, opts) {
 
     if (type === 'ETH') {
       if (inbound) {

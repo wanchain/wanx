@@ -23,7 +23,7 @@ const wanx = new WanX('testnet', config)
 ```
 // chain = 'ETH'
 // inbound = true
-const handler = wanx.sendCrosschain('ETH', true, {
+const handler = wanx.send('ETH', true, {
   from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
   to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
   value: '10000000000000000',
@@ -51,7 +51,7 @@ handler.on('complete', res => {
 ```
 // chain = 'ETH'
 // inbound = false
-const handler = wanx.sendCrosschain('ETH', false, {
+const handler = wanx.send('ETH', false, {
   from: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
   to: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
   value: '10000000000000000',
