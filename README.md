@@ -102,7 +102,7 @@ const opts = {
 
 // chain = 'ETH'
 // inbound = true
-const handler = wanx.send('ETH', true, opts);
+const handler = wanx.revoke('ETH', true, opts);
 
 handler.on('error', err => {
   console.log('ERROR:', err);
