@@ -1,3 +1,5 @@
+const wanutils = require('wanchain-util');
+
 const CrosschainBase = require('./base');
 const utils = require('../utils');
 
@@ -12,7 +14,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
   send(opts) {
 
     // validate inputs
-    this.opts = utils.validateCrosschainOpts(this.type, opts);
+    this.opts = utils.validateSendOpts(this.type, opts);
 
     let {
       storeman
@@ -55,6 +57,37 @@ class CrosschainETH_Inbound extends CrosschainBase {
       return this.listenRefundTx();
 
     }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', { receipt });
+
+    }).catch(err => {
+
+      // notify error
+      this.emit('error', err)
+
+    });
+
+    return this;
+  }
+
+  // send revoke transaction on ethereum
+  revoke(opts) {
+
+    // validate inputs
+    this.opts = utils.validateRevokeOpts(this.type, opts);
+
+    const revokeData = this.buildRevokeData(this.opts.xHash);
+
+    const sendOpts = {
+      from: this.opts.source,
+      to: this.config.ethHtlcAddr,
+      gas: 4910000,
+      gasPrice: 100e9,
+      data: revokeData,
+    };
+
+    this.web3eth.eth.sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
       this.emit('complete', { receipt });
@@ -152,9 +185,9 @@ class CrosschainETH_Inbound extends CrosschainBase {
     return '0x' + sig.substr(0, 8) + this.x.x;
   }
 
-  buildRevokeData() {
+  buildRevokeData(xHash) {
     const sig = this.config.signatures.HTLCETH.eth2wethRevoke;
-    return '0x' + sig.substr(0, 8) + this.x.x;
+    return '0x' + sig.substr(0, 8) + wanutils.stripHexPrefix(xHash);
   }
 }
 

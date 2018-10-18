@@ -8,7 +8,7 @@ const Web3 = require('web3');
 
 const web3 = new Web3();
 
-function validateCrosschainOpts(type, opts) {
+function validateSendOpts(type, opts) {
   // console.log(type, opts);
 
   // TODO: there should be an opt schema and this should check against it
@@ -23,6 +23,22 @@ function validateCrosschainOpts(type, opts) {
     destination: opts.to,
     value: opts.value,
     storeman: opts.storeman,
+  }
+}
+
+function validateRevokeOpts(type, opts) {
+  // console.log(type, opts);
+
+  // TODO: there should be an opt schema and this should check against it
+  if (type === 'ETH') {
+    if (! opts.xHash) {
+      throw new Error('Invalid xHash');
+    }
+  }
+
+  return {
+    source: opts.from,
+    xHash: opts.xHash,
   }
 }
 
@@ -106,6 +122,7 @@ module.exports = {
   number2Bytes,
   getXHash,
   generateXHash,
-  validateCrosschainOpts,
+  validateSendOpts,
+  validateRevokeOpts,
   websocketsRequest,
 }

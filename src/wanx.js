@@ -26,15 +26,23 @@ class WanX {
   }
 
   send(type, inbound, opts) {
+    const sender = this.getSender(type, inbound);
+    return sender.send(opts);
+  }
+
+  revoke(type, inbound, opts) {
+    const sender = this.getSender(type, inbound);
+    return sender.revoke(opts);
+  }
+
+  getSender(type, inbound) {
 
     if (type === 'ETH') {
       if (inbound) {
-        const cc = new CrosschainETH_Inbound(this.config);
-        return cc.send(opts);
-      } else {
-        const cc = new CrosschainETH_Outbound(this.config);
-        return cc.send(opts);
+        return new CrosschainETH_Inbound(this.config);
       }
+
+      return new CrosschainETH_Outbound(this.config);
     }
 
     else if (type === 'BTC') {
