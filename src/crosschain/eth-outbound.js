@@ -145,7 +145,7 @@ class CrosschainETH_Outbound extends CrosschainBase {
   redeem(opts) {
 
     // validate inputs
-    this.opts = utils.validateSendOpts(this.type, opts);
+    this.opts = utils.validateRedeemOpts(this.type, opts);
 
     this.redeemKey = this.opts.redeemKey;
 
