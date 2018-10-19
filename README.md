@@ -71,9 +71,70 @@ const opts = {
   },
 };
 
-// chain = 'ETH'
-// inbound = false
 const handler = wanx.send('ETH', false, opts);
+
+handler.on('info', info => {
+  console.log('INFO:', info);
+});
+
+handler.on('error', err => {
+  console.log('ERROR:', err);
+  handler.removeAllListeners();
+});
+
+handler.on('complete', res => {
+  console.log('COMPLETE!!!', res);
+  handler.removeAllListeners();
+});
+
+```
+
+#### Create a ETH 2 WETH lock
+```
+const opts = {
+  from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
+  to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
+  value: '10000000000000000',
+  storeman: {
+    wan: '0x06daa9379cbe241a84a65b217a11b38fe3b4b063',
+    eth: '0x41623962c5d44565de623d53eb677e0f300467d2',
+  },
+};
+
+const handler = wanx.lock('ETH', true, opts);
+
+handler.on('info', info => {
+  console.log('INFO:', info);
+});
+
+handler.on('error', err => {
+  console.log('ERROR:', err);
+  handler.removeAllListeners();
+});
+
+handler.on('complete', res => {
+  console.log('COMPLETE!!!', res);
+  handler.removeAllListeners();
+});
+
+```
+
+#### Redeem a locked transaction
+```
+const opts = {
+  from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
+  to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
+  storeman: {
+    wan: '0x06daa9379cbe241a84a65b217a11b38fe3b4b063',
+    eth: '0x41623962c5d44565de623d53eb677e0f300467d2',
+  },
+  redeemKey: {
+    x: '6d470cb1396a9491be3f489ec97d53076072270e56340101c09c909168b9151f',
+    xHash: '98ad871fc37aed2f174770715b5f860dfb1542386b89e29bcc8a96dc854654e6',
+  },
+};
+
+const handler = wanx.redeem('ETH', true, opts);
 
 handler.on('info', info => {
   console.log('INFO:', info);
@@ -98,8 +159,6 @@ const opts = {
   xHash: '4840f5ba2a32a1ce266b6779b352b984c4613e413952d3e9777a5c660b5c76a4',
 };
 
-// chain = 'ETH'
-// inbound = false
 const handler = wanx.revoke('ETH', false, opts);
 
 handler.on('error', err => {
