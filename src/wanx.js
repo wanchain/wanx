@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const Web3 = require('web3');
 
 const config = require('./config');
+const utils = require('./utils');
 
 const CrosschainETH_Inbound = require('./crosschain/eth-inbound');
 const CrosschainETH_Outbound = require('./crosschain/eth-outbound');
@@ -48,6 +49,10 @@ class WanX {
   revoke(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.revoke(opts);
+  }
+
+  newRedeemKey() {
+    return utils.generateXPair();
   }
 
 }

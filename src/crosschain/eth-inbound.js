@@ -18,18 +18,8 @@ class CrosschainETH_Inbound extends CrosschainBase {
     // validate inputs
     this.opts = utils.validateSendOpts(this.type, opts);
 
-    let {
-      storeman
-    } = this.opts;
+    this.redeemKey = this.opts.redeemKey || utils.generateXPair();
 
-    // TODO: add storeman auto-select if not passed in opts
-    if (! storeman) {
-      //
-    }
-
-    this.redeemKey = utils.generateXHash();
-
-    // TODO: add handling for failed transactions
     Promise.resolve([]).then(() => {
 
       // notify status
@@ -79,9 +69,8 @@ class CrosschainETH_Inbound extends CrosschainBase {
     // validate inputs
     this.opts = utils.validateSendOpts(this.type, opts);
 
-    this.redeemKey = utils.generateXHash();
+    this.redeemKey = this.opts.redeemKey || utils.generateXPair();
 
-    // TODO: add handling for failed transactions
     Promise.resolve([]).then(() => {
 
       // notify status
@@ -119,7 +108,6 @@ class CrosschainETH_Inbound extends CrosschainBase {
 
     this.redeemKey = this.opts.redeemKey;
 
-    // TODO: add handling for failed transactions
     Promise.resolve([]).then(() => {
 
       // notify status

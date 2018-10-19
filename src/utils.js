@@ -70,7 +70,7 @@ function getXHash(x) {
   return keccak('keccak256').update(buf).digest().toString('hex')
 }
 
-function generateXHash() {
+function generateXPair() {
   let randomBuf;
   do {
     randomBuf = crypto.randomBytes(32);
@@ -96,7 +96,7 @@ module.exports = {
   addr2Bytes,
   number2Bytes,
   getXHash,
-  generateXHash,
+  generateXPair,
   validateSendOpts,
   validateRedeemOpts,
   validateRevokeOpts,
