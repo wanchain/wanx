@@ -48,7 +48,7 @@ function sendTransaction(opts) {
           return reject(err);
         }
 
-        const getReceipt = (() => {
+        const getReceipt = () => {
           this.web3eth.eth.getTransactionReceipt(hash, (err, receipt) => {
             if (err) {
               return reject(err);
@@ -68,7 +68,9 @@ function sendTransaction(opts) {
               getReceipt();
             }, 2000);
           });
-        })();
+        };
+
+        getReceipt();
       });
     });
   }
@@ -81,7 +83,7 @@ function watchLogs(opts) {
     console.log('watchLogs v1.x');
 
     return new Promise((resolve, reject) => {
-      const getLogs = (() => {
+      const getLogs = () => {
         console.log('getLogs');
         this.web3.eth.getPastLogs(opts).then(res => {
           if (res.length) {
@@ -95,7 +97,9 @@ function watchLogs(opts) {
         }).catch(err => {
           reject(err);
         });
-      })();
+      };
+
+      getLogs();
     });
   }
 
