@@ -1,8 +1,11 @@
 module.exports = web3Util;
 
+const ERR_NOVERSION = 'Unable to obtain web3 version';
+
 function web3Util(web3Obj) {
 
   this.web3 = web3Obj;
+  this.version = getVersion(web3Obj);
 
   this.sendTransaction = sendTransaction;
   this.watchLogs = watchLogs;
@@ -11,14 +14,25 @@ function web3Util(web3Obj) {
   return this;
 }
 
-function sendTransaction(opts) {
-
-  if (! this.web3 || ! this.web3.version || ! this.web3.version.api) {
-    throw new Error('Unable to obtain web3 version');
+function getVersion(web3) {
+  if (! web3 || ! web3.version) {
+    throw new Error(ERR_NOVERSION);
   }
 
+  if (typeof web3.version === 'string') {
+    return web3.version;
+  }
+  else if (typeof web3.version.api === 'string') {
+    return web3.version.api;
+  }
+
+  throw new Error(ERR_NOVERSION);
+}
+
+function sendTransaction(opts) {
+
   // v1.0.0 or greater
-  if (this.web3.version.api[0] == '1') {
+  if (this.version[0] == '1') {
     console.log('sendTransaction v1.x');
 
     return this.web3.eth.sendTransaction(opts);
@@ -63,7 +77,7 @@ function sendTransaction(opts) {
 function watchLogs(opts) {
 
   // v1.0.0 or greater
-  if (this.web3.version.api[0] == '1') {
+  if (this.version[0] == '1') {
     console.log('watchLogs v1.x');
 
     return new Promise((resolve, reject) => {
@@ -106,7 +120,7 @@ function watchLogs(opts) {
 function call(opts) {
 
   // v1.0.0 or greater
-  if (this.web3.version.api[0] == '1') {
+  if (this.version[0] == '1') {
     return this.web3.call(opts);
   }
 
