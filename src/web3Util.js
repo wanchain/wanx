@@ -33,15 +33,11 @@ function sendTransaction(opts) {
 
   // v1.0.0 or greater
   if (this.version[0] == '1') {
-    console.log('sendTransaction v1.x');
-
     return this.web3.eth.sendTransaction(opts);
   }
 
   // below v1.0.0
   else {
-    console.log('sendTransaction v0.x');
-
     return new Promise((resolve, reject) => {
       this.web3.eth.sendTransaction(opts, (err, hash) => {
         if (err) {
@@ -80,11 +76,8 @@ function watchLogs(opts) {
 
   // v1.0.0 or greater
   if (this.version[0] == '1') {
-    console.log('watchLogs v1.x');
-
     return new Promise((resolve, reject) => {
       const getLogs = () => {
-        console.log('getLogs');
         this.web3.eth.getPastLogs(opts).then(res => {
           if (res.length) {
             return resolve(res);
@@ -105,8 +98,6 @@ function watchLogs(opts) {
 
   // below v1.0.0
   else {
-    console.log('watchLogs v0.x');
-
     return new Promise((resolve, reject) => {
       const filter = this.web3.eth.filter(opts);
       filter.watch((err, log) => {
