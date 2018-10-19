@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const Web3 = require('web3');
 
 const config = require('./config');
 
@@ -12,48 +11,41 @@ class WanX {
 
   constructor(network, conf) {
 
+    // load configuration
     this.config = config.get(network, conf);
 
-    if (! this.config.web3wan) {
-      const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
-      this.config.web3wan = new Web3(provider);
-    }
-
-    if (! this.config.web3eth) {
-      const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
-      this.config.web3eth = new Web3(provider);
-    }
   }
 
   send(type, inbound, opts) {
-    const sender = this.getSender(type, inbound);
+    const sender = getSender(type, inbound, this.config);
     return sender.send(opts);
   }
 
   revoke(type, inbound, opts) {
-    const sender = this.getSender(type, inbound);
+    const sender = getSender(type, inbound, this.config);
     return sender.revoke(opts);
   }
 
-  getSender(type, inbound) {
+}
 
-    if (type === 'ETH') {
-      if (inbound) {
-        return new CrosschainETH_Inbound(this.config);
-      }
+function getSender(type, inbound, config) {
 
-      return new CrosschainETH_Outbound(this.config);
+  if (type === 'ETH') {
+    if (inbound) {
+      return new CrosschainETH_Inbound(config);
     }
 
-    else if (type === 'BTC') {
-    }
+    return new CrosschainETH_Outbound(config);
+  }
 
-    else if (type === 'ERC20') {
-    }
+  else if (type === 'BTC') {
+  }
 
-    else {
-      throw new Error(`Unsupported crosschain type: ${type}. Types available `);
-    }
+  else if (type === 'ERC20') {
+  }
+
+  else {
+    throw new Error(`Unsupported crosschain type: ${type}. Types available `);
   }
 }
 
