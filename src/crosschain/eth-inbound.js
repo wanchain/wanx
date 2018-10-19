@@ -1,6 +1,7 @@
 const wanutils = require('wanchain-util');
 
 const CrosschainBase = require('./base');
+const web3Util = require('../web3Util');
 const utils = require('../utils');
 
 class CrosschainETH_Inbound extends CrosschainBase {
@@ -40,7 +41,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'lockPending', receipt });
 
-      return this.listenLockTx();
+      return this.listenLockTx(receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -54,7 +55,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
 
-      return this.listenRefundTx();
+      return this.listenRefundTx(receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -87,7 +88,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
       data: revokeData,
     };
 
-    this.web3eth.eth.sendTransaction(sendOpts).then(receipt => {
+    web3Util(this.web3eth).sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
       this.emit('complete', { receipt });
@@ -119,14 +120,14 @@ class CrosschainETH_Inbound extends CrosschainBase {
       data: lockData,
     };
 
-    return this.web3eth.eth.sendTransaction(sendOpts);
+    return web3Util(this.web3eth).sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on wanchain
-  listenLockTx() {
+  listenLockTx(blockNumber) {
 
     const lockScanOpts = {
-      chainType: 'WAN',
+      blockNumber,
       address: this.config.wanHtlcAddr,
       topics: [
         '0x' + this.config.signatures.HTLCWETH.ETH2WETHLock,
@@ -136,12 +137,11 @@ class CrosschainETH_Inbound extends CrosschainBase {
       ],
     };
 
-    return this.rpcRequest('monitorLog', lockScanOpts);
+    return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
   // send refund transaction on wanchain
   sendRefundTx() {
-
     const refundData = this.buildRefundData();
 
     const sendOpts = {
@@ -152,14 +152,14 @@ class CrosschainETH_Inbound extends CrosschainBase {
       data: refundData,
     };
 
-    return this.web3wan.eth.sendTransaction(sendOpts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on ethereum
-  listenRefundTx() {
+  listenRefundTx(blockNumber) {
 
     const refundScanOpts = {
-      chainType: 'ETH',
+      blockNumber,
       address: this.config.ethHtlcAddr,
       topics: [
         '0x' + this.config.signatures.HTLCETH.ETH2WETHRefund,
@@ -169,7 +169,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
       ],
     };
 
-    return this.rpcRequest('monitorLog', refundScanOpts);
+    return web3Util(this.web3eth).watchLogs(refundScanOpts);
   }
 
   buildLockData(storeman, destination) {

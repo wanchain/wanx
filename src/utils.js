@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const keccak = require('keccak');
 const secp256k1 = require('secp256k1');
 const wanutils = require('wanchain-util');
-const WebSocket = require('ws');
 const Web3 = require('web3');
 
 const web3 = new Web3();
@@ -72,52 +71,6 @@ function number2Bytes(num) {
   return '0'.repeat(64 - hex.length) + hex;
 }
 
-function websocketsRequest(url, action, parameters, cb) {
-
-  const wss = new WebSocket(`wss://${url}`, {
-    origin: `https://${url}`,
-    rejectUnauthorized: false,
-  });
-
-  const cbIsFunc = typeof cb === 'function';
-  let sent = false;
-
-  wss.onopen = function(event) {
-    wss.send(JSON.stringify({
-      header: 'wanchain',
-      action,
-      parameters,
-    }));
-  };
-
-  wss.onclose = function() {
-    if (cbIsFunc && ! sent) {
-      const err = new Error('Websocket prematurely closed');
-      cb(err, null);
-    }
-
-    wss.terminate();
-  };
-
-  wss.onerror = function(err) {
-    if (cbIsFunc) {
-      sent = true;
-      cb(err, null);
-    }
-
-    wss.terminate();
-  };
-
-  wss.onmessage = function(event) {
-    if (cbIsFunc) {
-      sent = true;
-      cb(null, event);
-    }
-
-    wss.terminate();
-  };
-};
-
 module.exports = {
   addr2Bytes,
   number2Bytes,
@@ -125,5 +78,4 @@ module.exports = {
   generateXHash,
   validateSendOpts,
   validateRevokeOpts,
-  websocketsRequest,
 }

@@ -27,7 +27,6 @@ const mainnetConfig = {
 const defaultConfig = {
   wanNodeUrl: 'http://localhost:8545',
   ethNodeUrl: 'http://localhost:18545',
-  rpcWsUrl: 'localhost',
 
   rpcIpcPath: process.env.HOME,
   keyStorePath: process.env.HOME,
