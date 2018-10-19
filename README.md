@@ -103,20 +103,27 @@ const opts = {
 
 const handler = wanx.lock('ETH', true, opts);
 
-handler.on('info', info => {
-  console.log('INFO:', info);
-});
+...
+```
 
-handler.on('error', err => {
-  console.log('ERROR:', err);
-  handler.removeAllListeners();
-});
+#### Create a ETH 2 WETH lock with pre-generated redeemKey
+```
+const redeemKey = wanx.newRedeemKey();
 
-handler.on('complete', res => {
-  console.log('COMPLETE!!!', res);
-  handler.removeAllListeners();
-});
+const opts = {
+  from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
+  to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
+  value: '10000000000000000',
+  storeman: {
+    wan: '0x06daa9379cbe241a84a65b217a11b38fe3b4b063',
+    eth: '0x41623962c5d44565de623d53eb677e0f300467d2',
+  },
+  redeemKey: redeemKey,
+};
 
+const handler = wanx.lock('ETH', true, opts);
+
+...
 ```
 
 #### Redeem a locked transaction
@@ -136,20 +143,7 @@ const opts = {
 
 const handler = wanx.redeem('ETH', true, opts);
 
-handler.on('info', info => {
-  console.log('INFO:', info);
-});
-
-handler.on('error', err => {
-  console.log('ERROR:', err);
-  handler.removeAllListeners();
-});
-
-handler.on('complete', res => {
-  console.log('COMPLETE!!!', res);
-  handler.removeAllListeners();
-});
-
+...
 ```
 
 #### Revoke an expired transaction
@@ -161,13 +155,5 @@ const opts = {
 
 const handler = wanx.revoke('ETH', false, opts);
 
-handler.on('error', err => {
-  console.log('ERROR:', err);
-  handler.removeAllListeners();
-});
-
-handler.on('complete', res => {
-  console.log('COMPLETE!!!', res);
-  handler.removeAllListeners();
-});
+...
 ```
