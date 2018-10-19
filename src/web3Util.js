@@ -1,6 +1,6 @@
-module.exports = web3Util;
-
 const ERR_NOVERSION = 'Unable to obtain web3 version';
+
+module.exports = web3Util;
 
 function web3Util(web3Obj) {
 
@@ -31,6 +31,8 @@ function getVersion(web3) {
 
 function sendTransaction(opts) {
 
+  // TODO: do proper semver parsing when doing version check
+  //
   // v1.0.0 or greater
   if (this.version[0] == '1') {
     return this.web3.eth.sendTransaction(opts);
