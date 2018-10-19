@@ -90,6 +90,16 @@ class CrosschainETH_Outbound extends CrosschainBase {
     // validate inputs
     this.opts = utils.validateSendOpts(this.type, opts);
 
+    let {
+      value,
+      storeman,
+    } = this.opts;
+
+    // TODO: add storeman auto-select if not passed in opts
+    if (! storeman) {
+      //
+    }
+
     this.redeemKey = utils.generateXHash();
 
     // TODO: add handling for failed transactions
@@ -98,7 +108,16 @@ class CrosschainETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', Object.assign({ status: 'starting' }, this.redeemKey));
 
-      return this.sendLockTx();
+      return this.getStoremanFee(storeman.wan, value);
+
+    }).then(res => {
+
+      const fee = new BigNumber(res).toString();
+
+      // notify status
+      this.emit('info', { status: 'fee', fee });
+
+      return this.sendLockTx(fee);
 
     }).then(receipt => {
 
