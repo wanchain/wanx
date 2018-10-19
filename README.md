@@ -14,14 +14,12 @@ const WanX = require('wanx');
 const config = {
   wanNodeUrl: 'http://localhost:8545',
   ethNodeUrl: 'http://13.57.92.468:8545',
-  rpcWsUrl: '12.345.678.901',
 };
 
 // or configure with web3 objects
 const config = {
   web3wan: wan3,
   web3eth: web3,
-  rpcWsUrl: '12.345.678.901',
 };
 
 const wanx = new WanX('testnet', config);
@@ -29,7 +27,7 @@ const wanx = new WanX('testnet', config);
 ```
 
 ### Usage
-#### Make ETH 2 WETH crosschain transaction
+#### Make a complete ETH 2 WETH crosschain transaction
 ```
 const opts = {
   from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
@@ -61,7 +59,7 @@ handler.on('complete', res => {
 
 ```
 
-#### Make WETH 2 ETH crosschain transaction
+#### Make a complete WETH 2 ETH crosschain transaction
 ```
 const opts = {
   from: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
@@ -93,7 +91,7 @@ handler.on('complete', res => {
 
 ```
 
-#### Revoke transaction
+#### Revoke an expired transaction
 ```
 const opts = {
   from: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
@@ -101,8 +99,8 @@ const opts = {
 };
 
 // chain = 'ETH'
-// inbound = true
-const handler = wanx.revoke('ETH', true, opts);
+// inbound = false
+const handler = wanx.revoke('ETH', false, opts);
 
 handler.on('error', err => {
   console.log('ERROR:', err);
