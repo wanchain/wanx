@@ -13,10 +13,11 @@ class WanX {
   constructor(network, conf) {
 
     // load configuration
+    // default config + network config + user config
     this.config = config.get(network, conf);
 
-    // initialize web3 objects if objects not passed in config and if config
-    // urls are set
+    // initialize web3 objects if objects are not passed in config and if
+    // config urls are set
     if (! this.config.web3wan && this.config.wanNodeUrl) {
       const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
       this.config.web3wan = new Web3(provider);
@@ -32,6 +33,16 @@ class WanX {
   send(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.send(opts);
+  }
+
+  lock(type, inbound, opts) {
+    const sender = getSender(type, inbound, this.config);
+    return sender.lock(opts);
+  }
+
+  redeem(type, inbound, opts) {
+    const sender = getSender(type, inbound, this.config);
+    return sender.redeem(opts);
   }
 
   revoke(type, inbound, opts) {

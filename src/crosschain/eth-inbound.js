@@ -12,6 +12,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
     this.type = 'ETH';
   }
 
+  // send complete crosschain transaction
   send(opts) {
 
     // validate inputs
@@ -26,13 +27,13 @@ class CrosschainETH_Inbound extends CrosschainBase {
       //
     }
 
-    this.x = utils.generateXHash();
+    this.redeemKey = utils.generateXHash();
 
     // TODO: add handling for failed transactions
     Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', Object.assign({ status: 'starting' }, this.x));
+      this.emit('info', Object.assign({ status: 'starting' }, this.redeemKey));
 
       return this.sendLockTx();
 
@@ -47,6 +48,82 @@ class CrosschainETH_Inbound extends CrosschainBase {
 
       // notify locked status
       this.emit('info', { status: 'locked', receipt });
+
+      return this.sendRefundTx();
+
+    }).then(receipt => {
+
+      // notify refund result
+      this.emit('info', { status: 'confirming', receipt });
+
+      return this.listenRefundTx(receipt.blockNumber);
+
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', { receipt });
+
+    }).catch(err => {
+
+      // notify error
+      this.emit('error', err)
+
+    });
+
+    return this;
+  }
+
+  // first 1/2 of crosschain transaction
+  lock(opts) {
+
+    // validate inputs
+    this.opts = utils.validateSendOpts(this.type, opts);
+
+    this.redeemKey = utils.generateXHash();
+
+    // TODO: add handling for failed transactions
+    Promise.resolve([]).then(() => {
+
+      // notify status
+      this.emit('info', Object.assign({ status: 'starting' }, this.redeemKey));
+
+      return this.sendLockTx();
+
+    }).then(receipt => {
+
+      // notify status
+      this.emit('info', { status: 'lockPending', receipt });
+
+      return this.listenLockTx(receipt.blockNumber);
+
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', { receipt });
+
+    }).catch(err => {
+
+      // notify error
+      this.emit('error', err)
+
+    });
+
+    return this;
+  }
+
+  // second 1/2 of crosschain transaction
+  redeem(opts) {
+
+    // validate inputs
+    this.opts = utils.validateRedeemOpts(this.type, opts);
+
+    this.redeemKey = this.opts.redeemKey;
+
+    // TODO: add handling for failed transactions
+    Promise.resolve([]).then(() => {
+
+      // notify status
+      this.emit('info', { status: 'starting' });
 
       return this.sendRefundTx();
 
@@ -133,7 +210,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWETH.ETH2WETHLock,
         null,
         null,
-        '0x' + this.x.hashX,
+        '0x' + this.redeemKey.xHash,
       ],
     };
 
@@ -165,7 +242,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCETH.ETH2WETHRefund,
         null,
         null,
-        '0x' + this.x.hashX,
+        '0x' + this.redeemKey.xHash,
       ],
     };
 
@@ -175,14 +252,14 @@ class CrosschainETH_Inbound extends CrosschainBase {
   buildLockData(storeman, destination) {
     const sig = this.config.signatures.HTLCETH.eth2wethLock;
 
-    return '0x' + sig.substr(0, 8) + this.x.hashX
+    return '0x' + sig.substr(0, 8) + this.redeemKey.xHash
       + utils.addr2Bytes(storeman)
       + utils.addr2Bytes(destination);
   }
 
   buildRefundData() {
     const sig = this.config.signatures.HTLCWETH.eth2wethRefund;
-    return '0x' + sig.substr(0, 8) + this.x.x;
+    return '0x' + sig.substr(0, 8) + this.redeemKey.x;
   }
 
   buildRevokeData(xHash) {

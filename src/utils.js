@@ -26,6 +26,27 @@ function validateSendOpts(type, opts) {
   }
 }
 
+function validateRedeemOpts(type, opts) {
+  // console.log(type, opts);
+
+  // TODO: there should be an opt schema and this should check against it
+  if (type === 'ETH') {
+    if (! opts.redeemKey || ! opts.redeemKey.x || ! opts.redeemKey.xHash) {
+      throw new Error('Invalid redeemKey');
+    }
+  }
+
+  return {
+    destination: opts.to,
+    source: opts.from,
+    storeman: opts.storeman,
+    redeemKey: {
+      x: opts.redeemKey.x,
+      xHash: opts.redeemKey.xHash,
+    },
+  }
+}
+
 function validateRevokeOpts(type, opts) {
   // console.log(type, opts);
 
@@ -56,9 +77,9 @@ function generateXHash() {
   } while (!secp256k1.privateKeyVerify(randomBuf));
 
   const x = randomBuf.toString('hex');
-  const hashX = getXHash(x);
+  const xHash = getXHash(x);
 
-  return { x, hashX };
+  return { x, xHash };
 }
 
 function addr2Bytes(addr) {
@@ -77,5 +98,6 @@ module.exports = {
   getXHash,
   generateXHash,
   validateSendOpts,
+  validateRedeemOpts,
   validateRevokeOpts,
 }
