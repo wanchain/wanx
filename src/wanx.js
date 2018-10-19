@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Web = require('web3');
+const Web3 = require('web3');
 
 const config = require('./config');
 
