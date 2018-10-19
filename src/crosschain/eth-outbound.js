@@ -45,7 +45,7 @@ class CrosschainETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify status
-      this.emit('info', { status: 'lockPending', receipt });
+      this.emit('info', { status: 'locking', receipt });
 
       return this.listenLockTx(receipt.blockNumber);
 
@@ -110,7 +110,7 @@ class CrosschainETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify status
-      this.emit('info', { status: 'lockPending', receipt });
+      this.emit('info', { status: 'locking', receipt });
 
       return this.listenLockTx(receipt.blockNumber);
 
