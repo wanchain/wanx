@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const Web = require('web3');
 
 const config = require('./config');
 
@@ -13,6 +14,18 @@ class WanX {
 
     // load configuration
     this.config = config.get(network, conf);
+
+    // initialize web3 objects if objects not passed in config and if config
+    // urls are set
+    if (! this.config.web3wan && this.config.wanNodeUrl) {
+      const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
+      this.config.web3wan = new Web3(provider);
+    }
+
+    if (! this.config.web3eth && this.config.ethNodeUrl) {
+      const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
+      this.config.web3eth = new Web3(provider);
+    }
 
   }
 
