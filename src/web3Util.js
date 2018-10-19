@@ -45,7 +45,7 @@ function sendTransaction(opts) {
         }
 
         const getReceipt = () => {
-          this.web3eth.eth.getTransactionReceipt(hash, (err, receipt) => {
+          this.web3.eth.getTransactionReceipt(hash, (err, receipt) => {
             if (err) {
               return reject(err);
             }
@@ -116,13 +116,13 @@ function call(opts) {
 
   // v1.0.0 or greater
   if (this.version[0] == '1') {
-    return this.web3.call(opts);
+    return this.web3.eth.call(opts);
   }
 
   // below v1.0.0
   else {
     return new Promise((resolve, reject) => {
-      this.web3.call(opts, (err, res) => {
+      this.web3.eth.call(opts, (err, res) => {
         if (err) {
           return reject(err);
         }

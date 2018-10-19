@@ -183,7 +183,7 @@ class CrosschainETH_Outbound extends CrosschainBase {
       ],
     };
 
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+    return web3Util(this.web3wan).watchLogs(refundScanOpts);
   }
 
   buildLockData(storeman, destination, value) {
