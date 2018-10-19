@@ -61,7 +61,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { receipt });
+      this.emit('complete', { status: 'confirmed', receipt });
 
     }).catch(err => {
 
@@ -99,7 +99,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { receipt });
+      this.emit('complete', { status: 'locked', receipt });
 
     }).catch(err => {
 
@@ -137,7 +137,7 @@ class CrosschainETH_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { receipt });
+      this.emit('complete', { status: 'confirmed', receipt });
 
     }).catch(err => {
 
@@ -165,10 +165,12 @@ class CrosschainETH_Inbound extends CrosschainBase {
       data: revokeData,
     };
 
+    this.emit('info', { status: 'starting' });
+
     web3Util(this.web3eth).sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
-      this.emit('complete', { receipt });
+      this.emit('complete', { status: 'revoked', receipt });
 
     }).catch(err => {
 
