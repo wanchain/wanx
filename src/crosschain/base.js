@@ -10,7 +10,7 @@ class CrosschainBase extends EventEmitter {
     this.web3wan = config.web3wan;
     this.web3eth = config.web3eth;
 
-    this.x = {};
+    this.redeemKey = {};
   }
 
 }
