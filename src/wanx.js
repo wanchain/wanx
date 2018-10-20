@@ -2,12 +2,12 @@ const EventEmitter = require('events');
 const Web3 = require('web3');
 
 const config = require('./config');
-const utils = require('./utils');
+const crypto = require('./crypto');
 
-const CrosschainETH_Inbound = require('./crosschain/eth-inbound');
-const CrosschainETH_Outbound = require('./crosschain/eth-outbound');
-// const CrosschainBTC = require('./crosschain/btc');
-// const CrosschainERC20 = require('./crosschain/erc20');
+const ETH_Inbound = require('./crosschain/eth-inbound');
+const ETH_Outbound = require('./crosschain/eth-outbound');
+// const BTC = require('./crosschain/btc');
+// const ERC20 = require('./crosschain/erc20');
 
 class WanX {
 
@@ -52,7 +52,7 @@ class WanX {
   }
 
   newRedeemKey() {
-    return utils.generateXPair();
+    return crypto.generateXPair();
   }
 
 }
@@ -61,10 +61,10 @@ function getSender(type, inbound, config) {
 
   if (type === 'ETH') {
     if (inbound) {
-      return new CrosschainETH_Inbound(config);
+      return new ETH_Inbound(config);
     }
 
-    return new CrosschainETH_Outbound(config);
+    return new ETH_Outbound(config);
   }
 
   else if (type === 'BTC') {
