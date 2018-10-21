@@ -16,27 +16,23 @@ class ETH_Outbound extends CrosschainBase {
 
   constructor(config) {
     super(config);
-
-    this.type = 'ETH';
   }
 
   // complete crosschain transaction
   send(opts) {
 
     // validate inputs
-    this.opts = validateSendOpts(this.type, opts);
+    this.opts = validateSendOpts(opts);
 
-    let {
+    const {
       value,
       storeman,
     } = this.opts;
 
-    this.redeemKey = this.opts.redeemKey || generateXPair();
-
     Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: this.redeemKey });
+      this.emit('info', { status: 'starting', redeemKey: this.opts.redeemKey });
 
       return this.getStoremanFee(storeman.wan, value);
 
@@ -89,19 +85,17 @@ class ETH_Outbound extends CrosschainBase {
   lock(opts) {
 
     // validate inputs
-    this.opts = validateSendOpts(this.type, opts);
+    this.opts = validateSendOpts(opts);
 
-    let {
+    const {
       value,
       storeman,
     } = this.opts;
 
-    this.redeemKey = this.opts.redeemKey || generateXPair();
-
     Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: this.redeemKey });
+      this.emit('info', { status: 'starting', redeemKey: this.opts.redeemKey });
 
       return this.getStoremanFee(storeman.wan, value);
 
@@ -141,14 +135,12 @@ class ETH_Outbound extends CrosschainBase {
   redeem(opts) {
 
     // validate inputs
-    this.opts = validateRedeemOpts(this.type, opts);
-
-    this.redeemKey = this.opts.redeemKey;
+    this.opts = validateRedeemOpts(opts);
 
     Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: this.redeemKey });
+      this.emit('info', { status: 'starting', redeemKey: this.opts.redeemKey });
 
       return this.sendRefundTx();
 
@@ -178,7 +170,7 @@ class ETH_Outbound extends CrosschainBase {
   revoke(opts) {
 
     // validate inputs
-    this.opts = validateRevokeOpts(this.type, opts);
+    this.opts = validateRevokeOpts(opts);
 
     const revokeData = this.buildRevokeData(this.opts.xHash);
 
@@ -239,7 +231,7 @@ class ETH_Outbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCETH.WETH2ETHLock,
         null,
         null,
-        '0x' + this.redeemKey.xHash,
+        '0x' + this.opts.redeemKey.xHash,
       ],
     };
 
@@ -272,7 +264,7 @@ class ETH_Outbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWETH.WETH2ETHRefund,
         null,
         null,
-        '0x' + this.redeemKey.xHash,
+        '0x' + this.opts.redeemKey.xHash,
       ],
     };
 
@@ -282,7 +274,7 @@ class ETH_Outbound extends CrosschainBase {
   buildLockData(storeman, destination, value) {
     const sig = this.config.signatures.HTLCWETH.weth2ethLock;
 
-    return '0x' + sig.substr(0, 8) + this.redeemKey.xHash
+    return '0x' + sig.substr(0, 8) + this.opts.redeemKey.xHash
       + types.addr2Bytes(storeman)
       + types.addr2Bytes(destination)
       + types.number2Bytes(value)
@@ -290,7 +282,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildRefundData() {
     const sig = this.config.signatures.HTLCETH.weth2ethRefund;
-    return '0x' + sig.substr(0, 8) + this.redeemKey.x;
+    return '0x' + sig.substr(0, 8) + this.opts.redeemKey.x;
   }
 
   buildRevokeData(xHash) {
