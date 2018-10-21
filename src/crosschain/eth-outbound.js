@@ -20,7 +20,7 @@ class ETH_Outbound extends CrosschainBase {
     this.type = 'ETH';
   }
 
-  // send complete crosschain transaction
+  // complete crosschain transaction
   send(opts) {
 
     // validate inputs
@@ -137,6 +137,7 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   // second 1/2 of crosschain transaction
+  // requires redeemKey to be passed in opts
   redeem(opts) {
 
     // validate inputs
