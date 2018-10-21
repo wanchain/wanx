@@ -16,7 +16,7 @@ const config = {
   ethNodeUrl: 'http://13.57.92.468:8545',
 };
 
-// or configure with web3 objects
+// or configure with pre-initialized web3 objects
 const config = {
   web3wan: wan3,
   web3eth: web3,
@@ -157,3 +157,9 @@ const handler = wanx.revoke('ETH', false, opts);
 
 ...
 ```
+
+## Next Todos
+- Support signing raw transactions
+- Add BTC and ERC20 token support
+- Remove hardcoded gas prices and make configurable and/or auto-calculated
+- Add getStoremanGroups method
