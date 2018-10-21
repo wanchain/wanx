@@ -31,21 +31,25 @@ class WanX {
 
   }
 
+  // complete crosschain transfer (lock and redeem)
   send(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.send(opts);
   }
 
+  // lock step (1st of 2 steps)
   lock(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.lock(opts);
   }
 
+  // redeem step (2nd of 2 steps, if timelock active)
   redeem(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.redeem(opts);
   }
 
+  // revoke step (2nd of 2 steps, if timelock expired)
   revoke(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.revoke(opts);
@@ -59,22 +63,16 @@ class WanX {
 
 function getSender(type, inbound, config) {
 
-  if (type === 'ETH') {
-    if (inbound) {
+  const direction = inbound ? 'in' : 'out';
+  const senderName = `${type.toLowerCase()}_${direction}`;
+
+  switch(senderName) {
+    case 'eth_in':
       return new ETH_Inbound(config);
-    }
-
-    return new ETH_Outbound(config);
-  }
-
-  else if (type === 'BTC') {
-  }
-
-  else if (type === 'ERC20') {
-  }
-
-  else {
-    throw new Error(`Unsupported crosschain type: ${type}. Types available `);
+    case 'eth_out':
+      return new ETH_Outbound(config);
+    default:
+      throw new Error(`Unsupported crosschain type: ${type}.`);
   }
 }
 
