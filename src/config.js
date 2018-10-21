@@ -28,11 +28,8 @@ const defaultConfig = {
   wanNodeUrl: null,
   ethNodeUrl: null,
 
-  rpcIpcPath: process.env.HOME,
-  keyStorePath: process.env.HOME,
+  wanKeyStorePath: process.env.HOME,
   ethkeyStorePath: process.env.HOME,
-
-  confirmBlocks: 2,
 
   signatures: {
     ERC20: {
@@ -169,24 +166,27 @@ const get = function(network, conf = {}) {
   const config = Object.assign({}, defaultConfig, networkConfig, conf);
 
   if (process.platform === 'darwin') {
-    config.rpcIpcPath += '/Library/Wanchain/gwan.ipc';
-    config.keyStorePath = path.join(config.keyStorePath, '/Library/wanchain/', network, 'keystore/');
+    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '/Library/wanchain/', network, 'keystore/');
     config.ethkeyStorePath = path.join(config.ethkeyStorePath, '/Library/ethereum/', network, 'keystore/');
   }
 
   else if (process.platform === 'freebsd' || process.platform === 'linux' || process.platform === 'sunos') {
-    config.rpcIpcPath += '/.wanchain/gwan.ipc';
-    config.keyStorePath = path.join(config.keyStorePath, '.wanchain', network, 'keystore/');
+    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '.wanchain', network, 'keystore/');
     config.ethkeyStorePath = path.join(config.ethkeyStorePath, '.ethereum', network, 'keystore/');
   }
 
   else if (process.platform === 'win32') {
-    config.rpcIpcPath = '\\\\.\\pipe\\gwan.ipc';
-    config.keyStorePath = path.join(process.env.APPDATA, 'wanchain', network, 'keystore\\');
+    config.wanKeyStorePath = path.join(process.env.APPDATA, 'wanchain', network, 'keystore\\');
     config.ethkeyStorePath = path.join(process.env.APPDATA, 'ethereum', network, 'keystore\\');
   }
 
   return config;
 };
 
-module.exports = { get };
+module.exports = {
+  testnetConfig,
+  mainnetConfig,
+  defaultConfig,
+
+  get,
+};
