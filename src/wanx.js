@@ -4,8 +4,8 @@ const Web3 = require('web3');
 const config = require('./config');
 const crypto = require('./crypto');
 
-const ETH_Inbound = require('./crosschain/eth-inbound');
-const ETH_Outbound = require('./crosschain/eth-outbound');
+const ETH_Inbound = require('./crosschain/eth/inbound');
+const ETH_Outbound = require('./crosschain/eth/outbound');
 // const BTC = require('./crosschain/btc');
 // const ERC20 = require('./crosschain/erc20');
 
