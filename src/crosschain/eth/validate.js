@@ -18,8 +18,8 @@ function validateSendOpts(opts) {
   }
 
   return {
-    source: opts.from,
-    destination: opts.to,
+    from: opts.from,
+    to: opts.to,
     value: opts.value,
     storeman: opts.storeman,
     redeemKey: {
@@ -36,8 +36,8 @@ function validateRedeemOpts(opts) {
   }
 
   return {
-    source: opts.from,
-    destination: opts.to,
+    from: opts.from,
+    to: opts.to,
     storeman: opts.storeman,
     redeemKey: {
       x: opts.redeemKey.x,
@@ -48,13 +48,15 @@ function validateRedeemOpts(opts) {
 
 function validateRevokeOpts(opts) {
 
-  if (! opts.xHash) {
-    throw new Error('Invalid xHash');
+  if (! opts.redeemKey || ! opts.redeemKey.xHash) {
+    throw new Error('Invalid redeemKey');
   }
 
   return {
-    source: opts.from,
-    xHash: opts.xHash,
+    from: opts.from,
+    redeemKey: {
+      xHash: opts.redeemKey.xHash,
+    },
   }
 }
 

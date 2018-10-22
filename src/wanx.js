@@ -31,6 +31,16 @@ class WanX {
 
   }
 
+  new(type, inbound) {
+    return getSender(type, inbound, this.config);
+  }
+
+  newRedeemKey() {
+    return crypto.generateXPair();
+  }
+
+  // shortcut methods
+
   // complete crosschain transfer (lock and redeem)
   send(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
@@ -53,10 +63,6 @@ class WanX {
   revoke(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.revoke(opts);
-  }
-
-  newRedeemKey() {
-    return crypto.generateXPair();
   }
 
 }
