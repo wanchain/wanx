@@ -3,9 +3,12 @@ const Web3 = require('web3');
 
 const config = require('./config');
 const crypto = require('./crypto');
+const btcUtil = require('./btc-util');
 
 const ETH_Inbound = require('./crosschain/eth/inbound');
 const ETH_Outbound = require('./crosschain/eth/outbound');
+
+const BTC_Outbound = require('./crosschain/btc/outbound');
 // const BTC = require('./crosschain/btc');
 // const ERC20 = require('./crosschain/erc20');
 
@@ -37,6 +40,10 @@ class WanX {
 
   newRedeemKey() {
     return crypto.generateXPair();
+  }
+
+  newBtcRedeemKey() {
+    return btcUtil.generateXPair();
   }
 
   // shortcut methods
@@ -77,6 +84,8 @@ function getSender(type, inbound, config) {
       return new ETH_Inbound(config);
     case 'eth_out':
       return new ETH_Outbound(config);
+    case 'btc_out':
+      return new BTC_Outbound(config);
     default:
       throw new Error(`Unsupported crosschain type: ${type}.`);
   }

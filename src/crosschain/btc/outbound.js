@@ -2,6 +2,7 @@ const BigNumber = require('bignumber.js');
 const wanutils = require('wanchain-util');
 
 const CrosschainBase = require('../base');
+const btcUtil = require('../../btc-util');
 const web3Util = require('../../web3-util');
 const types = require('../../types');
 
@@ -11,7 +12,7 @@ const {
   validateRevokeOpts,
 } = require('./validate');
 
-class ETH_Outbound extends CrosschainBase {
+class BTC_Outbound extends CrosschainBase {
 
   constructor(config) {
     super(config);
@@ -51,14 +52,14 @@ class ETH_Outbound extends CrosschainBase {
       // notify locked status
       this.emit('info', { status: 'locked', receipt });
 
-      return this.sendRefundTx(opts);
+      return this.sendRedeemTx(opts);
 
     }).then(receipt => {
 
-      // notify refund result
+      // notify redeem result
       this.emit('info', { status: 'confirming', receipt });
 
-      return this.listenRefundTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -131,14 +132,14 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendRefundTx(opts);
+      return this.sendRedeemTx(opts);
 
     }).then(receipt => {
 
-      // notify refund result
+      // notify redeem result
       this.emit('info', { status: 'confirming', receipt });
 
-      return this.listenRefundTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -165,7 +166,7 @@ class ETH_Outbound extends CrosschainBase {
 
     const sendOpts = {
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.wanHtlcAddrBtc,
       gas: 4700000,
       gasPrice: 180e9,
       data: revokeData,
@@ -200,7 +201,7 @@ class ETH_Outbound extends CrosschainBase {
 
     const sendOpts = {
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.wanHtlcAddrBtc,
       gas: 4700000,
       gasPrice: 180e9,
       value: fee,
@@ -215,80 +216,81 @@ class ETH_Outbound extends CrosschainBase {
 
     const lockScanOpts = {
       blockNumber,
-      address: this.config.ethHtlcAddr,
+      address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCETH.WETH2ETHLock,
+        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCLockNotice,
         null,
         null,
         '0x' + redeemKey.xHash,
       ],
     };
 
-    return web3Util(this.web3eth).watchLogs(lockScanOpts);
+    return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
-  // send refund transaction on ethereum
-  sendRefundTx({ to, redeemKey }) {
+  // send redeem transaction on ethereum
+  sendRedeemTx({ from, redeemKey }) {
 
-    const refundData = this.buildRefundData({ redeemKey });
+    const redeemData = this.buildRedeemData({ redeemKey });
 
     const sendOpts = {
-      from: to,
-      to: this.config.ethHtlcAddr,
-      gas: 4910000,
-      gasPrice: 100e9,
-      data: refundData,
+      from: from,
+      to: this.config.wanHtlcAddrBtc,
+      gas: 4700000,
+      gasPrice: 180e9,
+      data: redeemData,
     };
 
-    return web3Util(this.web3eth).sendTransaction(sendOpts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on wanchain
-  listenRefundTx({ redeemKey }, blockNumber) {
+  listenRedeemTx({ redeemKey }, blockNumber) {
 
-    const refundScanOpts = {
+    const redeemScanOpts = {
       blockNumber,
-      address: this.config.wanHtlcAddr,
+      address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCWETH.WETH2ETHRefund,
+        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
         null,
         null,
         '0x' + redeemKey.xHash,
       ],
     };
 
-    return web3Util(this.web3wan).watchLogs(refundScanOpts);
+    return web3Util(this.web3wan).watchLogs(redeemScanOpts);
   }
 
   buildLockData({ to, value, storeman, redeemKey }) {
-    const sig = this.config.signatures.HTLCWETH.weth2ethLock;
+    const sig = this.config.signatures.HTLCWBTC.wbtc2btcLock;
+    const toAddr = btcUtil.addressToHash160(to, 'pubkeyhash', this.config.network);
 
     return '0x' + sig.substr(0, 8) + redeemKey.xHash
       + types.addr2Bytes(storeman.wan)
-      + types.addr2Bytes(to)
-      + types.number2Bytes(value)
+      + types.addr2Bytes(toAddr)
+      + types.number2Bytes(value);
   }
 
-  buildRefundData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCETH.weth2ethRefund;
+  buildRedeemData({ redeemKey }) {
+    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRedeem;
     return '0x' + sig.substr(0, 8) + redeemKey.x;
   }
 
   buildRevokeData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWETH.weth2ethRevoke;
+    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRevoke;
     return '0x' + sig.substr(0, 8) + wanutils.stripHexPrefix(redeemKey.xHash);
   }
 
   getStoremanFee({ storeman, value }) {
-    const to = this.config.wanHtlcAddr;
-    const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
+    const to = this.config.wanHtlcAddrBtc;
+    const sig = this.config.signatures.HTLCWBTC.getWbtc2BtcFee;
 
     const data = '0x' + sig.substr(0, 8)
       + types.addr2Bytes(storeman.wan)
-      + types.number2Bytes(value)
+      + types.number2Bytes(value);
 
     return web3Util(this.web3wan).call({ to, data });
   }
 }
 
-module.exports = ETH_Outbound;
+module.exports = BTC_Outbound;
