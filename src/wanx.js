@@ -2,12 +2,12 @@ const EventEmitter = require('events');
 const Web3 = require('web3');
 
 const config = require('./config');
-const utils = require('./utils');
+const crypto = require('./crypto');
 
-const CrosschainETH_Inbound = require('./crosschain/eth-inbound');
-const CrosschainETH_Outbound = require('./crosschain/eth-outbound');
-// const CrosschainBTC = require('./crosschain/btc');
-// const CrosschainERC20 = require('./crosschain/erc20');
+const ETH_Inbound = require('./crosschain/eth/inbound');
+const ETH_Outbound = require('./crosschain/eth/outbound');
+// const BTC = require('./crosschain/btc');
+// const ERC20 = require('./crosschain/erc20');
 
 class WanX {
 
@@ -31,50 +31,54 @@ class WanX {
 
   }
 
+  new(type, inbound) {
+    return getSender(type, inbound, this.config);
+  }
+
+  newRedeemKey() {
+    return crypto.generateXPair();
+  }
+
+  // shortcut methods
+
+  // complete crosschain transfer (lock and redeem)
   send(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.send(opts);
   }
 
+  // lock step (1st of 2 steps)
   lock(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.lock(opts);
   }
 
+  // redeem step (2nd of 2 steps, if timelock active)
   redeem(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.redeem(opts);
   }
 
+  // revoke step (2nd of 2 steps, if timelock expired)
   revoke(type, inbound, opts) {
     const sender = getSender(type, inbound, this.config);
     return sender.revoke(opts);
-  }
-
-  newRedeemKey() {
-    return utils.generateXPair();
   }
 
 }
 
 function getSender(type, inbound, config) {
 
-  if (type === 'ETH') {
-    if (inbound) {
-      return new CrosschainETH_Inbound(config);
-    }
+  const direction = inbound ? 'in' : 'out';
+  const senderName = `${type.toLowerCase()}_${direction}`;
 
-    return new CrosschainETH_Outbound(config);
-  }
-
-  else if (type === 'BTC') {
-  }
-
-  else if (type === 'ERC20') {
-  }
-
-  else {
-    throw new Error(`Unsupported crosschain type: ${type}. Types available `);
+  switch(senderName) {
+    case 'eth_in':
+      return new ETH_Inbound(config);
+    case 'eth_out':
+      return new ETH_Outbound(config);
+    default:
+      throw new Error(`Unsupported crosschain type: ${type}.`);
   }
 }
 
