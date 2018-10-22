@@ -51,14 +51,14 @@ class ETH_Outbound extends CrosschainBase {
       // notify locked status
       this.emit('info', { status: 'locked', receipt });
 
-      return this.sendRefundTx(opts);
+      return this.sendRedeemTx(opts);
 
     }).then(receipt => {
 
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
 
-      return this.listenRefundTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -131,14 +131,14 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendRefundTx(opts);
+      return this.sendRedeemTx(opts);
 
     }).then(receipt => {
 
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
 
-      return this.listenRefundTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, receipt.blockNumber);
 
     }).then(receipt => {
 
@@ -228,9 +228,9 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   // send refund transaction on ethereum
-  sendRefundTx({ to, redeemKey }) {
+  sendRedeemTx({ to, redeemKey }) {
 
-    const refundData = this.buildRefundData({ redeemKey });
+    const refundData = this.buildRedeemData({ redeemKey });
 
     const sendOpts = {
       from: to,
@@ -244,7 +244,7 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   // listen for storeman tx on wanchain
-  listenRefundTx({ redeemKey }, blockNumber) {
+  listenRedeemTx({ redeemKey }, blockNumber) {
 
     const refundScanOpts = {
       blockNumber,
@@ -269,7 +269,7 @@ class ETH_Outbound extends CrosschainBase {
       + types.number2Bytes(value)
   }
 
-  buildRefundData({ redeemKey }) {
+  buildRedeemData({ redeemKey }) {
     const sig = this.config.signatures.HTLCETH.weth2ethRefund;
     return '0x' + sig.substr(0, 8) + redeemKey.x;
   }
