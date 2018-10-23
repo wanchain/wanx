@@ -1,7 +1,8 @@
 # WanX
 ### Utility for making crosschain transactions on the wanchain network
 
-NB: This project is still under heavy development. Please use at your own risk!
+NB: This project is still under heavy development and currently only works with
+testnet. Feel free to check it out, but please use at your own risk!
 
 ### Install
 ```
