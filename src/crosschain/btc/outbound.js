@@ -165,7 +165,7 @@ class BTC_Outbound extends CrosschainBase {
     const revokeData = this.buildRevokeData(opts);
 
     const sendOpts = {
-      from: from,
+      from: opts.from,
       to: this.config.wanHtlcAddrBtc,
       gas: 4700000,
       gasPrice: 180e9,

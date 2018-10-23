@@ -58,21 +58,21 @@ function buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, destHash
   const bitcoinNetwork = bitcoin.networks[network];
 
   const redeemScript = bitcoin.script.compile([
+
     bitcoin.opcodes.OP_IF,
     bitcoin.opcodes.OP_SHA256,
     Buffer.from(hashx, 'hex'),
     bitcoin.opcodes.OP_EQUALVERIFY,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-
     Buffer.from(wanutils.stripHexPrefix(destHash160Addr), 'hex'),
+
     bitcoin.opcodes.OP_ELSE,
     bitcoin.script.number.encode(redeemLockTimeStamp),
     bitcoin.opcodes.OP_CHECKLOCKTIMEVERIFY,
     bitcoin.opcodes.OP_DROP,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-
     Buffer.from(wanutils.stripHexPrefix(revokerHash160Addr), 'hex'),
     bitcoin.opcodes.OP_ENDIF,
 
