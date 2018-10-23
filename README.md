@@ -1,5 +1,5 @@
 # WanX
-### Utility for making crosschain transactions on the wanchain network
+### Utility for making crosschain transactions on the Wanchain network
 
 ### Install
 ```
@@ -62,7 +62,7 @@ cctx.on('complete', res => {
 
 ```
 
-#### Create a ETH 2 WETH lock (1st of 2 steps)
+#### Create a ETH 2 WETH lock (Step 1/2)
 ```
 // get new crosschain tx
 const cctx = wan.new('eth', true);
@@ -116,7 +116,7 @@ cctx.lock(opts);
 ...
 ```
 
-#### Redeem a locked transaction (2nd of 2 steps)
+#### Redeem a locked transaction (Step 2/2)
 ```
 const opts = {
   from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
