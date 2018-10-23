@@ -1,6 +1,8 @@
 # WanX
 ### Utility for making crosschain transactions on the wanchain network
 
+NB: This project is still under heavy development. Please use at your own risk!
+
 ### Install
 ```
 npm install wanx
