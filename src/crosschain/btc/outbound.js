@@ -156,7 +156,7 @@ class BTC_Outbound extends CrosschainBase {
     return this;
   }
 
-  // send revoke transaction on wanchain
+  // send revoke transaction
   revoke(opts) {
 
     // validate inputs
@@ -189,7 +189,7 @@ class BTC_Outbound extends CrosschainBase {
     return this;
   }
 
-  // send lock transaction on wanchain
+  // send lock transaction
   sendLockTx({ to, from, value, storeman, redeemKey, fee }) {
 
     const lockData = this.buildLockData({
@@ -211,7 +211,7 @@ class BTC_Outbound extends CrosschainBase {
     return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
-  // listen for storeman tx on ethereum
+  // listen for storeman tx
   listenLockTx({ redeemKey }, blockNumber) {
 
     const lockScanOpts = {
@@ -228,7 +228,7 @@ class BTC_Outbound extends CrosschainBase {
     return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
-  // send redeem transaction on ethereum
+  // send redeem transaction
   sendRedeemTx({ from, redeemKey }) {
 
     const redeemData = this.buildRedeemData({ redeemKey });
@@ -244,7 +244,7 @@ class BTC_Outbound extends CrosschainBase {
     return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
-  // listen for storeman tx on wanchain
+  // listen for storeman tx
   listenRedeemTx({ redeemKey }, blockNumber) {
 
     const redeemScanOpts = {
