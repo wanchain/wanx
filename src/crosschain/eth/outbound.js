@@ -44,7 +44,11 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'locking', receipt });
 
-      return this.listenLockTx(opts, receipt.blockNumber);
+      return web3Util(this.web3eth).getBlockNumber();
+
+    }).then(blockNumber => {
+
+      return this.listenLockTx(opts, blockNumber);
 
     }).then(receipt => {
 
@@ -57,6 +61,10 @@ class ETH_Outbound extends CrosschainBase {
 
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
+
+      return web3Util(this.web3wan).getBlockNumber();
+
+    }).then(blockNumber => {
 
       return this.listenRedeemTx(opts, receipt.blockNumber);
 
@@ -102,7 +110,11 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'locking', receipt });
 
-      return this.listenLockTx(opts, receipt.blockNumber);
+      return web3Util(this.web3eth).getBlockNumber();
+
+    }).then(blockNumber => {
+
+      return this.listenLockTx(opts, blockNumber);
 
     }).then(receipt => {
 
@@ -137,6 +149,10 @@ class ETH_Outbound extends CrosschainBase {
 
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
+
+      return web3Util(this.web3wan).getBlockNumber();
+
+    }).then(blockNumber => {
 
       return this.listenRedeemTx(opts, receipt.blockNumber);
 
