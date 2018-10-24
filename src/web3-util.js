@@ -1,3 +1,5 @@
+const util = require('util');
+
 const ERR_NOVERSION = 'Unable to obtain web3 version';
 
 module.exports = web3Util;
@@ -7,6 +9,7 @@ function web3Util(web3Obj) {
   this.web3 = web3Obj;
   this.version = getVersion(web3Obj);
 
+  this.getBlockNumber = getBlockNumber;
   this.sendTransaction = sendTransaction;
   this.watchLogs = watchLogs;
   this.call = call;
@@ -123,14 +126,19 @@ function call(opts) {
 
   // below v1.0.0
   else {
-    return new Promise((resolve, reject) => {
-      this.web3.eth.call(opts, (err, res) => {
-        if (err) {
-          return reject(err);
-        }
+    return util.promisify(this.web3.eth.call)(opts);
+  }
+}
 
-        resolve(res);
-      });
-    });
+function getBlockNumber(opts) {
+
+  // v1.0.0 or greater
+  if (this.version[0] == '1') {
+    return this.web3.eth.getBlockNumber(opts);
+  }
+
+  // below v1.0.0
+  else {
+    return util.promisify(this.web3.eth.getBlockNumber)(opts);
   }
 }
