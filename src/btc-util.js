@@ -90,6 +90,47 @@ function buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, destHash
   return { address, redeemScript, hashx, redeemLockTimeStamp };
 }
 
+function buildRedeemTx(network, x, senderH160Addr, receiverWif, redeemLockTimeStamp, txid, value, fee) {
+  const bitcoinNetwork = bitcoin.networks[network];
+
+  // FIXME: we should not assume that the input is in the first vout
+  const vout = 0;
+
+  // TODO: put the default fee in the config or something
+  fee = fee ? fee : 0.00005;
+
+  const receiverKeyPair = bitcoin.ECPair.fromWIF(receiverWif, bitcoinNetwork);
+  const receiverHash160Addr = bitcoin.crypto.hash160(receiverKeyPair.publicKey).toString('hex');
+  const contract = buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, receiverHash160Addr, senderH160Addr);
+  const redeemScript = contract.redeemScript;
+
+  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+
+  txb.setVersion(1);
+  txb.addInput(txid, 0);
+  txb.addOutput(receiverHash160Addr, (value - fee));
+
+  const tx = txb.buildIncomplete();
+  const sigHash = tx.hashForSignature(0, redeemScript, bitcoin.Transaction.SIGHASH_ALL);
+
+  const redeemScriptSig = bitcoin.payments.p2sh({
+    redeem: {
+      input: bitcoin.script.compile([
+        bitcoin.script.signature.encode(receiverKeyPair.sign(sigHash), bitcoin.Transaction.SIGHASH_ALL),
+        receiverKeyPair.publicKey,
+        Buffer.from(x, 'hex'),
+        bitcoin.opcodes.OP_TRUE
+      ]),
+      output: redeemScript,
+    },
+    network: config.bitcoinNetwork
+  }).input;
+
+  tx.setInputScript(0, redeemScriptSig);
+
+  return tx.toHex();
+}
+
 // function getTransaction(txHash) {
 //   return new Promise((resolve, reject) => {
 //     bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
