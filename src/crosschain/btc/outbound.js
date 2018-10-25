@@ -251,7 +251,7 @@ class BTC_Outbound extends CrosschainBase {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRefund,
+        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
         null,
         null,
         '0x' + redeemKey.xHash,
@@ -272,7 +272,7 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRefund;
+    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRedeem;
     return '0x' + sig.substr(0, 8) + redeemKey.x;
   }
 
