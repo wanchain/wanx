@@ -34,7 +34,7 @@ class WanX {
 
   }
 
-  new(type, inbound) {
+  newChain(type, inbound) {
     return getSender(type, inbound, this.config);
   }
 
@@ -44,32 +44,6 @@ class WanX {
 
   newBtcRedeemKey() {
     return btcUtil.generateXPair();
-  }
-
-  // shortcut methods
-
-  // complete crosschain transfer (lock and redeem)
-  send(type, inbound, opts) {
-    const sender = getSender(type, inbound, this.config);
-    return sender.send(opts);
-  }
-
-  // lock step (1st of 2 steps)
-  lock(type, inbound, opts) {
-    const sender = getSender(type, inbound, this.config);
-    return sender.lock(opts);
-  }
-
-  // redeem step (2nd of 2 steps, if timelock active)
-  redeem(type, inbound, opts) {
-    const sender = getSender(type, inbound, this.config);
-    return sender.redeem(opts);
-  }
-
-  // revoke step (2nd of 2 steps, if timelock expired)
-  revoke(type, inbound, opts) {
-    const sender = getSender(type, inbound, this.config);
-    return sender.revoke(opts);
   }
 
 }

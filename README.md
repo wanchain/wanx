@@ -45,7 +45,7 @@ const opts = {
 
 // chain = 'ETH'
 // inbound = true
-const cctx = wanx.new('ETH', true);
+const cctx = wanx.newChain('ETH', true);
 
 cctx.send(opts);
 
@@ -68,7 +68,7 @@ cctx.on('complete', res => {
 #### Create a ETH 2 WETH lock (1st of 2 steps)
 ```
 // get new crosschain tx
-const cctx = wan.new('eth', true);
+const cctx = wan.newChain('eth', true);
 
 const opts = {
   from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',

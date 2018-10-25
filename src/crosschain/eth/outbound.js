@@ -23,7 +23,7 @@ class ETH_Outbound extends CrosschainBase {
     // validate inputs
     opts = validateSendOpts(opts);
 
-    Promise.resolve([]).then(() => {
+    return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
@@ -79,8 +79,6 @@ class ETH_Outbound extends CrosschainBase {
       this.emit('error', err)
 
     });
-
-    return this;
   }
 
   // first 1/2 of crosschain transaction
@@ -89,7 +87,7 @@ class ETH_Outbound extends CrosschainBase {
     // validate inputs
     opts = validateSendOpts(opts);
 
-    Promise.resolve([]).then(() => {
+    return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
@@ -127,8 +125,6 @@ class ETH_Outbound extends CrosschainBase {
       this.emit('error', err)
 
     });
-
-    return this;
   }
 
   // second 1/2 of crosschain transaction
@@ -138,7 +134,7 @@ class ETH_Outbound extends CrosschainBase {
     // validate inputs
     opts = validateRedeemOpts(opts);
 
-    Promise.resolve([]).then(() => {
+    return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
@@ -167,8 +163,6 @@ class ETH_Outbound extends CrosschainBase {
       this.emit('error', err)
 
     });
-
-    return this;
   }
 
   // send revoke transaction on wanchain
@@ -189,7 +183,7 @@ class ETH_Outbound extends CrosschainBase {
 
     this.emit('info', { status: 'starting' });
 
-    web3Util(this.web3wan).sendTransaction(sendOpts).then(receipt => {
+    return web3Util(this.web3wan).sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
       this.emit('complete', { status: 'revoked', receipt });
@@ -200,8 +194,6 @@ class ETH_Outbound extends CrosschainBase {
       this.emit('error', err)
 
     });
-
-    return this;
   }
 
   // send lock transaction on wanchain
