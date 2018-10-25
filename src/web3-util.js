@@ -134,11 +134,11 @@ function getBlockNumber(opts) {
 
   // v1.0.0 or greater
   if (this.version[0] == '1') {
-    return this.web3.eth.getBlockNumber(opts);
+    return this.web3.eth.getBlockNumber();
   }
 
   // below v1.0.0
   else {
-    return util.promisify(this.web3.eth.getBlockNumber)(opts);
+    return util.promisify(this.web3.eth.getBlockNumber)();
   }
 }
