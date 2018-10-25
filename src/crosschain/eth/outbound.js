@@ -66,7 +66,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenRedeemTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, blockNumber);
 
     }).then(receipt => {
 
@@ -150,7 +150,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenRedeemTx(opts, receipt.blockNumber);
+      return this.listenRedeemTx(opts, blockNumber);
 
     }).then(receipt => {
 
