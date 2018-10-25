@@ -158,3 +158,5 @@ cctx.revoke(opts);
 - Add BTC and ERC20 token support
 - Remove hardcoded gas prices and make configurable and/or auto-calculated
 - Add getStoremanGroups method
+- Use validate.js for validating call options
+- Add tests!!!!
