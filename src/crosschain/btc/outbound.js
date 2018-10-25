@@ -181,19 +181,6 @@ class BTC_Outbound extends CrosschainBase {
     });
   }
 
-  getRedeemTx(opts) {
-    return buildRedeemTx(
-      this.config.network,
-      opts.redeemKey.x,
-      opts.storeman.eth,
-      opts.bitcoin.wif,
-      opts.bitcoin.lockTimestamp,
-      opts.bitcoin.txid,
-      opts.bitcoin.value,
-      opts.bitcoin.fee,
-    );
-  }
-
   // send lock transaction
   sendLockTx({ to, from, value, storeman, redeemKey, fee }) {
 
@@ -231,6 +218,20 @@ class BTC_Outbound extends CrosschainBase {
     };
 
     return web3Util(this.web3wan).watchLogs(lockScanOpts);
+  }
+
+  buildRedeemTx(opts) {
+    return btcUtil.buildRedeemTx(
+      this.config.network,
+      opts.redeemKey.x,
+      opts.storeman.btc,
+      opts.to,
+      opts.bitcoin.wif,
+      opts.bitcoin.lockTimestamp,
+      opts.bitcoin.txid,
+      parseInt(opts.value),
+      opts.bitcoin.fee,
+    );
   }
 
   // send redeem transaction

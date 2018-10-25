@@ -16,9 +16,12 @@ const wanutils = require('wanchain-util');
 module.exports = {
   addressToHash160,
   hash160ToAddress,
-  buildHashTimeLockContract,
+
   getXHash,
   generateXPair,
+
+  buildHashTimeLockContract,
+  buildRedeemTx,
   // getTransaction,
 }
 
@@ -54,26 +57,26 @@ function generateXPair() {
 }
 
 // generate the P2SH timelock contract
-function buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, destHash160Addr, revokerHash160Addr) {
+function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   const redeemScript = bitcoin.script.compile([
 
     bitcoin.opcodes.OP_IF,
     bitcoin.opcodes.OP_SHA256,
-    Buffer.from(hashx, 'hex'),
+    Buffer.from(xHash, 'hex'),
     bitcoin.opcodes.OP_EQUALVERIFY,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(wanutils.stripHexPrefix(destHash160Addr), 'hex'),
+    Buffer.from(wanutils.stripHexPrefix(destH160Addr), 'hex'),
 
     bitcoin.opcodes.OP_ELSE,
-    bitcoin.script.number.encode(redeemLockTimeStamp),
+    bitcoin.script.number.encode(lockTimestamp),
     bitcoin.opcodes.OP_CHECKLOCKTIMEVERIFY,
     bitcoin.opcodes.OP_DROP,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(wanutils.stripHexPrefix(revokerHash160Addr), 'hex'),
+    Buffer.from(wanutils.stripHexPrefix(revokerH160Addr), 'hex'),
     bitcoin.opcodes.OP_ENDIF,
 
     bitcoin.opcodes.OP_EQUALVERIFY,
@@ -87,10 +90,12 @@ function buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, destHash
 
   const { address } = addressPay;
 
-  return { address, redeemScript, hashx, redeemLockTimeStamp };
+  return { address, redeemScript, xHash, lockTimestamp };
 }
 
-function buildRedeemTx(network, x, senderH160Addr, receiverWif, redeemLockTimeStamp, txid, value, fee) {
+// TODO:
+// derive receiverAddr from receiverWif
+function buildRedeemTx(network, x, senderH160Addr, receiverAddr, receiverWif, lockTimestamp, txid, value, fee) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // FIXME: we should not assume that the input is in the first vout
@@ -99,16 +104,17 @@ function buildRedeemTx(network, x, senderH160Addr, receiverWif, redeemLockTimeSt
   // TODO: put the default fee in the config or something
   fee = fee ? fee : 0.00005;
 
+  const xHash = getXHash(x);
+
   const receiverKeyPair = bitcoin.ECPair.fromWIF(receiverWif, bitcoinNetwork);
-  const receiverHash160Addr = bitcoin.crypto.hash160(receiverKeyPair.publicKey).toString('hex');
-  const contract = buildHashTimeLockContract(network, hashx, redeemLockTimeStamp, receiverHash160Addr, senderH160Addr);
-  const redeemScript = contract.redeemScript;
+  const receiverH160Addr = bitcoin.crypto.hash160(receiverKeyPair.publicKey).toString('hex');
+  const { redeemScript } = buildHashTimeLockContract(network, xHash, lockTimestamp, receiverH160Addr, senderH160Addr);
 
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
   txb.addInput(txid, 0);
-  txb.addOutput(receiverHash160Addr, (value - fee));
+  txb.addOutput(receiverAddr, (value - fee));
 
   const tx = txb.buildIncomplete();
   const sigHash = tx.hashForSignature(0, redeemScript, bitcoin.Transaction.SIGHASH_ALL);
@@ -119,11 +125,11 @@ function buildRedeemTx(network, x, senderH160Addr, receiverWif, redeemLockTimeSt
         bitcoin.script.signature.encode(receiverKeyPair.sign(sigHash), bitcoin.Transaction.SIGHASH_ALL),
         receiverKeyPair.publicKey,
         Buffer.from(x, 'hex'),
-        bitcoin.opcodes.OP_TRUE
+        bitcoin.opcodes.OP_TRUE,
       ]),
       output: redeemScript,
     },
-    network: config.bitcoinNetwork
+    network: bitcoinNetwork,
   }).input;
 
   tx.setInputScript(0, redeemScriptSig);
