@@ -4,24 +4,24 @@ const testnetConfig = {
   network: 'testnet',
   chainId: 3,
   wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0x3ba524a9b01de0953ba8fe720befac9e14ff95b9',
+  wbtcTokenAddress: '0x6a40a70a0bd72de24918e6eec3cdc5e131e6b1cf',
   ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
   wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x87a0dee965e7679d15327ce0cc3df8dfc009b43d',
-  wanHtlcAddrE20: '0xe10515355e684e515c9c632c9eed04cca425cda1',
-  wanHtlcAddrBtc: '0x5c35c015da4299a039e58b42ef474d94324da5e4',
+  ethHtlcAddrE20: '0x4a8f5dd531e4cd1993b79b23dbda21faacb9c731',
+  wanHtlcAddrE20: '0xfc0eba261b49763decb6c911146e3cf524fa7ebc',
+  wanHtlcAddrBtc: '0xef1b0855787dc964dda78db9551a2f8732b05ccf',
 };
 
 const mainnetConfig = {
   network: 'mainnet',
   chainId: 1,
   wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0x3ba524a9b01de0953ba8fe720befac9e14ff95b9',
+  wbtcTokenAddress: '0x6a40a70a0bd72de24918e6eec3cdc5e131e6b1cf',
   ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
   wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x87a0dee965e7679d15327ce0cc3df8dfc009b43d',
-  wanHtlcAddrE20: '0xe10515355e684e515c9c632c9eed04cca425cda1',
-  wanHtlcAddrBtc: '0x5c35c015da4299a039e58b42ef474d94324da5e4',
+  ethHtlcAddrE20: '0x4a8f5dd531e4cd1993b79b23dbda21faacb9c731',
+  wanHtlcAddrE20: '0xfc0eba261b49763decb6c911146e3cf524fa7ebc',
+  wanHtlcAddrBtc: '0xef1b0855787dc964dda78db9551a2f8732b05ccf',
 };
 
 const defaultConfig = {
