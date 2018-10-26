@@ -2,15 +2,15 @@ const EventEmitter = require('events');
 const Web3 = require('web3');
 
 const config = require('./config');
-const crypto = require('./crypto');
-const btcUtil = require('./btc-util');
+const crypto = require('./lib/crypto');
+const btcUtil = require('./btc/utils');
 
-const ETH_Inbound = require('./crosschain/eth/inbound');
-const ETH_Outbound = require('./crosschain/eth/outbound');
+const ETH_Inbound = require('./eth/inbound');
+const ETH_Outbound = require('./eth/outbound');
 
-const BTC_Outbound = require('./crosschain/btc/outbound');
-// const BTC = require('./crosschain/btc');
-// const ERC20 = require('./crosschain/erc20');
+const BTC_Outbound = require('./btc/outbound');
+// const BTC = require('./btc');
+// const ERC20 = require('./erc20');
 
 class WanX {
 

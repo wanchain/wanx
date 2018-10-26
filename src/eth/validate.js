@@ -1,4 +1,4 @@
-const { generateXPair } = require('../../btc-util');
+const { generateXPair } = require('../lib/crypto');
 
 // TODO:
 // - there should be an opt schema and this should check against it
