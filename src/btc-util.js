@@ -1,11 +1,10 @@
 const bitcoin = require('bitcoinjs-lib');
 const btcAddress = require('btc-address');
 const binConv = require('binstring');
-// const bitcoinRpc = require('node-bitcoin-rpc');
-// const settings = require('./settings');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 const wanutils = require('wanchain-util');
+// const bitcoinRpc = require('node-bitcoin-rpc');
 
 // const btcNode = settings.btcNode;
 // const btcNetwork = settings.btcNetwork;
@@ -22,7 +21,7 @@ module.exports = {
 
   buildHashTimeLockContract,
   buildRedeemTx,
-  // getTransaction,
+  getTransaction,
 }
 
 function hash160ToAddress(hash160, addressType, network) {
@@ -137,37 +136,37 @@ function buildRedeemTx(network, x, senderH160Addr, receiverAddr, receiverWif, lo
   return tx.toHex();
 }
 
-// function getTransaction(txHash) {
-//   return new Promise((resolve, reject) => {
-//     bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
-//       if (err !== null) {
-//         return reject(err);
-//       }
+function getTransaction(txHash) {
+  return new Promise((resolve, reject) => {
+    bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
+      if (err !== null) {
+        return reject(err);
+      }
 
-//       // if tx found, return it
-//       if (res && res.result) {
-//         return resolve(res.result);
-//       }
+      // if tx found, return it
+      if (res && res.result) {
+        return resolve(res.result);
+      }
 
-//       // otherwise, check the mempool
-//       bitcoinRpc.call('getrawmempool', [], (err, res) => {
-//         if (err !== null) {
-//           return reject(err);
-//         } else if (res.error !== null) {
-//           return reject(res.error);
-//         }
+      // otherwise, check the mempool
+      bitcoinRpc.call('getrawmempool', [], (err, res) => {
+        if (err !== null) {
+          return reject(err);
+        } else if (res.error !== null) {
+          return reject(res.error);
+        }
 
-//         const transactions = res.result;
+        const transactions = res.result;
 
-//         if (! Array.isArray(transactions)) {
-//           return reject(new Error('mempool transactions is not an array'));
-//         }
+        if (! Array.isArray(transactions)) {
+          return reject(new Error('mempool transactions is not an array'));
+        }
 
-//         const tx = transactions.filter(t => t.txid === txHash).shift();
+        const tx = transactions.filter(t => t.txid === txHash).shift();
 
-//         // if (! tx) return reject(new Error('transaction not found'));
-//         resolve(tx);
-//       });
-//     });
-//   });
-// }
+        // if (! tx) return reject(new Error('transaction not found'));
+        resolve(tx);
+      });
+    });
+  });
+}
