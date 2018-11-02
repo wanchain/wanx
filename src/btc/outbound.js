@@ -220,34 +220,47 @@ class BTC_Outbound extends CrosschainBase {
     return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
-  buildRedeemTx(opts) {
-    return btcUtil.buildRedeemTx(
+  buildHashTimeLockContract(xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
+    return btcUtil.buildHashTimeLockContract(
       this.config.network,
-      opts.redeemKey.x,
-      opts.storeman.btc,
-      opts.to,
-      opts.bitcoin.wif,
-      opts.bitcoin.lockTimestamp,
-      opts.bitcoin.txid,
-      parseInt(opts.value),
-      opts.bitcoin.fee,
+      xHash,
+      lockTimestamp,
+      destH160Addr,
+      revokerH160Addr
     );
   }
 
-  // send redeem transaction
-  sendRedeemTx({ from, redeemKey }) {
+  hashForSignature(opts) {
+    return btcUtil.hashForSignature(
+      this.config.network,
+      opts.redeemScript,
+      opts.publicKey,
+      opts.txid,
+      opts.value,
+    );
+  }
 
-    const redeemData = this.buildRedeemData({ redeemKey });
+  buildRedeemTx(opts) {
+    return btcUtil.buildRedeemTx(
+      this.config.network,
+      opts.redeemScript,
+      opts.signedRedeemScript,
+      opts.publicKey,
+      opts.redeemKey.x,
+      opts.txid,
+      opts.value,
+    );
+  }
 
-    const sendOpts = {
-      from: from,
-      to: this.config.wanHtlcAddrBtc,
-      gas: 4700000,
-      gasPrice: 180e9,
-      data: redeemData,
-    };
-
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  buildRedeemTxFromWif(opts) {
+    return btcUtil.buildRedeemTx(
+      this.config.network,
+      opts.redeemScript,
+      opts.wif,
+      opts.redeemKey.x,
+      opts.txid,
+      opts.value,
+    );
   }
 
   // listen for storeman tx
@@ -277,6 +290,7 @@ class BTC_Outbound extends CrosschainBase {
       + types.number2Bytes(value);
   }
 
+  // no longer needed
   buildRedeemData({ redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcRedeem;
     return '0x' + sig.substr(0, 8) + redeemKey.x;
