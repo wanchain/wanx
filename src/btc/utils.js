@@ -114,7 +114,6 @@ function hashForSignature(network, redeemScript, destPublicKey, txid, value) {
     pubkey: new Buffer.from(destPublicKey, 'hex')
   });
 
-  const destH160Addr = bitcoin.crypto.hash160(destPublicKey).toString('hex');
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
@@ -144,7 +143,7 @@ function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, t
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(wanutils.stripHexPrefix(txid), 0);
+  txb.addInput(wanutils.stripHexPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -189,7 +188,7 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(wanutils.stripHexPrefix(txid), 0);
+  txb.addInput(wanutils.stripHexPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
