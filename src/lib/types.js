@@ -1,8 +1,9 @@
 const BigNumber = require('bignumber.js');
-const wanutils = require('wanchain-util');
+
+const { stripHexPrefix } = require('./utils');
 
 function addr2Bytes(addr) {
-  return '0'.repeat(24) + wanutils.stripHexPrefix(addr);
+  return '0'.repeat(24) + stripHexPrefix(addr);
 }
 
 function number2Bytes(num) {

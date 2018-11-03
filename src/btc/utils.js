@@ -3,7 +3,8 @@ const btcAddress = require('btc-address');
 const binConv = require('binstring');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
-const wanutils = require('wanchain-util');
+
+const { stripHexPrefix } = require('../lib/utils');
 
 // const bitcoinRpc = require('node-bitcoin-rpc');
 
@@ -30,7 +31,7 @@ module.exports = {
 
 function hash160ToAddress(hash160, addressType, network) {
   const opts = { in: 'hex', out: 'bytes' };
-  const hash = wanutils.stripHexPrefix(hash160);
+  const hash = stripHexPrefix(hash160);
   const address = new btcAddress(binConv(hash, opts), addressType, network);
 
   return address.toString();
@@ -42,13 +43,13 @@ function addressToHash160(addr, addressType, network) {
 }
 
 function hash256(x) {
-  const buff = Buffer.from(wanutils.stripHexPrefix(x), 'hex');
+  const buff = Buffer.from(stripHexPrefix(x), 'hex');
   return bitcoin.crypto.sha256(bitcoin.crypto.sha256(buff)).toString('hex');
 }
 
 // convert x to xHash
 function getXHash(x) {
-  const buff = Buffer.from(wanutils.stripHexPrefix(x), 'hex');
+  const buff = Buffer.from(stripHexPrefix(x), 'hex');
   return bitcoin.crypto.sha256(buff).toString('hex');
 }
 
@@ -76,7 +77,7 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
     bitcoin.opcodes.OP_EQUALVERIFY,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(wanutils.stripHexPrefix(destH160Addr), 'hex'),
+    Buffer.from(stripHexPrefix(destH160Addr), 'hex'),
 
     bitcoin.opcodes.OP_ELSE,
     bitcoin.script.number.encode(lockTimestamp),
@@ -84,7 +85,7 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
     bitcoin.opcodes.OP_DROP,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(wanutils.stripHexPrefix(revokerH160Addr), 'hex'),
+    Buffer.from(stripHexPrefix(revokerH160Addr), 'hex'),
     bitcoin.opcodes.OP_ENDIF,
 
     bitcoin.opcodes.OP_EQUALVERIFY,
@@ -117,7 +118,7 @@ function hashForSignature(network, redeemScript, destPublicKey, txid, value) {
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(wanutils.stripHexPrefix(txid), 0);
+  txb.addInput(stripHexPrefix(txid), 0);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -143,7 +144,7 @@ function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, t
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(wanutils.stripHexPrefix(txid), vout);
+  txb.addInput(stripHexPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -188,7 +189,7 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(wanutils.stripHexPrefix(txid), vout);
+  txb.addInput(stripHexPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();

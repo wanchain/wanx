@@ -1,10 +1,10 @@
 const BigNumber = require('bignumber.js');
-const wanutils = require('wanchain-util');
 
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
 const web3Util = require('../lib/web3');
 const types = require('../lib/types');
+const { stripHexPrefix } = require('../lib/utils');
 
 const {
   validateSendOpts,
@@ -298,7 +298,7 @@ class BTC_Outbound extends CrosschainBase {
 
   buildRevokeData({ redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcRevoke;
-    return '0x' + sig.substr(0, 8) + wanutils.stripHexPrefix(redeemKey.xHash);
+    return '0x' + sig.substr(0, 8) + stripHexPrefix(redeemKey.xHash);
   }
 
   getStoremanFee({ storeman, value }) {
