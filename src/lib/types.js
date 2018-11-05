@@ -3,7 +3,8 @@ const BigNumber = require('bignumber.js');
 const { stripHexPrefix } = require('./utils');
 
 function addr2Bytes(addr) {
-  return '0'.repeat(24) + stripHexPrefix(addr);
+  const a = stripHexPrefix(addr) || '';
+  return '0'.repeat(64 - a.length) + a.toLowerCase();
 }
 
 function number2Bytes(num) {
