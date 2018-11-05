@@ -107,19 +107,14 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
   };
 }
 
-function hashForSignature(network, redeemScript, destPublicKey, txid, value) {
+function hashForSignature(network, redeemScript, destAddr, txid, value) {
   const bitcoinNetwork = bitcoin.networks[network];
-
-  const { address } = bitcoin.payments.p2pkh({
-    network: bitcoinNetwork,
-    pubkey: new Buffer.from(destPublicKey, 'hex')
-  });
 
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
   txb.addInput(stripHexPrefix(txid), 0);
-  txb.addOutput(address, value);
+  txb.addOutput(destAddr, value);
 
   const tx = txb.buildIncomplete();
 
@@ -136,10 +131,8 @@ function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, t
 
   const { address } = bitcoin.payments.p2pkh({
     network: bitcoinNetwork,
-    pubkey: publicKey,
+    pubkey: destPublicKey,
   });
-
-  const destH160Addr = bitcoin.crypto.hash160(destPublicKey).toString('hex');
 
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
@@ -184,8 +177,6 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
     pubkey: destKeyPair.publicKey,
   });
 
-  const destH160Addr = bitcoin.crypto.hash160(destKeyPair.publicKey).toString('hex');
-
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
@@ -219,6 +210,93 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
 
   return tx.toHex();
 }
+
+function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x, txid, value) {
+  const bitcoinNetwork = bitcoin.networks[network];
+
+  // NB: storemen address validation requires that vout is 0
+  const vout = 0;
+
+  const { address } = bitcoin.payments.p2pkh({
+    network: bitcoinNetwork,
+    pubkey: revokerPublicKey,
+  });
+
+  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+
+  txb.setVersion(1);
+  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addOutput(address, value);
+
+  const tx = txb.buildIncomplete();
+
+  const signature = bitcoin.script.signature.encode(
+    new Buffer.from(signedSigHash, 'base64'),
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  const redeemScriptSig = bitcoin.payments.p2sh({
+    redeem: {
+      input: bitcoin.script.compile([
+        signature,
+        Buffer.from(revokerPublicKey, 'hex'),
+        bitcoin.opcodes.OP_FALSE,
+      ]),
+      output: new Buffer.from(redeemScript, 'hex'),
+    },
+    network: bitcoinNetwork,
+  }).input;
+
+  tx.setInputScript(0, redeemScriptSig);
+
+  return tx.toHex();
+}
+
+function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value) {
+  const bitcoinNetwork = bitcoin.networks[network];
+
+  // NB: storemen address validation requires that vout is 0
+  const vout = 0;
+
+  const revokerKeyPair = bitcoin.ECPair.fromWIF(revokerWif, bitcoinNetwork);
+  const { address } = bitcoin.payments.p2pkh({
+    network: bitcoinNetwork,
+    pubkey: revokerKeyPair.publicKey,
+  });
+
+  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+
+  txb.setVersion(1);
+  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addOutput(address, value);
+
+  const tx = txb.buildIncomplete();
+
+  const sigHash = tx.hashForSignature(0, new Buffer.from(redeemScript, 'hex'), bitcoin.Transaction.SIGHASH_ALL);
+  const signedSigHash = revokerKeyPair.sign(sigHash);
+
+  const signature = bitcoin.script.signature.encode(
+    signedSigHash,
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  const redeemScriptSig = bitcoin.payments.p2sh({
+    redeem: {
+      input: bitcoin.script.compile([
+        signature,
+        revokerKeyPair.publicKey,
+        bitcoin.opcodes.OP_FALSE,
+      ]),
+      output: new Buffer.from(redeemScript, 'hex'),
+    },
+    network: bitcoinNetwork,
+  }).input;
+
+  tx.setInputScript(0, redeemScriptSig);
+
+  return tx.toHex();
+}
+
 function getTransaction(txHash) {
   return new Promise((resolve, reject) => {
     bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
