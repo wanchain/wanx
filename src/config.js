@@ -28,16 +28,6 @@ const defaultConfig = {
   wanNodeUrl: null,
   ethNodeUrl: null,
 
-  wanKeyStorePath: process.env.HOME,
-  ethkeyStorePath: process.env.HOME,
-
-  btcNode: {
-    host: 'localhost',
-    port: 18332,
-    user: 'btcuser',
-    pass: 'btcpass',
-  },
-
   signatures: {
     ERC20: {
       Approval: '8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925',
@@ -200,21 +190,6 @@ const get = function(network, conf = {}) {
 
   const networkConfig = network === 'mainnet' ? mainnetConfig : testnetConfig;
   const config = Object.assign({}, defaultConfig, networkConfig, conf);
-
-  if (process.platform === 'darwin') {
-    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '/Library/wanchain/', network, 'keystore/');
-    config.ethkeyStorePath = path.join(config.ethkeyStorePath, '/Library/ethereum/', network, 'keystore/');
-  }
-
-  else if (process.platform === 'freebsd' || process.platform === 'linux' || process.platform === 'sunos') {
-    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '.wanchain', network, 'keystore/');
-    config.ethkeyStorePath = path.join(config.ethkeyStorePath, '.ethereum', network, 'keystore/');
-  }
-
-  else if (process.platform === 'win32') {
-    config.wanKeyStorePath = path.join(process.env.APPDATA, 'wanchain', network, 'keystore\\');
-    config.ethkeyStorePath = path.join(process.env.APPDATA, 'ethereum', network, 'keystore\\');
-  }
 
   return config;
 };
