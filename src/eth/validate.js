@@ -1,4 +1,4 @@
-const { generateXPair } = require('../lib/crypto');
+const crypto = require('../lib/crypto');
 
 // TODO:
 // - there should be an opt schema and this should check against it
@@ -11,7 +11,10 @@ function validateSendOpts(opts) {
   }
 
   if (! opts.redeemKey) {
-    opts.redeemKey = generateXPair();
+    const x = crypto.generateX();
+    const xHash = crypto.keccak256(x);
+
+    opts.redeemKey = { x, xHash };
   }
   else if (! opts.redeemKey.x || ! opts.redeemKey.xHash) {
     throw new Error('Invalid redeemKey');

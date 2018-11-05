@@ -1,6 +1,4 @@
 const bitcoin = require('bitcoinjs-lib');
-const btcAddress = require('btc-address');
-const binConv = require('binstring');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 
@@ -15,54 +13,12 @@ const { stripHexPrefix } = require('../lib/utils');
 // bitcoinRpc.init(btcNode.host, btcNode.port, btcNode.user, btcNode.pass);
 
 module.exports = {
-  addressToHash160,
-  hash160ToAddress,
-
-  getXHash,
-  generateXPair,
-
   hashForSignature,
   buildHashTimeLockContract,
   buildRedeemTx,
   buildRedeemTxFromWif,
 
   getTransaction,
-}
-
-function hash160ToAddress(hash160, addressType, network) {
-  const opts = { in: 'hex', out: 'bytes' };
-  const hash = stripHexPrefix(hash160);
-  const address = new btcAddress(binConv(hash, opts), addressType, network);
-
-  return address.toString();
-}
-
-function addressToHash160(addr, addressType, network) {
-  const address = new btcAddress(addr, addressType, network);
-  return binConv(address.hash, { in: 'bytes', out: 'hex' });
-}
-
-function hash256(x) {
-  const buff = Buffer.from(stripHexPrefix(x), 'hex');
-  return bitcoin.crypto.sha256(bitcoin.crypto.sha256(buff)).toString('hex');
-}
-
-// convert x to xHash
-function getXHash(x) {
-  const buff = Buffer.from(stripHexPrefix(x), 'hex');
-  return bitcoin.crypto.sha256(buff).toString('hex');
-}
-
-function generateXPair() {
-  let randomBuf;
-  do {
-    randomBuf = crypto.randomBytes(32);
-  } while (!secp256k1.privateKeyVerify(randomBuf));
-
-  const x = randomBuf.toString('hex');
-  const xHash = getXHash(x);
-
-  return { x, xHash };
 }
 
 // generate the P2SH timelock contract
@@ -123,6 +79,9 @@ function hashForSignature(network, redeemScript, destAddr, txid, value) {
   return sigHash.toString('hex');
 }
 
+// TODO: combine duplicate code in buildRedeemTx, buildRedeemTxFromWif,
+// buildRevokeTx, and buildRevokeTxFromWif
+//
 function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, txid, value) {
   const bitcoinNetwork = bitcoin.networks[network];
 
