@@ -1,16 +1,16 @@
 const BigNumber = require('bignumber.js');
 
-const { stripHexPrefix } = require('./utils');
+const hex = require('./hex');
 
 function addr2Bytes(addr) {
-  const a = stripHexPrefix(addr) || '';
+  const a = hex.stripPrefix(addr) || '';
   return '0'.repeat(64 - a.length) + a.toLowerCase();
 }
 
 function number2Bytes(num) {
   const n = new BigNumber(num);
-  const hex = n.toString(16);
-  return '0'.repeat(64 - hex.length) + hex;
+  const str = n.toString(16);
+  return '0'.repeat(64 - str.length) + str;
 }
 
 module.exports = {

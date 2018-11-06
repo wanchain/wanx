@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const keccak = require('keccak');
 const secp256k1 = require('secp256k1');
 
-const { stripHexPrefix } = require('../lib/utils');
+const hex = require('../lib/hex');
 
 module.exports = {
   addressToHash160,
@@ -19,13 +19,13 @@ module.exports = {
 };
 
 function hash256(x) {
-  const buff = Buffer.from(stripHexPrefix(x), 'hex');
+  const buff = Buffer.from(hex.stripPrefix(x), 'hex');
   return bitcoin.crypto.sha256(bitcoin.crypto.sha256(buff)).toString('hex');
 }
 
 // convert x to xHash
 function sha256(x) {
-  const buff = Buffer.from(stripHexPrefix(x), 'hex');
+  const buff = Buffer.from(hex.stripPrefix(x), 'hex');
   return bitcoin.crypto.sha256(buff).toString('hex');
 }
 
@@ -46,7 +46,7 @@ function generateX() {
 
 function hash160ToAddress(hash160, addressType, network) {
   const opts = { in: 'hex', out: 'bytes' };
-  const hash = stripHexPrefix(hash160);
+  const hash = hex.stripPrefix(hash160);
   const address = new btcAddress(binConv(hash, opts), addressType, network);
 
   return address.toString();

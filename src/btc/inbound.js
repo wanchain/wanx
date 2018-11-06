@@ -2,7 +2,7 @@ const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
 const web3Util = require('../lib/web3');
 const types = require('../lib/types');
-const { stripHexPrefix } = require('../lib/utils');
+const hex = require('../lib/hex');
 
 const {
   validateSendOpts,
@@ -196,8 +196,8 @@ class BTC_Inbound extends CrosschainBase {
     return '0x' + sig.substr(0, 8)
       + types.addr2Bytes(storeman.wan)
       + types.addr2Bytes(btcUtil.addressToHash160(from))
-      + stripHexPrefix(redeemKey.xHash)
-      + stripHexPrefix(txHash)
+      + hex.stripPrefix(redeemKey.xHash)
+      + hex.stripPrefix(txHash)
       + types.number2Bytes(lockTimestamp);
   }
 

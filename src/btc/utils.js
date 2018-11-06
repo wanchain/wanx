@@ -2,7 +2,7 @@ const bitcoin = require('bitcoinjs-lib');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 
-const { stripHexPrefix } = require('../lib/utils');
+const hex = require('../lib/hex');
 
 // const bitcoinRpc = require('node-bitcoin-rpc');
 
@@ -33,7 +33,7 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
     bitcoin.opcodes.OP_EQUALVERIFY,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(stripHexPrefix(destH160Addr), 'hex'),
+    Buffer.from(hex.stripPrefix(destH160Addr), 'hex'),
 
     bitcoin.opcodes.OP_ELSE,
     bitcoin.script.number.encode(lockTimestamp),
@@ -41,7 +41,7 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
     bitcoin.opcodes.OP_DROP,
     bitcoin.opcodes.OP_DUP,
     bitcoin.opcodes.OP_HASH160,
-    Buffer.from(stripHexPrefix(revokerH160Addr), 'hex'),
+    Buffer.from(hex.stripPrefix(revokerH160Addr), 'hex'),
     bitcoin.opcodes.OP_ENDIF,
 
     bitcoin.opcodes.OP_EQUALVERIFY,
@@ -69,7 +69,7 @@ function hashForSignature(network, redeemScript, destAddr, txid, value) {
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(stripHexPrefix(txid), 0);
+  txb.addInput(hex.stripPrefix(txid), 0);
   txb.addOutput(destAddr, value);
 
   const tx = txb.buildIncomplete();
@@ -96,7 +96,7 @@ function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, t
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addInput(hex.stripPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -139,7 +139,7 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addInput(hex.stripPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -184,7 +184,7 @@ function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addInput(hex.stripPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -226,7 +226,7 @@ function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value)
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(stripHexPrefix(txid), vout);
+  txb.addInput(hex.stripPrefix(txid), vout);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
