@@ -4,39 +4,29 @@ const testnetConfig = {
   network: 'testnet',
   chainId: 3,
   wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0x3ba524a9b01de0953ba8fe720befac9e14ff95b9',
+  wbtcTokenAddress: '0xa3158cdcb24702e5612d20275745901fbc69331e',
   ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
   wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x87a0dee965e7679d15327ce0cc3df8dfc009b43d',
-  wanHtlcAddrE20: '0xe10515355e684e515c9c632c9eed04cca425cda1',
-  wanHtlcAddrBtc: '0x5c35c015da4299a039e58b42ef474d94324da5e4',
+  ethHtlcAddrE20: '0x905b3237b2367b2ddebdf54d4f5320429710850a',
+  wanHtlcAddrE20: '0x2b71a02033a5fdf20037aa184994a684a9229a15',
+  wanHtlcAddrBtc: '0xd2f14b0067f6fc0d99311c055491b29f01b72004',
 };
 
 const mainnetConfig = {
   network: 'mainnet',
   chainId: 1,
-  wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0x3ba524a9b01de0953ba8fe720befac9e14ff95b9',
-  ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
-  wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x87a0dee965e7679d15327ce0cc3df8dfc009b43d',
-  wanHtlcAddrE20: '0xe10515355e684e515c9c632c9eed04cca425cda1',
-  wanHtlcAddrBtc: '0x5c35c015da4299a039e58b42ef474d94324da5e4',
+  wethTokenAddress: '0x28362cd634646620ef2290058744f9244bb90ed9',
+  wbtcTokenAddress: '0xfa4b6988e8cb90bb25e51ea80257ffcdd8ebdd24',
+  ethHtlcAddr: '0x78eb00ec1c005fec86a074060cc1bc7513b1ee88',
+  wanHtlcAddr: '0x7a333ba427fce2e0c6dd6a2d727e5be6beb13ac2',
+  ethHtlcAddrE20: '0x4a8f5dd531e4cd1993b79b23dbda21faacb9c731',
+  wanHtlcAddrE20: '0xfc0eba261b49763decb6c911146e3cf524fa7ebc',
+  wanHtlcAddrBtc: '0x802894ef36050c9b8e94f8d0979c75512491b7d5',
 };
 
 const defaultConfig = {
   wanNodeUrl: null,
   ethNodeUrl: null,
-
-  wanKeyStorePath: process.env.HOME,
-  ethkeyStorePath: process.env.HOME,
-
-  btcNode: {
-    host: 'localhost',
-    port: 18332,
-    user: 'btcuser',
-    pass: 'btcpass',
-  },
 
   signatures: {
     ERC20: {
@@ -200,21 +190,6 @@ const get = function(network, conf = {}) {
 
   const networkConfig = network === 'mainnet' ? mainnetConfig : testnetConfig;
   const config = Object.assign({}, defaultConfig, networkConfig, conf);
-
-  if (process.platform === 'darwin') {
-    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '/Library/wanchain/', network, 'keystore/');
-    config.ethkeyStorePath = path.join(config.ethkeyStorePath, '/Library/ethereum/', network, 'keystore/');
-  }
-
-  else if (process.platform === 'freebsd' || process.platform === 'linux' || process.platform === 'sunos') {
-    config.wanKeyStorePath = path.join(config.wanKeyStorePath, '.wanchain', network, 'keystore/');
-    config.ethkeyStorePath = path.join(config.ethkeyStorePath, '.ethereum', network, 'keystore/');
-  }
-
-  else if (process.platform === 'win32') {
-    config.wanKeyStorePath = path.join(process.env.APPDATA, 'wanchain', network, 'keystore\\');
-    config.ethkeyStorePath = path.join(process.env.APPDATA, 'ethereum', network, 'keystore\\');
-  }
 
   return config;
 };

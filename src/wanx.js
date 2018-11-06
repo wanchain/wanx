@@ -2,15 +2,15 @@ const EventEmitter = require('events');
 const Web3 = require('web3');
 
 const config = require('./config');
-const crypto = require('./crypto');
-const btcUtil = require('./btc-util');
+const crypto = require('./lib/crypto');
 
-const ETH_Inbound = require('./crosschain/eth/inbound');
-const ETH_Outbound = require('./crosschain/eth/outbound');
+const ETH_Inbound = require('./eth/inbound');
+const ETH_Outbound = require('./eth/outbound');
 
-const BTC_Outbound = require('./crosschain/btc/outbound');
-// const BTC = require('./crosschain/btc');
-// const ERC20 = require('./crosschain/erc20');
+const BTC_Outbound = require('./btc/outbound');
+const BTC_Inbound = require('./btc/inbound');
+
+// const ERC20 = require('./erc20');
 
 class WanX {
 
@@ -38,14 +38,19 @@ class WanX {
     return getSender(type, inbound, this.config);
   }
 
-  newRedeemKey() {
-    return crypto.generateXPair();
-  }
+  // btc requires sha256, everything else keccak256
+  newRedeemKey(type = 'keccak256') {
+    const x = crypto.generateX();
 
-  newBtcRedeemKey() {
-    return btcUtil.generateXPair();
+    switch(type) {
+      case 'sha256':
+        return { x, xHash: crypto.sha256(x) };
+      case 'keccak256':
+        return { x, xHash: crypto.keccak256(x) };
+      default:
+        throw new Error(`Invalid hash type: ${type}.`);
+    }
   }
-
 }
 
 function getSender(type, inbound, config) {
@@ -58,6 +63,8 @@ function getSender(type, inbound, config) {
       return new ETH_Inbound(config);
     case 'eth_out':
       return new ETH_Outbound(config);
+    case 'btc_in':
+      return new BTC_Inbound(config);
     case 'btc_out':
       return new BTC_Outbound(config);
     default:

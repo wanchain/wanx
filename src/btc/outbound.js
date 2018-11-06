@@ -1,10 +1,10 @@
 const BigNumber = require('bignumber.js');
-const wanutils = require('wanchain-util');
 
 const CrosschainBase = require('../base');
-const btcUtil = require('../../btc-util');
-const web3Util = require('../../web3-util');
-const types = require('../../types');
+const btcUtil = require('./utils');
+const web3Util = require('../lib/web3');
+const types = require('../lib/types');
+const hex = require('../lib/hex');
 
 const {
   validateSendOpts,
@@ -16,62 +16,6 @@ class BTC_Outbound extends CrosschainBase {
 
   constructor(config) {
     super(config);
-  }
-
-  // complete crosschain transaction
-  send(opts) {
-
-    // validate inputs
-    opts = validateSendOpts(opts);
-
-    return Promise.resolve([]).then(() => {
-
-      // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
-
-      return this.getStoremanFee(opts);
-
-    }).then(res => {
-
-      const fee = new BigNumber(res).toString();
-
-      // notify status
-      this.emit('info', { status: 'fee', fee });
-
-      return this.sendLockTx(Object.assign({}, opts, { fee }));
-
-    }).then(receipt => {
-
-      // notify status
-      this.emit('info', { status: 'locking', receipt });
-
-      return this.listenLockTx(opts, receipt.blockNumber);
-
-    }).then(receipt => {
-
-      // notify locked status
-      this.emit('info', { status: 'locked', receipt });
-
-      return this.sendRedeemTx(opts);
-
-    }).then(receipt => {
-
-      // notify redeem result
-      this.emit('info', { status: 'confirming', receipt });
-
-      return this.listenRedeemTx(opts, receipt.blockNumber);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'confirmed', receipt });
-
-    }).catch(err => {
-
-      // notify error
-      this.emit('error', err)
-
-    });
   }
 
   // first 1/2 of crosschain transaction
@@ -101,46 +45,12 @@ class BTC_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'locking', receipt });
 
-      return this.listenLockTx(opts, receipt.blockNumber);
+      return this.listenLockNoticeTx(opts, receipt.blockNumber);
 
     }).then(receipt => {
 
       // notify complete
       this.emit('complete', { status: 'locked', receipt });
-
-    }).catch(err => {
-
-      // notify error
-      this.emit('error', err)
-
-    });
-  }
-
-  // second 1/2 of crosschain transaction
-  // requires redeemKey to be passed in opts
-  redeem(opts) {
-
-    // validate inputs
-    opts = validateRedeemOpts(opts);
-
-    return Promise.resolve([]).then(() => {
-
-      // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
-
-      return this.sendRedeemTx(opts);
-
-    }).then(receipt => {
-
-      // notify redeem result
-      this.emit('info', { status: 'confirming', receipt });
-
-      return this.listenRedeemTx(opts, receipt.blockNumber);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'confirmed', receipt });
 
     }).catch(err => {
 
@@ -204,9 +114,9 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // listen for storeman tx
-  listenLockTx({ redeemKey }, blockNumber) {
+  listenLockNoticeTx({ redeemKey }, blockNumber) {
 
-    const lockScanOpts = {
+    const lockNoticeScanOpts = {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
@@ -217,23 +127,50 @@ class BTC_Outbound extends CrosschainBase {
       ],
     };
 
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+    return web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
   }
 
-  // send redeem transaction
-  sendRedeemTx({ from, redeemKey }) {
+  buildHashTimeLockContract(xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
+    return btcUtil.buildHashTimeLockContract(
+      this.config.network,
+      xHash,
+      lockTimestamp,
+      destH160Addr,
+      revokerH160Addr
+    );
+  }
 
-    const redeemData = this.buildRedeemData({ redeemKey });
+  hashForSignature(opts) {
+    return btcUtil.hashForSignature(
+      this.config.network,
+      opts.redeemScript,
+      opts.publicKey,
+      opts.txid,
+      opts.value,
+    );
+  }
 
-    const sendOpts = {
-      from: from,
-      to: this.config.wanHtlcAddrBtc,
-      gas: 4700000,
-      gasPrice: 180e9,
-      data: redeemData,
-    };
+  buildRedeemTx(opts) {
+    return btcUtil.buildRedeemTx(
+      this.config.network,
+      opts.redeemScript,
+      opts.signedRedeemScript,
+      opts.publicKey,
+      opts.redeemKey.x,
+      opts.txid,
+      opts.value,
+    );
+  }
 
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  buildRedeemTxFromWif(opts) {
+    return btcUtil.buildRedeemTx(
+      this.config.network,
+      opts.redeemScript,
+      opts.wif,
+      opts.redeemKey.x,
+      opts.txid,
+      opts.value,
+    );
   }
 
   // listen for storeman tx
@@ -263,14 +200,9 @@ class BTC_Outbound extends CrosschainBase {
       + types.number2Bytes(value);
   }
 
-  buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRedeem;
-    return '0x' + sig.substr(0, 8) + redeemKey.x;
-  }
-
   buildRevokeData({ redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcRevoke;
-    return '0x' + sig.substr(0, 8) + wanutils.stripHexPrefix(redeemKey.xHash);
+    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
   }
 
   getStoremanFee({ storeman, value }) {

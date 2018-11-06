@@ -1,4 +1,4 @@
-const { generateXPair } = require('../../btc-util');
+const crypto = require('../lib/crypto');
 
 // TODO:
 // - there should be an opt schema and this should check against it
@@ -11,7 +11,10 @@ function validateSendOpts(opts) {
   }
 
   if (! opts.redeemKey) {
-    opts.redeemKey = generateXPair();
+    const x = crypto.generateX();
+    const xHash = crypto.sha256(x);
+
+    opts.redeemKey = { x, xHash };
   }
   else if (! opts.redeemKey.x || ! opts.redeemKey.xHash) {
     throw new Error('Invalid redeemKey');
@@ -26,7 +29,7 @@ function validateSendOpts(opts) {
       x: opts.redeemKey.x,
       xHash: opts.redeemKey.xHash,
     },
-  }
+  };
 }
 
 function validateRedeemOpts(opts) {
@@ -43,7 +46,7 @@ function validateRedeemOpts(opts) {
       x: opts.redeemKey.x,
       xHash: opts.redeemKey.xHash,
     },
-  }
+  };
 }
 
 function validateRevokeOpts(opts) {
@@ -57,11 +60,11 @@ function validateRevokeOpts(opts) {
     redeemKey: {
       xHash: opts.redeemKey.xHash,
     },
-  }
+  };
 }
 
 module.exports = {
   validateSendOpts,
   validateRedeemOpts,
   validateRevokeOpts,
-}
+};
