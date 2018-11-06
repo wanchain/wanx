@@ -221,12 +221,38 @@ class ETH_Outbound extends CrosschainBase {
     });
 
     return {
+      Txtype: '0x01',
       from: from,
       to: this.config.wanHtlcAddr,
-      gas: 4700000,
-      gasPrice: 180e9,
-      value: fee,
+      gas: hex.fromNumber(4700000),
+      gasPrice: hex.fromNumber(180e9),
+      value: hex.fromNumber(fee),
       data: lockData,
+    };
+  }
+
+  buildRedeemTx({ to, redeemKey }) {
+    const refundData = this.buildRedeemData({ redeemKey });
+
+    return {
+      from: to,
+      to: this.config.ethHtlcAddr,
+      gas: hex.fromNumber(4910000),
+      gasPrice: hex.fromNumber(100e9),
+      data: refundData,
+    };
+  }
+
+  buildRevokeTx({ from, redeemKey }) {
+    const revokeData = this.buildRevokeData({ redeemKey });
+
+    return {
+      Txtype: '0x01',
+      from: from,
+      to: this.config.wanHtlcAddr,
+      gas: hex.fromNumber(4700000),
+      gasPrice: hex.fromNumber(180e9),
+      data: revokeData,
     };
   }
 
@@ -243,18 +269,6 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
-  buildRedeemTx({ to, redeemKey }) {
-    const refundData = this.buildRedeemData({ redeemKey });
-
-    return {
-      from: to,
-      to: this.config.ethHtlcAddr,
-      gas: 4910000,
-      gasPrice: 100e9,
-      data: refundData,
-    };
-  }
-
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
     return {
       blockNumber,
@@ -265,18 +279,6 @@ class ETH_Outbound extends CrosschainBase {
         null,
         '0x' + redeemKey.xHash,
       ],
-    };
-  }
-
-  buildRevokeTx({ from, redeemKey }) {
-    const revokeData = this.buildRevokeData({ redeemKey });
-
-    return {
-      from: from,
-      to: this.config.wanHtlcAddr,
-      gas: 4700000,
-      gasPrice: 180e9,
-      data: revokeData,
     };
   }
 
@@ -299,15 +301,18 @@ class ETH_Outbound extends CrosschainBase {
     return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
   }
 
-  getStoremanFee({ storeman, value }) {
+  getStoremanFee(opts) {
     const to = this.config.wanHtlcAddr;
-    const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
-
-    const data = '0x' + sig.substr(0, 8)
-      + types.addr2Bytes(storeman.wan)
-      + types.number2Bytes(value)
+    const data = this.buildStoremanFeeData(opts);
 
     return web3Util(this.web3wan).call({ to, data });
+  }
+
+  buildStoremanFeeData({ storeman, value }) {
+    const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
+    return '0x' + sig.substr(0, 8)
+      + types.addr2Bytes(storeman.wan)
+      + types.number2Bytes(value);
   }
 }
 
