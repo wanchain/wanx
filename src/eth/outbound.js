@@ -207,7 +207,7 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   // listen for storeman tx on wanchain
-  listenRedeemTx({ redeemKey }, blockNumber) {
+  listenRedeemTx(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
     return web3Util(this.web3wan).watchLogs(redeemScanOpts);
   }
