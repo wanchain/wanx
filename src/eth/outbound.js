@@ -232,14 +232,14 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildRedeemTx({ to, redeemKey }) {
-    const refundData = this.buildRedeemData({ redeemKey });
+    const redeemData = this.buildRedeemData({ redeemKey });
 
     return {
       from: to,
       to: this.config.ethHtlcAddr,
       gas: hex.fromNumber(4910000),
       gasPrice: hex.fromNumber(100e9),
-      data: refundData,
+      data: redeemData,
     };
   }
 

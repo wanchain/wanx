@@ -188,8 +188,8 @@ class ETH_Inbound extends CrosschainBase {
 
   // listen for storeman tx on ethereum
   listenRedeemTx(opts, blockNumber) {
-    const refundScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
-    return web3Util(this.web3eth).watchLogs(refundScanOpts);
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+    return web3Util(this.web3eth).watchLogs(redeemScanOpts);
   }
 
   buildLockTx({ to, from, value, storeman, redeemKey }) {
