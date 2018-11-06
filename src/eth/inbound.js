@@ -149,17 +149,9 @@ class ETH_Inbound extends CrosschainBase {
   revoke(opts) {
 
     // validate inputs
-    const { from, redeemKey } = validateRevokeOpts(opts);
+    opts = validateRevokeOpts(opts);
 
-    const revokeData = this.buildRevokeData({ redeemKey });
-
-    const sendOpts = {
-      from: from,
-      to: this.config.ethHtlcAddr,
-      gas: 4910000,
-      gasPrice: 100e9,
-      data: revokeData,
-    };
+    const sendOpts = this.buildRevokeTx(opts);
 
     this.emit('info', { status: 'starting' });
 
@@ -177,15 +169,37 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // send lock transaction on ethereum
-  sendLockTx({ to, from, value, storeman, redeemKey }) {
+  sendLockTx(opts) {
+    const sendOpts = this.buildLockTx(opts);
+    return web3Util(this.web3eth).sendTransaction(sendOpts);
+  }
 
+  // listen for storeman tx on wanchain
+  listenLockTx(opts, blockNumber) {
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
+    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+  }
+
+  // send refund transaction on wanchain
+  sendRedeemTx(opts) {
+    const sendOpts = this.buildRedeemTx(opts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  }
+
+  // listen for storeman tx on ethereum
+  listenRedeemTx(opts, blockNumber) {
+    const refundScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+    return web3Util(this.web3eth).watchLogs(refundScanOpts);
+  }
+
+  buildLockTx({ to, from, value, storeman, redeemKey }) {
     const lockData = this.buildLockData({
       to,
       storeman,
       redeemKey,
     });
 
-    const sendOpts = {
+    return {
       from: from,
       to: this.config.ethHtlcAddr,
       value: value,
@@ -193,14 +207,34 @@ class ETH_Inbound extends CrosschainBase {
       gasPrice: 100e9,
       data: lockData,
     };
-
-    return web3Util(this.web3eth).sendTransaction(sendOpts);
   }
 
-  // listen for storeman tx on wanchain
-  listenLockTx({ redeemKey }, blockNumber) {
+  buildRedeemTx({ to, redeemKey }) {
+    const redeemData = this.buildRedeemData({ redeemKey });
 
-    const lockScanOpts = {
+    return {
+      from: to,
+      to: this.config.wanHtlcAddr,
+      gas: 4700000,
+      gasPrice: 180e9,
+      data: redeemData,
+    };
+  }
+
+  buildRevokeTx({ from, redeemKey }) {
+    const revokeData = this.buildRevokeData({ redeemKey });
+
+    return {
+      from: from,
+      to: this.config.ethHtlcAddr,
+      gas: 4910000,
+      gasPrice: 100e9,
+      data: revokeData,
+    };
+  }
+
+  buildLockScanOpts({ redeemKey }, blockNumber) {
+    return {
       blockNumber,
       address: this.config.wanHtlcAddr,
       topics: [
@@ -210,29 +244,10 @@ class ETH_Inbound extends CrosschainBase {
         '0x' + redeemKey.xHash,
       ],
     };
-
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
-  // send refund transaction on wanchain
-  sendRedeemTx({ to, redeemKey }) {
-    const refundData = this.buildRedeemData({ redeemKey });
-
-    const sendOpts = {
-      from: to,
-      to: this.config.wanHtlcAddr,
-      gas: 4700000,
-      gasPrice: 180e9,
-      data: refundData,
-    };
-
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
-  }
-
-  // listen for storeman tx on ethereum
-  listenRedeemTx({ redeemKey }, blockNumber) {
-
-    const refundScanOpts = {
+  buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    return {
       blockNumber,
       address: this.config.ethHtlcAddr,
       topics: [
@@ -242,8 +257,6 @@ class ETH_Inbound extends CrosschainBase {
         '0x' + redeemKey.xHash,
       ],
     };
-
-    return web3Util(this.web3eth).watchLogs(refundScanOpts);
   }
 
   buildLockData({ storeman, to, redeemKey }) {
