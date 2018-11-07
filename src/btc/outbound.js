@@ -195,9 +195,9 @@ class BTC_Outbound extends CrosschainBase {
     const toAddr = btcUtil.addressToHash160(to, 'pubkeyhash', this.config.network);
 
     return '0x' + sig.substr(0, 8) + redeemKey.xHash
-      + types.addr2Bytes(storeman.wan)
-      + types.addr2Bytes(toAddr)
-      + types.number2Bytes(value);
+      + types.hex2Bytes32(storeman.wan)
+      + types.hex2Bytes32(toAddr)
+      + types.num2Bytes32(value);
   }
 
   buildRevokeData({ redeemKey }) {
@@ -210,8 +210,8 @@ class BTC_Outbound extends CrosschainBase {
     const sig = this.config.signatures.HTLCWBTC.getWbtc2BtcFee;
 
     const data = '0x' + sig.substr(0, 8)
-      + types.addr2Bytes(storeman.wan)
-      + types.number2Bytes(value);
+      + types.hex2Bytes32(storeman.wan)
+      + types.num2Bytes32(value);
 
     return web3Util(this.web3wan).call({ to, data });
   }

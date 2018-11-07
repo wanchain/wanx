@@ -192,13 +192,14 @@ class BTC_Inbound extends CrosschainBase {
 
   buildLockNoticeData({ storeman, from, redeemKey, txHash, lockTimestamp }) {
     const sig = this.config.signatures.HTLCWBTC.btc2wbtcLockNotice;
+    const fromHash160 = btcUtil.addressToHash160(from, 'pubkeyhash', this.config.network);
 
     return '0x' + sig.substr(0, 8)
-      + types.addr2Bytes(storeman.wan)
-      + types.addr2Bytes(btcUtil.addressToHash160(from))
+      + types.hex2Bytes32(storeman.wan)
+      + types.hex2Bytes32(fromHash160)
       + hex.stripPrefix(redeemKey.xHash)
       + hex.stripPrefix(txHash)
-      + types.number2Bytes(lockTimestamp);
+      + types.num2Bytes32(lockTimestamp);
   }
 
   buildRedeemData({ redeemKey }) {

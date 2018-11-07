@@ -264,8 +264,8 @@ class ETH_Inbound extends CrosschainBase {
     const sig = this.config.signatures.HTLCETH.eth2wethLock;
 
     return '0x' + sig.substr(0, 8) + redeemKey.xHash
-      + types.addr2Bytes(storeman.eth)
-      + types.addr2Bytes(to);
+      + types.hex2Bytes32(storeman.eth)
+      + types.hex2Bytes32(to);
   }
 
   buildRedeemData({ redeemKey }) {

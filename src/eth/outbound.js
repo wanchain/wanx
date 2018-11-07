@@ -286,9 +286,9 @@ class ETH_Outbound extends CrosschainBase {
     const sig = this.config.signatures.HTLCWETH.weth2ethLock;
 
     return '0x' + sig.substr(0, 8) + redeemKey.xHash
-      + types.addr2Bytes(storeman.wan)
-      + types.addr2Bytes(to)
-      + types.number2Bytes(value)
+      + types.hex2Bytes32(storeman.wan)
+      + types.hex2Bytes32(to)
+      + types.num2Bytes32(value);
   }
 
   buildRedeemData({ redeemKey }) {
@@ -311,8 +311,8 @@ class ETH_Outbound extends CrosschainBase {
   buildStoremanFeeData({ storeman, value }) {
     const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
     return '0x' + sig.substr(0, 8)
-      + types.addr2Bytes(storeman.wan)
-      + types.number2Bytes(value);
+      + types.hex2Bytes32(storeman.wan)
+      + types.num2Bytes32(value);
   }
 }
 
