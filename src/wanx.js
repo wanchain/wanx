@@ -26,10 +26,16 @@ class WanX {
       const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
       this.config.web3wan = new Web3(provider);
     }
+    else if (this.config.web3wan && typeof this.config.web3wan.version !== 'string') {
+      throw new Error('Unsupported web3 version');
+    }
 
     if (! this.config.web3eth && this.config.ethNodeUrl) {
       const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
       this.config.web3eth = new Web3(provider);
+    }
+    else if (this.config.web3eth && typeof this.config.web3eth.version !== 'string') {
+      throw new Error('Unsupported web3 version');
     }
 
     this.crypto = crypto;

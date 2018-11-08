@@ -70,7 +70,7 @@ class BTC_Outbound extends CrosschainBase {
 
     this.emit('info', { status: 'starting' });
 
-    return web3Util(this.web3wan).sendTransaction(sendOpts).then(receipt => {
+    return this.web3wan.eth.sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
       this.emit('complete', { status: 'revoked', receipt });
@@ -86,7 +86,7 @@ class BTC_Outbound extends CrosschainBase {
   // send lock transaction
   sendLockTx(opts) {
     const sendOpts = this.buildLockTx(opts);
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+    return this.web3wan.eth.sendTransaction(sendOpts);
   }
 
   buildLockTx({ to, from, value, storeman, redeemKey, fee }) {
@@ -217,7 +217,7 @@ class BTC_Outbound extends CrosschainBase {
 
   getStoremanFee({ storeman, value }) {
     const callOpts = this.buildStoremanFeeTx(opts);
-    return web3Util(this.web3wan).call(callOpts);
+    return this.web3wan.eth.call(callOpts);
   }
 
   buildStoremanFeeTx(opts) {

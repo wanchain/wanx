@@ -117,7 +117,7 @@ class BTC_Inbound extends CrosschainBase {
   // send lock transaction on ethereum
   sendLockNoticeTx(opts) {
     const sendOpts = this.buildLockNoticTx(opts);
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+    return this.web3wan.eth.sendTransaction(sendOpts);
   }
 
   buildLockNoticTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
@@ -160,7 +160,7 @@ class BTC_Inbound extends CrosschainBase {
   // send refund transaction on wanchain
   sendRedeemTx(opts) {
     const sendOpts = this.buildRedeemTx(opts);
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+    return this.web3wan.eth.sendTransaction(sendOpts);
   }
 
   buildRedeemTx({ to, redeemKey }) {

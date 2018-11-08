@@ -44,7 +44,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'locking', receipt });
 
-      return web3Util(this.web3eth).getBlockNumber();
+      return this.web3eth.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -62,7 +62,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
 
-      return web3Util(this.web3wan).getBlockNumber();
+      return this.web3wan.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -108,7 +108,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'locking', receipt });
 
-      return web3Util(this.web3eth).getBlockNumber();
+      return this.web3eth.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -146,7 +146,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify refund result
       this.emit('info', { status: 'confirming', receipt });
 
-      return web3Util(this.web3wan).getBlockNumber();
+      return this.web3wan.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -175,7 +175,7 @@ class ETH_Outbound extends CrosschainBase {
 
     this.emit('info', { status: 'starting' });
 
-    return web3Util(this.web3wan).sendTransaction(sendOpts).then(receipt => {
+    return this.web3wan.eth.sendTransaction(sendOpts).then(receipt => {
 
       // notify complete
       this.emit('complete', { status: 'revoked', receipt });
@@ -191,7 +191,7 @@ class ETH_Outbound extends CrosschainBase {
   // send lock transaction on wanchain
   sendLockTx(opts) {
     const sendOpts = this.buildLockTx(opts);
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+    return this.web3wan.eth.sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on ethereum
@@ -203,7 +203,7 @@ class ETH_Outbound extends CrosschainBase {
   // send refund transaction on ethereum
   sendRedeemTx(opts) {
     const sendOpts = this.buildRedeemTx(opts);
-    return web3Util(this.web3eth).sendTransaction(sendOpts);
+    return this.web3eth.eth.sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on wanchain
@@ -303,7 +303,7 @@ class ETH_Outbound extends CrosschainBase {
 
   getStoremanFee(opts) {
     const callOpts = this.buildStoremanFeeTx(opts)
-    return web3Util(this.web3wan).call(callOpts);
+    return this.web3wan.eth.call(callOpts);
   }
 
   buildStoremanFeeTx(opts) {
