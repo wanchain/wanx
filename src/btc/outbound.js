@@ -66,15 +66,7 @@ class BTC_Outbound extends CrosschainBase {
     // validate inputs
     opts = validateRevokeOpts(opts);
 
-    const revokeData = this.buildRevokeData(opts);
-
-    const sendOpts = {
-      from: opts.from,
-      to: this.config.wanHtlcAddrBtc,
-      gas: 4700000,
-      gasPrice: 180e9,
-      data: revokeData,
-    };
+    const sendOpts = this.buildRevokeTx(opts);
 
     this.emit('info', { status: 'starting' });
 
@@ -92,8 +84,12 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // send lock transaction
-  sendLockTx({ to, from, value, storeman, redeemKey, fee }) {
+  sendLockTx(opts) {
+    const sendOpts = this.buildLockTx(opts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  }
 
+  buildLockTx({ to, from, value, storeman, redeemKey, fee }) {
     const lockData = this.buildLockData({
       to,
       value,
@@ -101,7 +97,7 @@ class BTC_Outbound extends CrosschainBase {
       redeemKey,
     });
 
-    const sendOpts = {
+    return {
       from: from,
       to: this.config.wanHtlcAddrBtc,
       gas: 4700000,
@@ -109,14 +105,28 @@ class BTC_Outbound extends CrosschainBase {
       value: fee,
       data: lockData,
     };
+  }
 
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  buildRevokeTx({ from, redeemKey }) {
+    const revokeData = this.buildRevokeData({ redeemKey });
+
+    return {
+      from: from,
+      to: this.config.wanHtlcAddrBtc,
+      gas: 4700000,
+      gasPrice: 180e9,
+      data: revokeData,
+    };
   }
 
   // listen for storeman tx
-  listenLockNoticeTx({ redeemKey }, blockNumber) {
+  listenLockNoticeTx(opts, blockNumber) {
+    const lockNoticeScanOpts = this.buildLockNoticeScanOpts(opts, blockNumber);
+    return web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
+  }
 
-    const lockNoticeScanOpts = {
+  buildLockNoticeScanOpts({ redeemKey }, blockNumber) {
+    return {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
@@ -126,8 +136,25 @@ class BTC_Outbound extends CrosschainBase {
         '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
+  }
 
-    return web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
+  // listen for storeman tx
+  listenRedeemTx(opts, blockNumber) {
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+    return web3Util(this.web3wan).watchLogs(redeemScanOpts);
+  }
+
+  buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    return {
+      blockNumber,
+      address: this.config.wanHtlcAddrBtc,
+      topics: [
+        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
+        null,
+        null,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
+      ],
+    };
   }
 
   buildHashTimeLockContract(xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
@@ -173,23 +200,6 @@ class BTC_Outbound extends CrosschainBase {
     );
   }
 
-  // listen for storeman tx
-  listenRedeemTx({ redeemKey }, blockNumber) {
-
-    const redeemScanOpts = {
-      blockNumber,
-      address: this.config.wanHtlcAddrBtc,
-      topics: [
-        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
-        null,
-        null,
-        '0x' + hex.stripPrefix(redeemKey.xHash),
-      ],
-    };
-
-    return web3Util(this.web3wan).watchLogs(redeemScanOpts);
-  }
-
   buildLockData({ to, value, storeman, redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcLock;
     const toAddr = crypto.addressToHash160(to, 'pubkeyhash', this.config.network);
@@ -206,14 +216,23 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   getStoremanFee({ storeman, value }) {
+    const callOpts = this.buildStoremanFeeTx(opts);
+    return web3Util(this.web3wan).call(callOpts);
+  }
+
+  buildStoremanFeeTx(opts) {
     const to = this.config.wanHtlcAddrBtc;
+    const data = this.buildStoremanFeeData(opts);
+
+    return { to, data };
+  }
+
+  buildStoremanFeeData({ storeman, value }) {
     const sig = this.config.signatures.HTLCWBTC.getWbtc2BtcFee;
 
-    const data = '0x' + sig.substr(0, 8)
+    return '0x' + sig.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
       + types.num2Bytes32(value);
-
-    return web3Util(this.web3wan).call({ to, data });
   }
 }
 

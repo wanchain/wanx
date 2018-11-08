@@ -115,8 +115,12 @@ class BTC_Inbound extends CrosschainBase {
   }
 
   // send lock transaction on ethereum
-  sendLockNoticeTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
+  sendLockNoticeTx(opts) {
+    const sendOpts = this.buildLockNoticTx(opts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  }
 
+  buildLockNoticTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
     const lockNoticeData = this.buildLockNoticeData({
       from,
       storeman,
@@ -125,21 +129,23 @@ class BTC_Inbound extends CrosschainBase {
       lockTimestamp,
     });
 
-    const sendOpts = {
+    return {
       from: to,
       to: this.config.wanHtlcAddrBtc,
       gas: 4710000,
       gasPrice: 180e9,
       data: lockNoticeData,
     };
-
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
   // listen for storeman tx on wanchain
-  listenLockTx({ redeemKey }, blockNumber) {
+  listenLockTx(opts, blockNumber) {
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
+    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+  }
 
-    const lockScanOpts = {
+  buildLockScanOpts({ redeemKey }, blockNumber) {
+    return {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
@@ -149,23 +155,24 @@ class BTC_Inbound extends CrosschainBase {
         '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
-
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
   // send refund transaction on wanchain
-  sendRedeemTx({ to, redeemKey }) {
+  sendRedeemTx(opts) {
+    const sendOpts = this.buildRedeemTx(opts);
+    return web3Util(this.web3wan).sendTransaction(sendOpts);
+  }
+
+  buildRedeemTx({ to, redeemKey }) {
     const redeemData = this.buildRedeemData({ redeemKey });
 
-    const sendOpts = {
+    return {
       from: to,
       to: this.config.wanHtlcAddrBtc,
       gas: 4700000,
       gasPrice: 180e9,
       data: redeemData,
     };
-
-    return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
   buildLockNoticeData({ storeman, from, redeemKey, txid, lockTimestamp }) {
