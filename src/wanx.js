@@ -36,7 +36,7 @@ class WanX {
   }
 
   newChain(type, inbound) {
-    return getSender(type, inbound, this.config);
+    return getChain(type, inbound, this.config);
   }
 
   // btc requires sha256, everything else keccak256
@@ -54,7 +54,7 @@ class WanX {
   }
 }
 
-function getSender(type, inbound, config) {
+function getChain(type, inbound, config) {
 
   const direction = inbound ? 'in' : 'out';
   const senderName = `${type.toLowerCase()}_${direction}`;
