@@ -242,7 +242,7 @@ class ETH_Inbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWETH.ETH2WETHLock,
         null,
         null,
-        '0x' + redeemKey.xHash,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
   }
@@ -255,7 +255,7 @@ class ETH_Inbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCETH.ETH2WETHRefund,
         null,
         null,
-        '0x' + redeemKey.xHash,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
   }
@@ -263,14 +263,14 @@ class ETH_Inbound extends CrosschainBase {
   buildLockData({ storeman, to, redeemKey }) {
     const sig = this.config.signatures.HTLCETH.eth2wethLock;
 
-    return '0x' + sig.substr(0, 8) + redeemKey.xHash
+    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.eth)
       + types.hex2Bytes32(to);
   }
 
   buildRedeemData({ redeemKey }) {
     const sig = this.config.signatures.HTLCWETH.eth2wethRefund;
-    return '0x' + sig.substr(0, 8) + redeemKey.x;
+    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.x);
   }
 
   buildRevokeData({ redeemKey }) {
