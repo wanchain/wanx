@@ -32,6 +32,7 @@ class WanX {
       this.config.web3eth = new Web3(provider);
     }
 
+    this.crypto = crypto;
   }
 
   newChain(type, inbound) {
