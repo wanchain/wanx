@@ -15,8 +15,11 @@ const hex = require('../lib/hex');
 module.exports = {
   hashForSignature,
   buildHashTimeLockContract,
+
   buildRedeemTx,
   buildRedeemTxFromWif,
+  buildRevokeTx,
+  buildRevokeTxFromWif,
 
   getTransaction,
 }
@@ -170,7 +173,7 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
   return tx.toHex();
 }
 
-function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x, txid, value) {
+function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x, txid, value, lockTimestamp) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // NB: storemen address validation requires that vout is 0
@@ -184,7 +187,8 @@ function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(hex.stripPrefix(txid), vout);
+  txb.setLockTime(lockTimestamp);
+  txb.addInput(hex.stripPrefix(txid), vout, 0);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();
@@ -211,7 +215,7 @@ function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x
   return tx.toHex();
 }
 
-function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value) {
+function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value, lockTimestamp) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // NB: storemen address validation requires that vout is 0
@@ -226,7 +230,8 @@ function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value)
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(hex.stripPrefix(txid), vout);
+  txb.setLockTime(lockTimestamp);
+  txb.addInput(hex.stripPrefix(txid), vout, 0);
   txb.addOutput(address, value);
 
   const tx = txb.buildIncomplete();

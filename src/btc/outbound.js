@@ -192,7 +192,7 @@ class BTC_Outbound extends CrosschainBase {
 
   buildLockData({ to, value, storeman, redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcLock;
-    const toAddr = btcUtil.addressToHash160(to, 'pubkeyhash', this.config.network);
+    const toAddr = crypto.addressToHash160(to, 'pubkeyhash', this.config.network);
 
     return '0x' + sig.substr(0, 8) + redeemKey.xHash
       + types.hex2Bytes32(storeman.wan)

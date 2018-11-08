@@ -1,6 +1,7 @@
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
 const web3Util = require('../lib/web3');
+const crypto = require('../lib/crypto');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
 
@@ -22,7 +23,7 @@ class BTC_Inbound extends CrosschainBase {
   lock(opts) {
 
     // validate inputs
-    opts = validateSendOpts(opts);
+    // opts = validateSendOpts(opts);
 
     return Promise.resolve([]).then(() => {
 
@@ -67,13 +68,6 @@ class BTC_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      // notify refund result
-      this.emit('info', { status: 'confirming', receipt });
-
-      return this.listenRedeemTx(opts, receipt.blockNumber);
-
-    }).then(receipt => {
-
       // notify complete
       this.emit('complete', { status: 'confirmed', receipt });
 
@@ -104,35 +98,36 @@ class BTC_Inbound extends CrosschainBase {
       opts.redeemKey.x,
       opts.txid,
       opts.value,
+      opts.lockTimestamp,
     );
   }
 
   buildRevokeTxFromWif(opts) {
-    return btcUtil.buildRevokeTx(
+    return btcUtil.buildRevokeTxFromWif(
       this.config.network,
       opts.redeemScript,
       opts.wif,
       opts.redeemKey.x,
       opts.txid,
       opts.value,
+      opts.lockTimestamp,
     );
   }
 
   // send lock transaction on ethereum
-  sendLockNoticeTx({ to, from, value, storeman, redeemKey, txHash, lockTimestamp }) {
+  sendLockNoticeTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
 
     const lockNoticeData = this.buildLockNoticeData({
       from,
       storeman,
       redeemKey,
-      txHash,
+      txid,
       lockTimestamp,
     });
 
     const sendOpts = {
       from: to,
       to: this.config.wanHtlcAddrBtc,
-      value: value,
       gas: 4710000,
       gasPrice: 180e9,
       data: lockNoticeData,
@@ -173,37 +168,20 @@ class BTC_Inbound extends CrosschainBase {
     return web3Util(this.web3wan).sendTransaction(sendOpts);
   }
 
-  // listen for storeman tx on ethereum
-  listenRedeemTx({ redeemKey }, blockNumber) {
-
-    const redeemScanOpts = {
-      blockNumber,
-      address: this.config.wanHtlcAddrBtc,
-      topics: [
-        '0x' + this.config.signatures.HTLCWBTC.BTC2WBTCRefund,
-        null,
-        null,
-        '0x' + redeemKey.xHash,
-      ],
-    };
-
-    return web3Util(this.web3eth).watchLogs(redeemScanOpts);
-  }
-
-  buildLockNoticeData({ storeman, from, redeemKey, txHash, lockTimestamp }) {
+  buildLockNoticeData({ storeman, from, redeemKey, txid, lockTimestamp }) {
     const sig = this.config.signatures.HTLCWBTC.btc2wbtcLockNotice;
-    const fromHash160 = btcUtil.addressToHash160(from, 'pubkeyhash', this.config.network);
+    const fromHash160 = crypto.addressToHash160(from, 'pubkeyhash', this.config.network);
 
     return '0x' + sig.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(fromHash160)
       + hex.stripPrefix(redeemKey.xHash)
-      + hex.stripPrefix(txHash)
+      + hex.stripPrefix(txid)
       + types.num2Bytes32(lockTimestamp);
   }
 
   buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.btc2wbtcRefund;
+    const sig = this.config.signatures.HTLCWBTC.btc2wbtcRedeem;
     return '0x' + sig.substr(0, 8) + redeemKey.x;
   }
 }
