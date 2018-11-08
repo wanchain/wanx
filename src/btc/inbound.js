@@ -146,7 +146,7 @@ class BTC_Inbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWBTC.BTC2WBTCLock,
         null,
         null,
-        '0x' + redeemKey.xHash,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
 
@@ -182,7 +182,7 @@ class BTC_Inbound extends CrosschainBase {
 
   buildRedeemData({ redeemKey }) {
     const sig = this.config.signatures.HTLCWBTC.btc2wbtcRedeem;
-    return '0x' + sig.substr(0, 8) + redeemKey.x;
+    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.x);
   }
 }
 

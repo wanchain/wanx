@@ -123,7 +123,7 @@ class BTC_Outbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCLockNotice,
         null,
         null,
-        '0x' + redeemKey.xHash,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
 
@@ -183,7 +183,7 @@ class BTC_Outbound extends CrosschainBase {
         '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
         null,
         null,
-        '0x' + redeemKey.xHash,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
       ],
     };
 
@@ -194,7 +194,7 @@ class BTC_Outbound extends CrosschainBase {
     const sig = this.config.signatures.HTLCWBTC.wbtc2btcLock;
     const toAddr = crypto.addressToHash160(to, 'pubkeyhash', this.config.network);
 
-    return '0x' + sig.substr(0, 8) + redeemKey.xHash
+    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(toAddr)
       + types.num2Bytes32(value);
