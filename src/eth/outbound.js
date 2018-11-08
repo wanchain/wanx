@@ -302,10 +302,15 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   getStoremanFee(opts) {
+    const callOpts = this.buildStoremanFeeTx(opts)
+    return web3Util(this.web3wan).call(callOpts);
+  }
+
+  buildStoremanFeeTx(opts) {
     const to = this.config.wanHtlcAddr;
     const data = this.buildStoremanFeeData(opts);
 
-    return web3Util(this.web3wan).call({ to, data });
+    return { to, data };
   }
 
   buildStoremanFeeData({ storeman, value }) {
