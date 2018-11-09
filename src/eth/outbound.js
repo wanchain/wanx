@@ -59,6 +59,11 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenRedeem(opts, blockNumber);
 
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', {});
+
     }).catch(err => {
 
       // notify error
@@ -97,6 +102,11 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, blockNumber);
 
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', {});
+
     }).catch(err => {
 
       // notify error
@@ -126,6 +136,11 @@ class ETH_Outbound extends CrosschainBase {
     }).then(blockNumber => {
 
       return this.listenRedeem(opts, blockNumber);
+
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', {});
 
     }).catch(err => {
 

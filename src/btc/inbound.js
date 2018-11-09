@@ -36,6 +36,11 @@ class BTC_Inbound extends CrosschainBase {
 
       return this.listenLock(opts, receipt.blockNumber);
 
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', {});
+
     }).catch(err => {
 
       // notify error
@@ -57,6 +62,11 @@ class BTC_Inbound extends CrosschainBase {
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
       return this.sendRedeem(opts);
+
+    }).then(receipt => {
+
+      // notify complete
+      this.emit('complete', {});
 
     }).catch(err => {
 
