@@ -26,41 +26,27 @@ class ETH_Inbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendLockTx(opts);
+      return this.sendLock(opts);
 
     }).then(receipt => {
-
-      // notify status
-      this.emit('info', { status: 'locking', receipt });
 
       return this.web3wan.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenLockTx(opts, blockNumber);
+      return this.listenLock(opts, blockNumber);
 
     }).then(receipt => {
 
-      // notify locked status
-      this.emit('info', { status: 'locked', receipt });
-
-      return this.sendRedeemTx(opts);
+      return this.sendRedeem(opts);
 
     }).then(receipt => {
-
-      // notify refund result
-      this.emit('info', { status: 'confirming', receipt });
 
       return this.web3eth.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenRedeemTx(opts, blockNumber);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'confirmed', receipt });
+      return this.listenRedeem(opts, blockNumber);
 
     }).catch(err => {
 
@@ -81,23 +67,15 @@ class ETH_Inbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendLockTx(opts);
+      return this.sendLock(opts);
 
     }).then(receipt => {
-
-      // notify status
-      this.emit('info', { status: 'locking', receipt });
 
       return this.web3wan.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenLockTx(opts, blockNumber);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'locked', receipt });
+      return this.listenLock(opts, blockNumber);
 
     }).catch(err => {
 
@@ -119,46 +97,15 @@ class ETH_Inbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendRedeemTx(opts);
+      return this.sendRedeem(opts);
 
     }).then(receipt => {
-
-      // notify refund result
-      this.emit('info', { status: 'confirming', receipt });
 
       return this.web3eth.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenRedeemTx(opts, blockNumber);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'confirmed', receipt });
-
-    }).catch(err => {
-
-      // notify error
-      this.emit('error', err)
-
-    });
-  }
-
-  // send revoke transaction on ethereum
-  revoke(opts) {
-
-    // validate inputs
-    opts = validateRevokeOpts(opts);
-
-    const sendOpts = this.buildRevokeTx(opts);
-
-    this.emit('info', { status: 'starting' });
-
-    return this.web3eth.eth.sendTransaction(sendOpts).then(receipt => {
-
-      // notify complete
-      this.emit('complete', { status: 'revoked', receipt });
+      return this.listenRedeem(opts, blockNumber);
 
     }).catch(err => {
 
@@ -169,36 +116,63 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // send lock transaction on ethereum
-  sendLockTx(opts) {
+  sendLock(opts) {
     const sendOpts = this.buildLockTx(opts);
+
     return this.web3eth.eth.sendTransaction(sendOpts)
       .on('transactionHash', hash => {
-        this.emit('info', { status: 'transactionHash', hash });
+        this.emit('info', { status: 'lockHash', hash });
       })
       .on('receipt', receipt => {
-        this.emit('info', { status: 'receipt', receipt });
+        this.emit('info', { status: 'locked', receipt });
       })
-      .on('confirmation', (confNumber, receipt) => {
-        this.emit('info', { status: 'locking', confNumber, receipt });
-      })
+      .on('error', err => {
+        this.emit('error', err);
+      });
   }
 
   // listen for storeman tx on wanchain
-  listenLockTx(opts, blockNumber) {
+  listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
     return web3Util(this.web3wan).watchLogs(lockScanOpts);
   }
 
   // send refund transaction on wanchain
-  sendRedeemTx(opts) {
+  sendRedeem(opts) {
     const sendOpts = this.buildRedeemTx(opts);
-    return this.web3wan.eth.sendTransaction(sendOpts);
+
+    return this.web3wan.eth.sendTransaction(sendOpts)
+      .on('transactionHash', hash => {
+        this.emit('info', { status: 'redeemHash', hash });
+      })
+      .on('receipt', receipt => {
+        this.emit('info', { status: 'redeemed', receipt });
+      })
+      .on('error', err => {
+        this.emit('error', err);
+      });
   }
 
   // listen for storeman tx on ethereum
-  listenRedeemTx(opts, blockNumber) {
+  listenRedeem(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
     return web3Util(this.web3eth).watchLogs(redeemScanOpts);
+  }
+
+  // send revoke transaction on ethereum
+  sendRevoke(opts) {
+    const sendOpts = this.buildRevokeTx(opts);
+
+    return this.web3eth.eth.sendTransaction(sendOpts)
+      .on('transactionHash', hash => {
+        this.emit('info', { status: 'revokeHash', hash });
+      })
+      .on('receipt', receipt => {
+        this.emit('info', { status: 'revoked', receipt });
+      })
+      .on('error', err => {
+        this.emit('error', err);
+      });
   }
 
   buildLockTx({ to, from, value, storeman, redeemKey }) {
