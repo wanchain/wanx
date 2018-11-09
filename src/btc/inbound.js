@@ -133,11 +133,13 @@ class BTC_Inbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
+    const { BTC2WBTCLock } = this.config.signatures.HTLCWBTC;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCWBTC.BTC2WBTCLock,
+        '0x' + BTC2WBTCLock,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -158,10 +160,10 @@ class BTC_Inbound extends CrosschainBase {
   }
 
   buildLockData({ storeman, from, redeemKey, txid, lockTimestamp }) {
-    const sig = this.config.signatures.HTLCWBTC.btc2wbtcLockNotice;
+    const { btc2wbtcLockNotice } = this.config.signatures.HTLCWBTC;
     const fromHash160 = crypto.addressToHash160(from, 'pubkeyhash', this.config.network);
 
-    return '0x' + sig.substr(0, 8)
+    return '0x' + btc2wbtcLockNotice.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(fromHash160)
       + hex.stripPrefix(redeemKey.xHash)
@@ -170,8 +172,10 @@ class BTC_Inbound extends CrosschainBase {
   }
 
   buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.btc2wbtcRedeem;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.x);
+    const { btc2wbtcRedeem } = this.config.signatures.HTLCWBTC;
+
+    return '0x' + btc2wbtcRedeem.substr(0, 8)
+      + hex.stripPrefix(redeemKey.x);
   }
 
   //

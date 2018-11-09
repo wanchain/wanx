@@ -29,7 +29,7 @@ class BTC_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.getStoremanFee(opts);
+      return this.getOutboundFee(opts);
 
     }).then(res => {
 
@@ -58,8 +58,8 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // make call to get storeman fee
-  getStoremanFee(opts) {
-    const callOpts = this.buildStoremanFeeTx(opts);
+  getOutboundFee(opts) {
+    const callOpts = this.buildOutboundFeeTx(opts);
     return this.web3wan.eth.call(callOpts);
   }
 
@@ -126,11 +126,13 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
+    const { WBTC2BTCLockNotice } = this.config.signatures.HTLCWBTC;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCLockNotice,
+        '0x' + WBTC2BTCLockNotice,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -151,11 +153,13 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    const { WBTC2BTCRedeem } = this.config.signatures.HTLCWBTC;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddrBtc,
       topics: [
-        '0x' + this.config.signatures.HTLCWBTC.WBTC2BTCRedeem,
+        '0x' + WBTC2BTCRedeem,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -164,31 +168,34 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   buildLockData({ to, value, storeman, redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.wbtc2btcLock;
+    const { wbtc2btcLock } = this.config.signatures.HTLCWBTC;
     const toAddr = crypto.addressToHash160(to, 'pubkeyhash', this.config.network);
 
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash)
+    return '0x' + wbtc2btcLock.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(toAddr)
       + types.num2Bytes32(value);
   }
 
   buildRevokeData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWBTC.wbtc2btcRevoke;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
+    const { wbtc2btcRevoke } = this.config.signatures.HTLCWBTC;
+
+    return '0x' + wbtc2btcRevoke.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash);
   }
 
-  buildStoremanFeeTx(opts) {
+  buildOutboundFeeTx(opts) {
     const to = this.config.wanHtlcAddrBtc;
-    const data = this.buildStoremanFeeData(opts);
+    const data = this.buildOutboundFeeData(opts);
 
     return { to, data };
   }
 
-  buildStoremanFeeData({ storeman, value }) {
-    const sig = this.config.signatures.HTLCWBTC.getWbtc2BtcFee;
+  buildOutboundFeeData({ storeman, value }) {
+    const { getWbtc2BtcFee } = this.config.signatures.HTLCWBTC;
 
-    return '0x' + sig.substr(0, 8)
+    return '0x' + getWbtc2BtcFee.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
       + types.num2Bytes32(value);
   }

@@ -267,11 +267,13 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
+    const { WETH2ETHLock } = this.config.signatures.HTLCETH;
+
     return {
       blockNumber,
       address: this.config.ethHtlcAddr,
       topics: [
-        '0x' + this.config.signatures.HTLCETH.WETH2ETHLock,
+        '0x' + WETH2ETHLock,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -280,11 +282,13 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    const { WETH2ETHRefund } = this.config.signatures.HTLCWETH;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddr,
       topics: [
-        '0x' + this.config.signatures.HTLCWETH.WETH2ETHRefund,
+        '0x' + WETH2ETHRefund,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -293,27 +297,33 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildLockData({ to, value, storeman, redeemKey }) {
-    const sig = this.config.signatures.HTLCWETH.weth2ethLock;
+    const { weth2ethLock } = this.config.signatures.HTLCWETH;
 
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash)
+    return '0x' + weth2ethLock.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(to)
       + types.num2Bytes32(value);
   }
 
   buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCETH.weth2ethRefund;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.x);
+    const { weth2ethRefund } = this.config.signatures.HTLCETH;
+
+    return '0x' + weth2ethRefund.substr(0, 8)
+      + hex.stripPrefix(redeemKey.x);
   }
 
   buildRevokeData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWETH.weth2ethRevoke;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
+    const { weth2ethRevoke } = this.config.signatures.HTLCWETH;
+
+    return '0x' + weth2ethRevoke.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash);
   }
 
   buildOutboundFeeData({ storeman, value }) {
-    const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
-    return '0x' + sig.substr(0, 8)
+    const { getWeth2EthFee } = this.config.signatures.HTLCWETH;
+
+    return '0x' + getWeth2EthFee.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
       + types.num2Bytes32(value);
   }

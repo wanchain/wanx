@@ -233,11 +233,13 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
+    const { ETH2WETHLock } = this.config.signatures.HTLCWETH;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddr,
       topics: [
-        '0x' + this.config.signatures.HTLCWETH.ETH2WETHLock,
+        '0x' + ETH2WETHLock,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -246,11 +248,13 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    const { ETH2WETHRefund } = this.config.signatures.HTLCETH;
+
     return {
       blockNumber,
       address: this.config.ethHtlcAddr,
       topics: [
-        '0x' + this.config.signatures.HTLCETH.ETH2WETHRefund,
+        '0x' + ETH2WETHRefund,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -259,21 +263,26 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   buildLockData({ storeman, to, redeemKey }) {
-    const sig = this.config.signatures.HTLCETH.eth2wethLock;
+    const { eth2wethLock } = this.config.signatures.HTLCETH;
 
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash)
+    return '0x' + eth2wethLock.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.eth)
       + types.hex2Bytes32(to);
   }
 
   buildRedeemData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCWETH.eth2wethRefund;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.x);
+    const { eth2wethRefund } = this.config.signatures.HTLCWETH;
+
+    return '0x' + eth2wethRefund.substr(0, 8)
+      + hex.stripPrefix(redeemKey.x);
   }
 
   buildRevokeData({ redeemKey }) {
-    const sig = this.config.signatures.HTLCETH.eth2wethRevoke;
-    return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
+    const { eth2wethRevoke } = this.config.signatures.HTLCETH;
+
+    return '0x' + eth2wethRevoke.substr(0, 8)
+      + hex.stripPrefix(redeemKey.xHash);
   }
 }
 
