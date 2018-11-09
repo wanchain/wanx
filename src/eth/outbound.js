@@ -28,7 +28,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.getStoremanFee(opts);
+      return this.getOutboundFee(opts);
 
     }).then(res => {
 
@@ -83,7 +83,7 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.getStoremanFee(opts);
+      return this.getOutboundFee(opts);
 
     }).then(res => {
 
@@ -150,8 +150,8 @@ class ETH_Outbound extends CrosschainBase {
     });
   }
 
-  getStoremanFee(opts) {
-    const callOpts = this.buildStoremanFeeTx(opts)
+  getOutboundFee(opts) {
+    const callOpts = this.buildOutboundFeeTx(opts)
     return this.web3wan.eth.call(callOpts);
   }
 
@@ -215,9 +215,9 @@ class ETH_Outbound extends CrosschainBase {
       });
   }
 
-  buildStoremanFeeTx(opts) {
+  buildOutboundFeeTx(opts) {
     const to = this.config.wanHtlcAddr;
-    const data = this.buildStoremanFeeData(opts);
+    const data = this.buildOutboundFeeData(opts);
 
     return { to, data };
   }
@@ -311,7 +311,7 @@ class ETH_Outbound extends CrosschainBase {
     return '0x' + sig.substr(0, 8) + hex.stripPrefix(redeemKey.xHash);
   }
 
-  buildStoremanFeeData({ storeman, value }) {
+  buildOutboundFeeData({ storeman, value }) {
     const sig = this.config.signatures.HTLCWETH.getWeth2EthFee;
     return '0x' + sig.substr(0, 8)
       + types.hex2Bytes32(storeman.wan)
