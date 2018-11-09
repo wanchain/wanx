@@ -7,10 +7,11 @@ const crypto = require('./lib/crypto');
 const ETH_Inbound = require('./eth/inbound');
 const ETH_Outbound = require('./eth/outbound');
 
+const ERC20_Inbound = require('./erc20/inbound');
+const ERC20_Outbound = require('./erc20/outbound');
+
 const BTC_Outbound = require('./btc/outbound');
 const BTC_Inbound = require('./btc/inbound');
-
-// const ERC20 = require('./erc20');
 
 class WanX {
 
@@ -70,6 +71,10 @@ function getChain(type, inbound, config) {
       return new ETH_Inbound(config);
     case 'eth_out':
       return new ETH_Outbound(config);
+    case 'erc20_in':
+      return new ERC20_Inbound(config);
+    case 'erc20_out':
+      return new ERC20_Outbound(config);
     case 'btc_in':
       return new BTC_Inbound(config);
     case 'btc_out':
