@@ -7,10 +7,11 @@ const crypto = require('./lib/crypto');
 const ETH_Inbound = require('./eth/inbound');
 const ETH_Outbound = require('./eth/outbound');
 
+const ERC20_Inbound = require('./erc20/inbound');
+const ERC20_Outbound = require('./erc20/outbound');
+
 const BTC_Outbound = require('./btc/outbound');
 const BTC_Inbound = require('./btc/inbound');
-
-// const ERC20 = require('./erc20');
 
 class WanX {
 
@@ -26,16 +27,23 @@ class WanX {
       const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
       this.config.web3wan = new Web3(provider);
     }
+    else if (this.config.web3wan && typeof this.config.web3wan.version !== 'string') {
+      throw new Error('Unsupported web3 version');
+    }
 
     if (! this.config.web3eth && this.config.ethNodeUrl) {
       const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
       this.config.web3eth = new Web3(provider);
     }
+    else if (this.config.web3eth && typeof this.config.web3eth.version !== 'string') {
+      throw new Error('Unsupported web3 version');
+    }
 
+    this.crypto = crypto;
   }
 
   newChain(type, inbound) {
-    return getSender(type, inbound, this.config);
+    return getChain(type, inbound, this.config);
   }
 
   // btc requires sha256, everything else keccak256
@@ -53,7 +61,7 @@ class WanX {
   }
 }
 
-function getSender(type, inbound, config) {
+function getChain(type, inbound, config) {
 
   const direction = inbound ? 'in' : 'out';
   const senderName = `${type.toLowerCase()}_${direction}`;
@@ -63,6 +71,10 @@ function getSender(type, inbound, config) {
       return new ETH_Inbound(config);
     case 'eth_out':
       return new ETH_Outbound(config);
+    case 'erc20_in':
+      return new ERC20_Inbound(config);
+    case 'erc20_out':
+      return new ERC20_Outbound(config);
     case 'btc_in':
       return new BTC_Inbound(config);
     case 'btc_out':

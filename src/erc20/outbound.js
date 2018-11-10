@@ -28,6 +28,8 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
+      this.sendApprove(opts);
+
       return this.getOutboundFee(opts);
 
     }).then(res => {
@@ -49,8 +51,6 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      this.emit('info', { status: 'locked', receipt });
-
       return this.sendRedeem(opts);
 
     }).then(receipt => {
@@ -64,7 +64,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'redeemed', receipt });
+      this.emit('complete', {});
 
     }).catch(err => {
 
@@ -85,6 +85,8 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
+      this.sendApprove(opts);
+
       return this.getOutboundFee(opts);
 
     }).then(res => {
@@ -107,7 +109,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'locked', receipt });
+      this.emit('complete', {});
 
     }).catch(err => {
 
@@ -142,7 +144,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'redeemed', receipt });
+      this.emit('complete', {});
 
     }).catch(err => {
 
@@ -155,6 +157,22 @@ class ETH_Outbound extends CrosschainBase {
   getOutboundFee(opts) {
     const callOpts = this.buildOutboundFeeTx(opts)
     return this.web3wan.eth.call(callOpts);
+  }
+
+  // send approve transaction on wanchain
+  sendApprove(opts) {
+    const sendOpts = this.buildApproveTx(opts);
+
+    return this.web3wan.eth.sendTransaction(sendOpts)
+      .on('transactionHash', hash => {
+        this.emit('info', { status: 'approveHash', hash });
+      })
+      .on('receipt', receipt => {
+        this.emit('info', { status: 'approved', receipt });
+      })
+      .on('error', err => {
+        this.emit('error', err);
+      });
   }
 
   // send lock transaction on wanchain
@@ -218,14 +236,28 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildOutboundFeeTx(opts) {
-    const to = this.config.wanHtlcAddr;
+    const to = this.config.wanHtlcAddrE20;
     const data = this.buildOutboundFeeData(opts);
 
     return { to, data };
   }
 
-  buildLockTx({ to, from, value, storeman, redeemKey, fee }) {
+  buildApproveTx({ token, from, value }) {
+    const approveData = this.buildApproveData({ token, value });
+
+    return {
+      Txtype: '0x01',
+      from: from,
+      to: this.config.wanHtlcAddrE20,
+      gas: hex.fromNumber(4700000),
+      gasPrice: hex.fromNumber(180e9),
+      data: approveData,
+    };
+  }
+
+  buildLockTx({ token, to, from, value, storeman, redeemKey, fee }) {
     const lockData = this.buildLockData({
+      token,
       to,
       value,
       storeman,
@@ -235,7 +267,7 @@ class ETH_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.wanHtlcAddrE20,
       gas: hex.fromNumber(4700000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(fee),
@@ -243,25 +275,25 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
-  buildRedeemTx({ to, redeemKey }) {
-    const redeemData = this.buildRedeemData({ redeemKey });
+  buildRedeemTx({ token, to, redeemKey }) {
+    const redeemData = this.buildRedeemData({ token, redeemKey });
 
     return {
       from: to,
-      to: this.config.ethHtlcAddr,
+      to: this.config.ethHtlcAddrE20,
       gas: hex.fromNumber(4910000),
       gasPrice: hex.fromNumber(100e9),
       data: redeemData,
     };
   }
 
-  buildRevokeTx({ from, redeemKey }) {
-    const revokeData = this.buildRevokeData({ redeemKey });
+  buildRevokeTx({ token, from, redeemKey }) {
+    const revokeData = this.buildRevokeData({ token, redeemKey });
 
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.wanHtlcAddrE20,
       gas: hex.fromNumber(4700000),
       gasPrice: hex.fromNumber(180e9),
       data: revokeData,
@@ -269,13 +301,11 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
-    const { WETH2ETHLock } = this.config.signatures.HTLCETH;
-
     return {
       blockNumber,
-      address: this.config.ethHtlcAddr,
+      address: this.config.ethHtlcAddrE20,
       topics: [
-        '0x' + WETH2ETHLock,
+        '0x' + this.config.signatures.HTLCETH_ERC20.OutboundLockLogger,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -284,13 +314,11 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
-    const { WETH2ETHRefund } = this.config.signatures.HTLCWETH;
-
     return {
       blockNumber,
-      address: this.config.wanHtlcAddr,
+      address: this.config.wanHtlcAddrE20,
       topics: [
-        '0x' + WETH2ETHRefund,
+        '0x' + this.config.signatures.HTLCWAN_ERC20.OutboundRedeemLogger,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -298,34 +326,46 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
-  buildLockData({ to, value, storeman, redeemKey }) {
-    const { weth2ethLock } = this.config.signatures.HTLCWETH;
+  buildApproveData({ value }) {
+    const { approve } = this.config.signatures.ERC20;
 
-    return '0x' + weth2ethLock.substr(0, 8)
+    return '0x' + approve.substr(0, 8)
+      + types.hex2Bytes32(this.config.wanHtlcAddrE20)
+      + types.num2Bytes32(value);
+  }
+
+  buildLockData({ token, to, value, storeman, redeemKey }) {
+    const { outboundLock } = this.config.signatures.HTLCWAN_ERC20;
+
+    return '0x' + outboundLock.substr(0, 8)
+      + types.hex2Bytes32(token)
       + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(to)
       + types.num2Bytes32(value);
   }
 
-  buildRedeemData({ redeemKey }) {
-    const { weth2ethRefund } = this.config.signatures.HTLCETH;
+  buildRedeemData({ token, redeemKey }) {
+    const { outboundRedeem } = this.config.signatures.HTLCETH_ERC20;
 
-    return '0x' + weth2ethRefund.substr(0, 8)
+    return '0x' + outboundRedeem.substr(0, 8)
+      + types.hex2Bytes32(token)
       + hex.stripPrefix(redeemKey.x);
   }
 
-  buildRevokeData({ redeemKey }) {
-    const { weth2ethRevoke } = this.config.signatures.HTLCWETH;
+  buildRevokeData({ token, redeemKey }) {
+    const { outboundRevoke } = this.config.signatures.HTLCWAN_ERC20;
 
-    return '0x' + weth2ethRevoke.substr(0, 8)
+    return '0x' + outboundRevoke.substr(0, 8)
+      + types.hex2Bytes32(token)
       + hex.stripPrefix(redeemKey.xHash);
   }
 
-  buildOutboundFeeData({ storeman, value }) {
-    const { getWeth2EthFee } = this.config.signatures.HTLCWETH;
+  buildOutboundFeeData({ token, storeman, value }) {
+    const { getOutboundFee } = this.config.signatures.HTLCWAN_ERC20;
 
-    return '0x' + getWeth2EthFee.substr(0, 8)
+    return '0x' + getOutboundFee.substr(0, 8)
+      + types.hex2Bytes32(token)
       + types.hex2Bytes32(storeman.wan)
       + types.num2Bytes32(value);
   }
