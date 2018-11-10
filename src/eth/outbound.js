@@ -49,6 +49,8 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
+      this.emit('info', { status: 'locked', receipt });
+
       return this.sendRedeem(opts);
 
     }).then(receipt => {
@@ -62,7 +64,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete', { status: 'redeemed', receipt });
 
     }).catch(err => {
 
@@ -105,7 +107,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete', { status: 'locked', receipt });
 
     }).catch(err => {
 
@@ -140,7 +142,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete', { status: 'redeemed', receipt });
 
     }).catch(err => {
 
