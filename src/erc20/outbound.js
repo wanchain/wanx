@@ -144,7 +144,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'complete', receipt }});
+      this.emit('complete', { status: 'complete', receipt });
 
     }).catch(err => {
 
@@ -197,7 +197,7 @@ class ETH_Outbound extends CrosschainBase {
   listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
 
-    this.emit('info', { status: 'scanLock': params: lockScanOpts });
+    this.emit('info', { status: 'scanLock', params: lockScanOpts });
 
     return web3Util(this.web3eth).watchLogs(lockScanOpts).then(receipt => {
       this.emit('info', { status: 'locked', receipt });
@@ -224,7 +224,7 @@ class ETH_Outbound extends CrosschainBase {
   listenRedeem(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
 
-    this.emit('info', { status: 'scanRedeem': params: redeemScanOpts });
+    this.emit('info', { status: 'scanRedeem', params: redeemScanOpts });
 
     return web3Util(this.web3wan).watchLogs(redeemScanOpts).then(receipt => {
       this.emit('info', { status: 'redeemed', receipt });
