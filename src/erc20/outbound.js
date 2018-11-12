@@ -28,16 +28,13 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
 
-      this.sendApprove(opts);
+      return this.sendApprove(opts);
+
+    }).then(receipt => {
 
       return this.getOutboundFee(opts);
 
-    }).then(res => {
-
-      const fee = new BigNumber(res).toString();
-
-      // notify status
-      this.emit('info', { status: 'fee', fee });
+    }).then(fee => {
 
       return this.sendLock(Object.assign({}, opts, { fee }));
 
@@ -64,7 +61,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'complete', receipt });
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -85,16 +82,13 @@ class ETH_Outbound extends CrosschainBase {
       // notify status
       this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
 
-      this.sendApprove(opts);
+      return this.sendApprove(opts);
+
+    }).then(receipt => {
 
       return this.getOutboundFee(opts);
 
-    }).then(res => {
-
-      const fee = new BigNumber(res).toString();
-
-      // notify status
-      this.emit('info', { status: 'fee', fee });
+    }).then(fee => {
 
       return this.sendLock(Object.assign({}, opts, { fee }));
 
@@ -109,7 +103,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -144,7 +138,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', { status: 'complete', receipt });
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -156,95 +150,141 @@ class ETH_Outbound extends CrosschainBase {
 
   getOutboundFee(opts) {
     const callOpts = this.buildOutboundFeeTx(opts)
-    return this.web3wan.eth.call(callOpts).then(outboundFee => {
-      this.emit('info', { status: 'outboundFee', fee: outboundFee });
+
+    const action = this.web3wan.eth.call(callOpts);
+
+    action.then(res => {
+      const fee = new BigNumber(res).toString();
+
+      this.emit('info', { status: 'outboundFee', fee });
+      return fee;
     });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send approve transaction on wanchain
   sendApprove(opts) {
     const sendOpts = this.buildApproveTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'approveHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'approved', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'approveHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'approved', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send lock transaction on wanchain
   sendLock(opts) {
     const sendOpts = this.buildLockTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'lockHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'locking', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'lockHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'locking', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // listen for storeman tx on ethereum
   listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
 
-    this.emit('info', { status: 'scanLock', params: lockScanOpts });
+    const action = web3Util(this.web3eth).watchLogs(lockScanOpts);
 
-    return web3Util(this.web3eth).watchLogs(lockScanOpts).then(receipt => {
+    action.then(receipt => {
       this.emit('info', { status: 'locked', receipt });
+      return receipt;
     });
+
+    action.catch('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send refund transaction on ethereum
   sendRedeem(opts) {
     const sendOpts = this.buildRedeemTx(opts);
 
-    return this.web3eth.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'redeemHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'redeeming', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3eth.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'redeemHash', hash });
+    })
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'redeeming', receipt });
+    })
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // listen for storeman tx on wanchain
   listenRedeem(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
 
-    this.emit('info', { status: 'scanRedeem', params: redeemScanOpts });
+    const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
 
-    return web3Util(this.web3wan).watchLogs(redeemScanOpts).then(receipt => {
+    action.then(receipt => {
       this.emit('info', { status: 'redeemed', receipt });
+      return receipt;
     });
+
+    action.catch('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send revoke transaction on wanchain
   sendRevoke(opts) {
     const sendOpts = this.buildRevokeTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'revokeHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'revoked', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'revokeHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'revoked', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   buildOutboundFeeTx(opts) {
@@ -255,12 +295,12 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildApproveTx({ token, from, value }) {
-    const approveData = this.buildApproveData({ token, value });
+    const approveData = this.buildApproveData({ value });
 
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddrE20,
+      to: token.wan,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: approveData,
@@ -350,7 +390,7 @@ class ETH_Outbound extends CrosschainBase {
     const { outboundLock } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + outboundLock.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.wan)
       + types.hex2Bytes32(to)
@@ -361,7 +401,7 @@ class ETH_Outbound extends CrosschainBase {
     const { outboundRedeem } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + outboundRedeem.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.x);
   }
 
@@ -369,7 +409,7 @@ class ETH_Outbound extends CrosschainBase {
     const { outboundRevoke } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + outboundRevoke.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash);
   }
 
@@ -377,7 +417,7 @@ class ETH_Outbound extends CrosschainBase {
     const { getOutboundFee } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + getOutboundFee.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + types.hex2Bytes32(storeman.wan)
       + types.num2Bytes32(value);
   }

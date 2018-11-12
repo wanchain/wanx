@@ -55,7 +55,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -93,7 +93,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -128,7 +128,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -263,7 +263,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     return {
       from: from,
-      to: token,
+      to: token.eth,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: approveData,
@@ -355,7 +355,7 @@ class ERC20_Inbound extends CrosschainBase {
     const { inboundLock } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundLock.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.eth)
       + types.hex2Bytes32(to)
@@ -366,7 +366,7 @@ class ERC20_Inbound extends CrosschainBase {
     const { inboundRedeem } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + inboundRedeem.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.x);
   }
 
@@ -374,7 +374,7 @@ class ERC20_Inbound extends CrosschainBase {
     const { inboundRevoke } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundRevoke.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash);
   }
 }
