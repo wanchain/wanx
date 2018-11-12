@@ -261,7 +261,7 @@ class ETH_Outbound extends CrosschainBase {
       Txtype: '0x01',
       from: from,
       to: this.config.wanHtlcAddrE20,
-      gas: hex.fromNumber(4700000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: approveData,
     };
@@ -280,7 +280,7 @@ class ETH_Outbound extends CrosschainBase {
       Txtype: '0x01',
       from: from,
       to: this.config.wanHtlcAddrE20,
-      gas: hex.fromNumber(4700000),
+      gas: hex.fromNumber(300000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(fee),
       data: lockData,
@@ -293,7 +293,7 @@ class ETH_Outbound extends CrosschainBase {
     return {
       from: to,
       to: this.config.ethHtlcAddrE20,
-      gas: hex.fromNumber(4910000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: redeemData,
     };
@@ -306,7 +306,7 @@ class ETH_Outbound extends CrosschainBase {
       Txtype: '0x01',
       from: from,
       to: this.config.wanHtlcAddrE20,
-      gas: hex.fromNumber(4700000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: revokeData,
     };
