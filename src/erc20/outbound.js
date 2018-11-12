@@ -26,7 +26,7 @@ class ETH_Outbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
 
       this.sendApprove(opts);
 
@@ -64,7 +64,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete', { status: 'complete', receipt });
 
     }).catch(err => {
 
@@ -83,7 +83,7 @@ class ETH_Outbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
 
       this.sendApprove(opts);
 
@@ -129,7 +129,7 @@ class ETH_Outbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
 
       return this.sendRedeem(opts);
 
@@ -144,7 +144,7 @@ class ETH_Outbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete', { status: 'complete', receipt }});
 
     }).catch(err => {
 
@@ -156,7 +156,9 @@ class ETH_Outbound extends CrosschainBase {
 
   getOutboundFee(opts) {
     const callOpts = this.buildOutboundFeeTx(opts)
-    return this.web3wan.eth.call(callOpts);
+    return this.web3wan.eth.call(callOpts).then(outboundFee => {
+      this.emit('info', { status: 'outboundFee', fee: outboundFee });
+    });
   }
 
   // send approve transaction on wanchain
@@ -184,7 +186,7 @@ class ETH_Outbound extends CrosschainBase {
         this.emit('info', { status: 'lockHash', hash });
       })
       .on('receipt', receipt => {
-        this.emit('info', { status: 'locked', receipt });
+        this.emit('info', { status: 'locking', receipt });
       })
       .on('error', err => {
         this.emit('error', err);
@@ -194,7 +196,12 @@ class ETH_Outbound extends CrosschainBase {
   // listen for storeman tx on ethereum
   listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
-    return web3Util(this.web3eth).watchLogs(lockScanOpts);
+
+    this.emit('info', { status: 'scanLock': params: lockScanOpts });
+
+    return web3Util(this.web3eth).watchLogs(lockScanOpts).then(receipt => {
+      this.emit('info', { status: 'locked', receipt });
+    });
   }
 
   // send refund transaction on ethereum
@@ -206,7 +213,7 @@ class ETH_Outbound extends CrosschainBase {
         this.emit('info', { status: 'redeemHash', hash });
       })
       .on('receipt', receipt => {
-        this.emit('info', { status: 'redeemed', receipt });
+        this.emit('info', { status: 'redeeming', receipt });
       })
       .on('error', err => {
         this.emit('error', err);
@@ -216,7 +223,12 @@ class ETH_Outbound extends CrosschainBase {
   // listen for storeman tx on wanchain
   listenRedeem(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
-    return web3Util(this.web3wan).watchLogs(redeemScanOpts);
+
+    this.emit('info', { status: 'scanRedeem': params: redeemScanOpts });
+
+    return web3Util(this.web3wan).watchLogs(redeemScanOpts).then(receipt => {
+      this.emit('info', { status: 'redeemed', receipt });
+    });
   }
 
   // send revoke transaction on wanchain

@@ -163,7 +163,7 @@ class ERC20_Inbound extends CrosschainBase {
         this.emit('info', { status: 'lockHash', hash });
       })
       .on('receipt', receipt => {
-        this.emit('info', { status: 'locked', receipt });
+        this.emit('info', { status: 'locking', receipt });
       })
       .on('error', err => {
         this.emit('error', err);
@@ -185,7 +185,7 @@ class ERC20_Inbound extends CrosschainBase {
         this.emit('info', { status: 'redeemHash', hash });
       })
       .on('receipt', receipt => {
-        this.emit('info', { status: 'redeemed', receipt });
+        this.emit('info', { status: 'redeeming', receipt });
       })
       .on('error', err => {
         this.emit('error', err);
