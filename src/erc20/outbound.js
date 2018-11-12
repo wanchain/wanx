@@ -353,11 +353,13 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildLockScanOpts({ redeemKey }, blockNumber) {
+    const { OutboundLockLogger } = this.config.signatures.HTLCETH_ERC20;
+
     return {
       blockNumber,
       address: this.config.ethHtlcAddrE20,
       topics: [
-        '0x' + this.config.signatures.HTLCETH_ERC20.OutboundLockLogger,
+        '0x' + OutboundLockLogger,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
@@ -366,11 +368,13 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   buildRedeemScanOpts({ redeemKey }, blockNumber) {
+    const { OutboundRedeemLogger } = this.config.signatures.HTLCWAN_ERC20;
+
     return {
       blockNumber,
       address: this.config.wanHtlcAddrE20,
       topics: [
-        '0x' + this.config.signatures.HTLCWAN_ERC20.OutboundRedeemLogger,
+        '0x' + OutboundRedeemLogger,
         null,
         null,
         '0x' + hex.stripPrefix(redeemKey.xHash),
