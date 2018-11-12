@@ -203,7 +203,7 @@ class ETH_Inbound extends CrosschainBase {
       from: from,
       to: this.config.ethHtlcAddr,
       value: hex.fromNumber(value),
-      gas: hex.fromNumber(4910000),
+      gas: hex.fromNumber(300000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
     };
@@ -216,7 +216,7 @@ class ETH_Inbound extends CrosschainBase {
       Txtype: '0x01',
       from: to,
       to: this.config.wanHtlcAddr,
-      gas: hex.fromNumber(4700000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
     };
@@ -228,7 +228,7 @@ class ETH_Inbound extends CrosschainBase {
     return {
       from: from,
       to: this.config.ethHtlcAddr,
-      gas: hex.fromNumber(4910000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: revokeData,
     };
