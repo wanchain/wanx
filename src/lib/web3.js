@@ -38,9 +38,9 @@ function watchLogs(opts) {
   return new Promise((resolve, reject) => {
 
     const getLogs = () => {
-      this.web3.eth.getPastLogs(opts).then(res => {
-        if (res.length) {
-          return resolve(res);
+      this.web3.eth.getPastLogs(opts).then(logs => {
+        if (logs.length) {
+          return resolve(logs[0]);
         }
 
         // TODO: add some sort of retry max
