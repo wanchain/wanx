@@ -154,9 +154,12 @@ cctx.revoke(opts);
 ```
 
 ## Next Todos
-- Support signing raw transactions
-- Add BTC and ERC20 token support
-- Remove hardcoded gas prices and make configurable and/or auto-calculated
-- Add getStoremanGroups method
+- Improve gas limit/price default values, and make configurable
+- Fix up event emission scheme
 - Use validate.js for validating call options
-- Add tests!!!!
+- Add tests for chain class methods
+- Add support for more of the contract methods
+- Add ABIs and make available on the wanx object
+- Add documentation for all chains and multiple use cases
+- Add jsdoc throughout codebase
+- Add getStoremanGroups method
