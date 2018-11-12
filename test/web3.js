@@ -21,7 +21,7 @@ const web3 = {
   }
 }
 
-describe('web3', () => {
+describe('web3 watchLogs', () => {
 
   it('should repeatedly call getLogs until res is not empty', (done) => {
     const w = web3Util(web3)
