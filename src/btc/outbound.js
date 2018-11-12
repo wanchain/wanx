@@ -3,6 +3,7 @@ const BigNumber = require('bignumber.js');
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
 const web3Util = require('../lib/web3');
+const crypto = require('../lib/crypto');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
 
