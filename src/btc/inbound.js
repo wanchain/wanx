@@ -39,7 +39,7 @@ class BTC_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -66,7 +66,7 @@ class BTC_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -80,38 +80,58 @@ class BTC_Inbound extends CrosschainBase {
   sendLock(opts) {
     const sendOpts = this.buildLockTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'lockHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'locked', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.on('transactionHash', hash => {
+      this.emit('info', { status: 'lockHash', hash });
+    });
+
+    action.on('receipt', receipt => {
+      this.emit('info', { status: 'locking', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // listen for storeman tx on wanchain
   listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+
+    const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
+
+    action.then(receipt => {
+      this.emit('info', { status: 'locked', receipt });
+      return receipt;
+    });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send redeem transaction on wanchain
   sendRedeem(opts) {
     const sendOpts = this.buildRedeemTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'redeemHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'redeemed', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.on('transactionHash', hash => {
+      this.emit('info', { status: 'redeemHash', hash });
+    });
+
+    action.on('receipt', receipt => {
+      this.emit('info', { status: 'redeemed', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
   }
 
   buildLockTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
@@ -126,7 +146,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       from: to,
       to: this.config.wanHtlcAddrBtc,
-      gas: 4710000,
+      gas: 300000,
       gasPrice: 180e9,
       data: lockNoticeData,
     };
@@ -153,7 +173,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       from: to,
       to: this.config.wanHtlcAddrBtc,
-      gas: 4700000,
+      gas: 120000,
       gasPrice: 180e9,
       data: redeemData,
     };

@@ -55,7 +55,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -93,7 +93,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -128,7 +128,7 @@ class ERC20_Inbound extends CrosschainBase {
     }).then(receipt => {
 
       // notify complete
-      this.emit('complete', {});
+      this.emit('complete');
 
     }).catch(err => {
 
@@ -142,85 +142,129 @@ class ERC20_Inbound extends CrosschainBase {
   sendApprove(opts) {
     const sendOpts = this.buildApproveTx(opts);
 
-    return this.web3eth.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'approveHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'approved', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3eth.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'approveHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'approved', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send lock transaction on ethereum
   sendLock(opts) {
     const sendOpts = this.buildLockTx(opts);
 
-    return this.web3eth.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'lockHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'locked', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3eth.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'lockHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'locking', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // listen for storeman tx on wanchain
   listenLock(opts, blockNumber) {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
-    return web3Util(this.web3wan).watchLogs(lockScanOpts);
+
+    const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
+
+    action.then(receipt => {
+      this.emit('info', { status: 'locked', receipt });
+      return receipt;
+    });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send redeem transaction on wanchain
   sendRedeem(opts) {
     const sendOpts = this.buildRedeemTx(opts);
 
-    return this.web3wan.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'redeemHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'redeemed', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3wan.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'redeemHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'redeeming', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // listen for storeman tx on ethereum
   listenRedeem(opts, blockNumber) {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
-    return web3Util(this.web3eth).watchLogs(redeemScanOpts);
+
+    const action = web3Util(this.web3eth).watchLogs(redeemScanOpts);
+
+    action.then(receipt => {
+      this.emit('info', { status: 'redeemed', receipt });
+      return receipt;
+    });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   // send revoke transaction on ethereum
   sendRevoke(opts) {
     const sendOpts = this.buildRevokeTx(opts);
 
-    return this.web3eth.eth.sendTransaction(sendOpts)
-      .on('transactionHash', hash => {
-        this.emit('info', { status: 'revokeHash', hash });
-      })
-      .on('receipt', receipt => {
-        this.emit('info', { status: 'revoked', receipt });
-      })
-      .on('error', err => {
-        this.emit('error', err);
-      });
+    const action = this.web3eth.eth.sendTransaction(sendOpts);
+
+    action.once('transactionHash', hash => {
+      this.emit('info', { status: 'revokeHash', hash });
+    });
+
+    action.once('receipt', receipt => {
+      this.emit('info', { status: 'revoked', receipt });
+    });
+
+    action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
   }
 
   buildApproveTx({ token, from, value }) {
-    const approveData = this.buildApproveData({ token, value });
+    const approveData = this.buildApproveData({ value });
 
     return {
       from: from,
-      to: this.config.ethHtlcAddrE20,
-      gas: hex.fromNumber(4910000),
+      to: token.eth,
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: approveData,
     };
@@ -232,13 +276,13 @@ class ERC20_Inbound extends CrosschainBase {
       to,
       storeman,
       redeemKey,
+      value,
     });
 
     return {
       from: from,
       to: this.config.ethHtlcAddrE20,
-      value: hex.fromNumber(value),
-      gas: hex.fromNumber(4910000),
+      gas: hex.fromNumber(300000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
     };
@@ -251,7 +295,7 @@ class ERC20_Inbound extends CrosschainBase {
       Txtype: '0x01',
       from: to,
       to: this.config.wanHtlcAddrE20,
-      gas: hex.fromNumber(4700000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
     };
@@ -263,7 +307,7 @@ class ERC20_Inbound extends CrosschainBase {
     return {
       from: from,
       to: this.config.ethHtlcAddrE20,
-      gas: hex.fromNumber(4910000),
+      gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: revokeData,
     };
@@ -307,21 +351,22 @@ class ERC20_Inbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
-  buildLockData({ token, storeman, to, redeemKey }) {
+  buildLockData({ token, to, value, storeman, redeemKey }) {
     const { inboundLock } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundLock.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash)
       + types.hex2Bytes32(storeman.eth)
-      + types.hex2Bytes32(to);
+      + types.hex2Bytes32(to)
+      + types.num2Bytes32(value);
   }
 
   buildRedeemData({ token, redeemKey }) {
     const { inboundRedeem } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + inboundRedeem.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.x);
   }
 
@@ -329,7 +374,7 @@ class ERC20_Inbound extends CrosschainBase {
     const { inboundRevoke } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundRevoke.substr(0, 8)
-      + types.hex2Bytes32(token)
+      + types.hex2Bytes32(token.eth)
       + hex.stripPrefix(redeemKey.xHash);
   }
 }

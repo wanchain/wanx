@@ -3,6 +3,7 @@ const Web3 = require('web3');
 
 const config = require('./config');
 const crypto = require('./lib/crypto');
+const abis = require('./abis');
 
 const ETH_Inbound = require('./eth/inbound');
 const ETH_Outbound = require('./eth/outbound');
@@ -40,6 +41,7 @@ class WanX {
     }
 
     this.crypto = crypto;
+    this.abis = abis;
   }
 
   newChain(type, inbound) {
