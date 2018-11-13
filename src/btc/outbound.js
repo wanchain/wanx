@@ -282,7 +282,7 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   buildRedeemTxFromWif(opts) {
-    return btcUtil.buildRedeemTx(
+    return btcUtil.buildRedeemTxFromWif(
       this.config.network,
       opts.redeemScript,
       opts.wif,

@@ -35,7 +35,7 @@ describe('web3 watchLogs', () => {
     const call = w.watchLogs(opts)
 
     call.then(res => {
-      expect(res).to.have.length(1)
+      expect(res).to.be.a('object')
       expect(timeout.callCount).to.equal(3)
       done();
     })

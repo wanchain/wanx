@@ -132,6 +132,8 @@ class BTC_Inbound extends CrosschainBase {
     action.on('error', err => {
       this.emit('error', err);
     });
+
+    return action;
   }
 
   buildLockTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
