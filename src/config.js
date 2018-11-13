@@ -7,8 +7,8 @@ const testnetConfig = {
   wbtcTokenAddress: '0xa3158cdcb24702e5612d20275745901fbc69331e',
   ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
   wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x905b3237b2367b2ddebdf54d4f5320429710850a',
-  wanHtlcAddrE20: '0x2b71a02033a5fdf20037aa184994a684a9229a15',
+  ethHtlcAddrE20: '0x149f1650f0ff097bca88118b83ed58fb1cfc68ef',
+  wanHtlcAddrE20: '0x27feb1785f61504619a105faa00f57c49cc4d9c3',
   wanHtlcAddrBtc: '0xd2f14b0067f6fc0d99311c055491b29f01b72004',
 };
 
