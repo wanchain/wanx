@@ -186,9 +186,10 @@ class ERC20_Inbound extends CrosschainBase {
 
     const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'locked', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCWAN_ERC20', 'InboundLockLogger', log);
+      this.emit('info', { status: 'locked', log, parsed });
+      return log;
     });
 
     action.catch(err => {
@@ -225,9 +226,10 @@ class ERC20_Inbound extends CrosschainBase {
 
     const action = web3Util(this.web3eth).watchLogs(redeemScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'redeemed', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCETH_ERC20', 'InboundRedeemLogger', log);
+      this.emit('info', { status: 'redeemed', log, parsed });
+      return log;
     });
 
     action.catch(err => {

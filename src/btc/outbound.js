@@ -100,9 +100,10 @@ class BTC_Outbound extends CrosschainBase {
 
     const action = web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'locked', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
+      this.emit('info', { status: 'locked', log, parsed });
+      return log;
     });
 
     action.catch(err => {
@@ -119,9 +120,10 @@ class BTC_Outbound extends CrosschainBase {
 
     const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'redeemed', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
+      this.emit('info', { status: 'redeemed', log, parsed });
+      return log;
     });
 
     action.catch(err => {
