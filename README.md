@@ -154,12 +154,12 @@ cctx.revoke(opts);
 ```
 
 ## Next Todos
-- Improve gas limit/price default values, and make configurable
-- Fix up event emission scheme
 - Use validate.js for validating call options
 - Add tests for chain class methods
+- Add tests for btc functions
 - Add support for more of the contract methods
-- Add ABIs and make available on the wanx object
+- Make gas price/limit configurable
 - Add documentation for all chains and multiple use cases
 - Add jsdoc throughout codebase
-- Add getStoremanGroups method
+- Add syncStoremanGroups and syncErc20StoremanGroups methods
+- Add getRegErc20Tokens method
