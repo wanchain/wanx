@@ -16,7 +16,7 @@ module.exports = {
   buildHashTimeLockContract,
 
   hashForRedeemSig,
-  hashForRevokeSig
+  hashForRevokeSig,
 
   buildRedeemTx,
   buildRedeemTxFromWif,
