@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
 const web3Util = require('../lib/web3');
@@ -137,13 +139,13 @@ class BTC_Inbound extends CrosschainBase {
     return action;
   }
 
-  buildLockTx({ to, from, value, storeman, redeemKey, txid, lockTimestamp }) {
+  buildLockTx({ to, from, value, storeman, redeemKey, txid, lockTime }) {
     const lockNoticeData = this.buildLockData({
       from,
       storeman,
       redeemKey,
       txid,
-      lockTimestamp,
+      lockTime,
     });
 
     return {
@@ -182,7 +184,7 @@ class BTC_Inbound extends CrosschainBase {
     };
   }
 
-  buildLockData({ storeman, from, redeemKey, txid, lockTimestamp }) {
+  buildLockData({ storeman, from, redeemKey, txid, lockTime }) {
     const { btc2wbtcLockNotice } = this.config.signatures.HTLCWBTC;
     const fromHash160 = crypto.addressToHash160(from, 'pubkeyhash', this.config.network);
 
@@ -191,7 +193,7 @@ class BTC_Inbound extends CrosschainBase {
       + types.hex2Bytes32(fromHash160)
       + hex.stripPrefix(redeemKey.xHash)
       + hex.stripPrefix(txid)
-      + types.num2Bytes32(lockTimestamp);
+      + types.num2Bytes32(lockTime);
   }
 
   buildRedeemData({ redeemKey }) {
@@ -205,38 +207,57 @@ class BTC_Inbound extends CrosschainBase {
   // BTC methods
   //
 
-  buildHashTimeLockContract(xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
+  buildHashTimeLockContract({ from, storeman, redeemKey, lockTime }) {
+
+    // auto-calculate lockTime if not set
+    // FIXME: define default locktime interval in settings,
+    // or better, add a method to get it from the contracts
+    if (lockTime === undefined || lockTime === null) {
+      lockTime = new moment().add(4, 'h').unix();
+    }
+
     return btcUtil.buildHashTimeLockContract(
       this.config.network,
-      xHash,
-      lockTimestamp,
-      destH160Addr,
-      revokerH160Addr
+      redeemKey.xHash,
+      storeman.btc,
+      crypto.addressToHash160(from, 'pubkeyhash', this.config.network),
+      lockTime,
     );
   }
 
-  buildRevokeTx(opts) {
+  hashForRevokeSig({ from, txid, value, lockTime, redeemScript }) {
+    return btcUtil.hashForRevokeSig(
+      this.config.network,
+      txid,
+      from,
+      value,
+      lockTime,
+      redeemScript,
+    );
+  }
+
+  buildRevokeTx({ txid, value, redeemKey, lockTime, redeemScript, publicKey, sigHash }) {
     return btcUtil.buildRevokeTx(
       this.config.network,
-      opts.redeemScript,
-      opts.signedSigHash,
-      opts.publicKey,
-      opts.redeemKey.x,
-      opts.txid,
-      opts.value,
-      opts.lockTimestamp,
+      txid,
+      value,
+      redeemScript,
+      redeemKey.x,
+      lockTime,
+      publicKey,
+      sigHash,
     );
   }
 
-  buildRevokeTxFromWif(opts) {
+  buildRevokeTxFromWif({ txid, value, redeemKey, lockTime, redeemScript, wif }) {
     return btcUtil.buildRevokeTxFromWif(
       this.config.network,
-      opts.redeemScript,
-      opts.wif,
-      opts.redeemKey.x,
-      opts.txid,
-      opts.value,
-      opts.lockTimestamp,
+      txid,
+      value,
+      redeemScript,
+      redeemKey.x,
+      lockTime,
+      wif,
     );
   }
 }

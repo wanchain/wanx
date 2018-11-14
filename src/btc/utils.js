@@ -13,8 +13,10 @@ const hex = require('../lib/hex');
 // bitcoinRpc.init(btcNode.host, btcNode.port, btcNode.user, btcNode.pass);
 
 module.exports = {
-  hashForSignature,
   buildHashTimeLockContract,
+
+  hashForRedeemSig,
+  hashForRevokeSig
 
   buildRedeemTx,
   buildRedeemTxFromWif,
@@ -25,11 +27,10 @@ module.exports = {
 }
 
 // generate the P2SH timelock contract
-function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
+function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr, lockTime) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   const redeemScript = bitcoin.script.compile([
-
     bitcoin.opcodes.OP_IF,
     bitcoin.opcodes.OP_SHA256,
     Buffer.from(xHash, 'hex'),
@@ -39,7 +40,7 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
     Buffer.from(hex.stripPrefix(destH160Addr), 'hex'),
 
     bitcoin.opcodes.OP_ELSE,
-    bitcoin.script.number.encode(lockTimestamp),
+    bitcoin.script.number.encode(lockTime),
     bitcoin.opcodes.OP_CHECKLOCKTIMEVERIFY,
     bitcoin.opcodes.OP_DROP,
     bitcoin.opcodes.OP_DUP,
@@ -59,61 +60,101 @@ function buildHashTimeLockContract(network, xHash, lockTimestamp, destH160Addr, 
   const { address } = addressPay;
 
   return {
-    address,
-    redeemScript,
-    xHash,
-    lockTimestamp
+    contract: {
+      address,
+      redeemScript: redeemScript.toString('hex'),
+    },
+    params: {
+      xHash,
+      lockTime,
+      redeemer: destH160Addr,
+      revoker: revokerH160Addr,
+    },
   };
 }
 
-function hashForSignature(network, redeemScript, destAddr, txid, value) {
+function hashForRedeemSig(network, txid, address, value, redeemScript) {
+  const tx = buildIncompleteRedeem(network, txid, address, value);
+  const sigHash = tx.hashForSignature(
+    0,
+    new Buffer.from(redeemScript, 'hex'),
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  return sigHash.toString('hex');
+}
+
+function hashForRevokeSig(network, txid, address, value, lockTime, redeemScript) {
+  const tx = buildIncompleteRevoke(network, txid, address, value, lockTime);
+  const sigHash = tx.hashForSignature(
+    0,
+    new Buffer.from(redeemScript, 'hex'),
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  return sigHash.toString('hex');
+}
+
+function buildIncompleteRedeem(network, txid, address, value) {
   const bitcoinNetwork = bitcoin.networks[network];
+
+  // NB: storemen address validation requires that vout is 0
+  const vout = 0;
 
   const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
 
   txb.setVersion(1);
-  txb.addInput(hex.stripPrefix(txid), 0);
-  txb.addOutput(destAddr, value);
+  txb.addInput(hex.stripPrefix(txid), vout);
+  txb.addOutput(address, value);
 
-  const tx = txb.buildIncomplete();
+  return txb.buildIncomplete();
+}
 
-  const sigHash = tx.hashForSignature(0, new Buffer.from(redeemScript, 'hex'), bitcoin.Transaction.SIGHASH_ALL);
+function buildIncompleteRevoke(network, txid, address, value, lockTime) {
+  const bitcoinNetwork = bitcoin.networks[network];
 
-  return sigHash.toString('hex');
+  // NB: storemen address validation requires that vout is 0
+  const vout = 0;
+
+  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+
+  txb.setVersion(1);
+  txb.setLockTime(lockTime);
+  txb.addInput(hex.stripPrefix(txid), vout, 0);
+  txb.addOutput(address, value);
+
+  return txb.buildIncomplete();
 }
 
 // TODO: combine duplicate code in buildRedeemTx, buildRedeemTxFromWif,
 // buildRevokeTx, and buildRevokeTxFromWif
 //
-function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, txid, value) {
+function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
-  // NB: storemen address validation requires that vout is 0
-  const vout = 0;
+  // if toAddress is not supplied, derive it from the publicKey
+  if (! toAddress) {
 
-  const { address } = bitcoin.payments.p2pkh({
-    network: bitcoinNetwork,
-    pubkey: destPublicKey,
-  });
+    const { address } = bitcoin.payments.p2pkh({
+      network: bitcoinNetwork,
+      pubkey: Buffer.from(publicKey, 'hex'),
+    });
 
-  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+    toAddress = address;
+  }
 
-  txb.setVersion(1);
-  txb.addInput(hex.stripPrefix(txid), vout);
-  txb.addOutput(address, value);
-
-  const tx = txb.buildIncomplete();
+  const tx = buildIncompleteRedeem(network, txid, toAddress, value);
 
   const signature = bitcoin.script.signature.encode(
     new Buffer.from(signedSigHash, 'base64'),
     bitcoin.Transaction.SIGHASH_ALL
   );
 
-  const redeemScriptSig = bitcoin.payments.p2sh({
+  const scriptSig = bitcoin.payments.p2sh({
     redeem: {
       input: bitcoin.script.compile([
         signature,
-        Buffer.from(destPublicKey, 'hex'),
+        Buffer.from(publicKey, 'hex'),
         Buffer.from(x, 'hex'),
         bitcoin.opcodes.OP_TRUE,
       ]),
@@ -122,44 +163,50 @@ function buildRedeemTx(network, redeemScript, signedSigHash, destPublicKey, x, t
     network: bitcoinNetwork,
   }).input;
 
-  tx.setInputScript(0, redeemScriptSig);
+  tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
 }
 
-function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
+function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // NB: storemen address validation requires that vout is 0
   const vout = 0;
 
-  const destKeyPair = bitcoin.ECPair.fromWIF(destWif, bitcoinNetwork);
-  const { address } = bitcoin.payments.p2pkh({
-    network: bitcoinNetwork,
-    pubkey: destKeyPair.publicKey,
-  });
+  const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoinNetwork);
 
-  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+  // if toAddress is not supplied, derive it from the publicKey
+  if (! toAddress) {
 
-  txb.setVersion(1);
-  txb.addInput(hex.stripPrefix(txid), vout);
-  txb.addOutput(address, value);
+    const { address } = bitcoin.payments.p2pkh({
+      network: bitcoinNetwork,
+      pubkey: keyPair.publicKey,
+    });
 
-  const tx = txb.buildIncomplete();
+    toAddress = address;
+  }
 
-  const sigHash = tx.hashForSignature(0, new Buffer.from(redeemScript, 'hex'), bitcoin.Transaction.SIGHASH_ALL);
-  const signedSigHash = destKeyPair.sign(sigHash);
+  const tx = buildIncompleteRedeem(network, txid, toAddress, value);
+
+  const sigHash = tx.hashForSignature(
+    0,
+    new Buffer.from(redeemScript, 'hex'),
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  const signedSigHash = keyPair.sign(sigHash);
 
   const signature = bitcoin.script.signature.encode(
     signedSigHash,
     bitcoin.Transaction.SIGHASH_ALL
   );
 
-  const redeemScriptSig = bitcoin.payments.p2sh({
+  const scriptSig = bitcoin.payments.p2sh({
     redeem: {
       input: bitcoin.script.compile([
         signature,
-        destKeyPair.publicKey,
+        keyPair.publicKey,
         Buffer.from(x, 'hex'),
         bitcoin.opcodes.OP_TRUE,
       ]),
@@ -168,41 +215,37 @@ function buildRedeemTxFromWif(network, redeemScript, destWif, x, txid, value) {
     network: bitcoinNetwork,
   }).input;
 
-  tx.setInputScript(0, redeemScriptSig);
+  tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
 }
 
-function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x, txid, value, lockTimestamp) {
+function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
-  // NB: storemen address validation requires that vout is 0
-  const vout = 0;
+  // if toAddress is not supplied, derive it from the publicKey
+  if (! toAddress) {
 
-  const { address } = bitcoin.payments.p2pkh({
-    network: bitcoinNetwork,
-    pubkey: revokerPublicKey,
-  });
+    const { address } = bitcoin.payments.p2pkh({
+      network: bitcoinNetwork,
+      pubkey: Buffer.from(publicKey, 'hex'),
+    });
 
-  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+    toAddress = address;
+  }
 
-  txb.setVersion(1);
-  txb.setLockTime(lockTimestamp);
-  txb.addInput(hex.stripPrefix(txid), vout, 0);
-  txb.addOutput(address, value);
-
-  const tx = txb.buildIncomplete();
+  const tx = buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
 
   const signature = bitcoin.script.signature.encode(
     new Buffer.from(signedSigHash, 'base64'),
     bitcoin.Transaction.SIGHASH_ALL
   );
 
-  const redeemScriptSig = bitcoin.payments.p2sh({
+  const scriptSig = bitcoin.payments.p2sh({
     redeem: {
       input: bitcoin.script.compile([
         signature,
-        Buffer.from(revokerPublicKey, 'hex'),
+        Buffer.from(publicKey, 'hex'),
         bitcoin.opcodes.OP_FALSE,
       ]),
       output: new Buffer.from(redeemScript, 'hex'),
@@ -210,45 +253,47 @@ function buildRevokeTx(network, redeemScript, signedSigHash, revokerPublicKey, x
     network: bitcoinNetwork,
   }).input;
 
-  tx.setInputScript(0, redeemScriptSig);
+  tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
 }
 
-function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value, lockTimestamp) {
+function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
-  // NB: storemen address validation requires that vout is 0
-  const vout = 0;
+  const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoinNetwork);
 
-  const revokerKeyPair = bitcoin.ECPair.fromWIF(revokerWif, bitcoinNetwork);
-  const { address } = bitcoin.payments.p2pkh({
-    network: bitcoinNetwork,
-    pubkey: revokerKeyPair.publicKey,
-  });
+  // if toAddress is not supplied, derive it from the publicKey
+  if (! toAddress) {
 
-  const txb = new bitcoin.TransactionBuilder(bitcoinNetwork);
+    const { address } = bitcoin.payments.p2pkh({
+      network: bitcoinNetwork,
+      pubkey: keyPair.publicKey,
+    });
 
-  txb.setVersion(1);
-  txb.setLockTime(lockTimestamp);
-  txb.addInput(hex.stripPrefix(txid), vout, 0);
-  txb.addOutput(address, value);
+    toAddress = address;
+  }
 
-  const tx = txb.buildIncomplete();
+  const tx = buildIncompleteRevoke(network, txid, address, value, lockTime);
 
-  const sigHash = tx.hashForSignature(0, new Buffer.from(redeemScript, 'hex'), bitcoin.Transaction.SIGHASH_ALL);
-  const signedSigHash = revokerKeyPair.sign(sigHash);
+  const sigHash = tx.hashForSignature(
+    0,
+    new Buffer.from(redeemScript, 'hex'),
+    bitcoin.Transaction.SIGHASH_ALL
+  );
+
+  const signedSigHash = keyPair.sign(sigHash);
 
   const signature = bitcoin.script.signature.encode(
     signedSigHash,
     bitcoin.Transaction.SIGHASH_ALL
   );
 
-  const redeemScriptSig = bitcoin.payments.p2sh({
+  const scriptSig = bitcoin.payments.p2sh({
     redeem: {
       input: bitcoin.script.compile([
         signature,
-        revokerKeyPair.publicKey,
+        keyPair.publicKey,
         bitcoin.opcodes.OP_FALSE,
       ]),
       output: new Buffer.from(redeemScript, 'hex'),
@@ -256,7 +301,7 @@ function buildRevokeTxFromWif(network, redeemScript, revokerWif, x, txid, value,
     network: bitcoinNetwork,
   }).input;
 
-  tx.setInputScript(0, redeemScriptSig);
+  tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
 }
