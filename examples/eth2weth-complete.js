@@ -34,13 +34,8 @@ const opts = {
 };
 
 // Do a complete crosschain transaction
-cctx.send(opts);
-
 // send = lock + redeem:
-// cctx.lock(opts).then(() => {
-//   cctx.redeem(opts);
-// });
-
+cctx.send(opts);
 
 // Handle events
 cctx.on('info', info => {
