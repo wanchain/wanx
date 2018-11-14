@@ -23,10 +23,18 @@ module.exports = {
   buildRevokeTx,
   buildRevokeTxFromWif,
 
-  getTransaction,
+  // getTransaction,
 }
 
-// generate the P2SH timelock contract
+/**
+ * Generate P2SH timelock contract
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} xHash - The xHash string
+ * @param {string} destH160Addr - Hash160 of the receiver's bitcoin address
+ * @param {string} revokerH160Addr - Hash160 of the revoker's bitcoin address
+ * @param {number} lockTime - The timestamp when the revoker is allowed to spend
+ * @returns {Object} Generated P2SH address and redeemScript
+ */
 function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr, lockTime) {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -73,6 +81,15 @@ function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr
   };
 }
 
+/**
+ * Get the hash to be signed for a redeem transaction
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {string} address - The address to receive funds
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @returns {string} Hash to be signed
+ */
 function hashForRedeemSig(network, txid, address, value, redeemScript) {
   const tx = buildIncompleteRedeem(network, txid, address, value);
   const sigHash = tx.hashForSignature(
@@ -84,6 +101,16 @@ function hashForRedeemSig(network, txid, address, value, redeemScript) {
   return sigHash.toString('hex');
 }
 
+/**
+ * Get the hash to be signed for a revoke transaction
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {string} address - The address to receive funds
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {number} lockTime - The lockTime of the P2SH address
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @returns {string} Hash to be signed
+ */
 function hashForRevokeSig(network, txid, address, value, lockTime, redeemScript) {
   const tx = buildIncompleteRevoke(network, txid, address, value, lockTime);
   const sigHash = tx.hashForSignature(
@@ -95,6 +122,14 @@ function hashForRevokeSig(network, txid, address, value, lockTime, redeemScript)
   return sigHash.toString('hex');
 }
 
+/**
+ * Build incomplete redeem transaction
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {string} address - The address to receive funds
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @returns {Object} Incomplete redeem transaction
+ */
 function buildIncompleteRedeem(network, txid, address, value) {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -110,6 +145,15 @@ function buildIncompleteRedeem(network, txid, address, value) {
   return txb.buildIncomplete();
 }
 
+/**
+ * Build incomplete revoke transaction
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {string} address - The address to receive funds
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {number} lockTime - The lockTime of the P2SH address
+ * @returns {Object} Incomplete revoke transaction
+ */
 function buildIncompleteRevoke(network, txid, address, value, lockTime) {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -126,9 +170,18 @@ function buildIncompleteRevoke(network, txid, address, value, lockTime) {
   return txb.buildIncomplete();
 }
 
-// TODO: combine duplicate code in buildRedeemTx, buildRedeemTxFromWif,
-// buildRevokeTx, and buildRevokeTxFromWif
-//
+/**
+ * Create redeem transaction using signed sigHash
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @param {string} x - The x value for the transaction
+ * @param {string} publicKey - The publicKey of the redeemer
+ * @param {string} signedSigHash - The sigHash signed by the redeemer
+ * @param {string} toAddress - The address where to send funds (defaults to redeemer)
+ * @returns {string} Signed transaction as hex string
+ */
 function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -168,6 +221,17 @@ function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedS
   return tx.toHex();
 }
 
+/**
+ * Create redeem transaction using WIF
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @param {string} x - The x value for the transaction
+ * @param {string} wif - The redeemer's private key in WIF format
+ * @param {string} toAddress - The address where to send funds (defaults to redeemer)
+ * @returns {string} Signed transaction as hex string
+ */
 function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -220,6 +284,18 @@ function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddr
   return tx.toHex();
 }
 
+/**
+ * Create revoke transaction using signed sigHash
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @param {string} x - The x value for the transaction
+ * @param {string} publicKey - The publicKey of the revoker
+ * @param {string} signedSigHash - The sigHash signed by the revoker
+ * @param {string} toAddress - The address where to send funds (defaults to revoker)
+ * @returns {string} Signed transaction as hex string
+ */
 function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -258,6 +334,17 @@ function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKe
   return tx.toHex();
 }
 
+/**
+ * Create revoke transaction using WIF
+ * @param {string} network - Network name (mainnet, testnet)
+ * @param {string} txid - The txid for the UTXO being spent
+ * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string} redeemScript - The redeemScript of the P2SH address
+ * @param {string} x - The x value for the transaction
+ * @param {string} wif - The revoker's private key in WIF format
+ * @param {string} toAddress - The address where to send funds (defaults to revoker)
+ * @returns {string} Signed transaction as hex string
+ */
 function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress = '') {
   const bitcoinNetwork = bitcoin.networks[network];
 
@@ -306,6 +393,11 @@ function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, w
   return tx.toHex();
 }
 
+/**
+ * Get transaction from blockchain or mempool
+ * @param {string} txHash - The hash of the transaction
+ * @returns {Promise} Promise object returning tx object
+ */
 function getTransaction(txHash) {
   return new Promise((resolve, reject) => {
     bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
@@ -334,7 +426,6 @@ function getTransaction(txHash) {
 
         const tx = transactions.filter(t => t.txid === txHash).shift();
 
-        // if (! tx) return reject(new Error('transaction not found'));
         resolve(tx);
       });
     });
