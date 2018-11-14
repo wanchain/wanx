@@ -1,3 +1,4 @@
+const moment = require('moment');
 const BigNumber = require('bignumber.js');
 
 const CrosschainBase = require('../base');
@@ -100,9 +101,10 @@ class BTC_Outbound extends CrosschainBase {
 
     const action = web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'locked', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
+      this.emit('info', { status: 'locked', log, parsed });
+      return log;
     });
 
     action.catch(err => {
@@ -119,9 +121,10 @@ class BTC_Outbound extends CrosschainBase {
 
     const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
 
-    action.then(receipt => {
-      this.emit('info', { status: 'redeemed', receipt });
-      return receipt;
+    action.then(log => {
+      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
+      this.emit('info', { status: 'redeemed', log, parsed });
+      return log;
     });
 
     action.catch(err => {
@@ -249,49 +252,54 @@ class BTC_Outbound extends CrosschainBase {
   // BTC methods
   //
 
-  buildHashTimeLockContract(xHash, lockTimestamp, destH160Addr, revokerH160Addr) {
+  buildHashTimeLockContract({ to, storeman, redeemKey, lockTime }) {
+
+    // auto-calculate lockTime if not set
+    if (lockTime === undefined || lockTime === null) {
+      lockTime = new moment().add(4, 'h').unix();
+    }
+
     return btcUtil.buildHashTimeLockContract(
       this.config.network,
-      xHash,
-      lockTimestamp,
-      destH160Addr,
-      revokerH160Addr
+      redeemKey.xHash,
+      crypto.addressToHash160(to, 'pubkeyhash', this.config.network),
+      storeman.btc,
+      lockTime,
     );
   }
 
-  hashForSignature(opts) {
-    return btcUtil.hashForSignature(
+  hashForRedeemSig({ to, txid, value, redeemScript }) {
+    return btcUtil.hashForRedeemSig(
       this.config.network,
-      opts.redeemScript,
-      opts.publicKey,
-      opts.txid,
-      opts.value,
+      txid,
+      to,
+      value,
+      redeemScript,
     );
   }
 
-  buildRedeemTx(opts) {
+  buildRedeemTx({ txid, value, redeemKey, redeemScript, publicKey, sigHash }) {
     return btcUtil.buildRedeemTx(
       this.config.network,
-      opts.redeemScript,
-      opts.signedSigHash,
-      opts.publicKey,
-      opts.redeemKey.x,
-      opts.txid,
-      opts.value,
+      txid,
+      value,
+      redeemScript,
+      redeemKey.x,
+      publicKey,
+      sigHash,
     );
   }
 
-  buildRedeemTxFromWif(opts) {
+  buildRedeemTxFromWif({ txid, value, redeemKey, redeemScript, wif }) {
     return btcUtil.buildRedeemTxFromWif(
       this.config.network,
-      opts.redeemScript,
-      opts.wif,
-      opts.redeemKey.x,
-      opts.txid,
-      opts.value,
+      txid,
+      value,
+      redeemScript,
+      redeemKey.x,
+      wif,
     );
   }
-
 }
 
 module.exports = BTC_Outbound;
