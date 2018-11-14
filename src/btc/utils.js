@@ -86,7 +86,7 @@ function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
  * @param {string} address - The address to receive funds
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @returns {string} Hash to be signed
  */
@@ -106,7 +106,7 @@ function hashForRedeemSig(network, txid, address, value, redeemScript) {
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
  * @param {string} address - The address to receive funds
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {number} lockTime - The lockTime of the P2SH address
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @returns {string} Hash to be signed
@@ -127,7 +127,7 @@ function hashForRevokeSig(network, txid, address, value, lockTime, redeemScript)
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
  * @param {string} address - The address to receive funds
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @returns {Object} Incomplete redeem transaction
  */
 function buildIncompleteRedeem(network, txid, address, value) {
@@ -140,7 +140,7 @@ function buildIncompleteRedeem(network, txid, address, value) {
 
   txb.setVersion(1);
   txb.addInput(hex.stripPrefix(txid), vout);
-  txb.addOutput(address, value);
+  txb.addOutput(address, parseInt(value));
 
   return txb.buildIncomplete();
 }
@@ -150,7 +150,7 @@ function buildIncompleteRedeem(network, txid, address, value) {
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
  * @param {string} address - The address to receive funds
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {number} lockTime - The lockTime of the P2SH address
  * @returns {Object} Incomplete revoke transaction
  */
@@ -165,7 +165,7 @@ function buildIncompleteRevoke(network, txid, address, value, lockTime) {
   txb.setVersion(1);
   txb.setLockTime(lockTime);
   txb.addInput(hex.stripPrefix(txid), vout, 0);
-  txb.addOutput(address, value);
+  txb.addOutput(address, parseInt(value));
 
   return txb.buildIncomplete();
 }
@@ -174,7 +174,7 @@ function buildIncompleteRevoke(network, txid, address, value, lockTime) {
  * Create redeem transaction using signed sigHash
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @param {string} x - The x value for the transaction
  * @param {string} publicKey - The publicKey of the redeemer
@@ -225,7 +225,7 @@ function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedS
  * Create redeem transaction using WIF
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @param {string} x - The x value for the transaction
  * @param {string} wif - The redeemer's private key in WIF format
@@ -288,7 +288,7 @@ function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddr
  * Create revoke transaction using signed sigHash
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @param {string} x - The x value for the transaction
  * @param {string} publicKey - The publicKey of the revoker
@@ -338,7 +338,7 @@ function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKe
  * Create revoke transaction using WIF
  * @param {string} network - Network name (mainnet, testnet)
  * @param {string} txid - The txid for the UTXO being spent
- * @param {number} value - The amount of funds to be sent (in Satoshis)
+ * @param {string|number} value - The amount of funds to be sent (in Satoshis)
  * @param {string} redeemScript - The redeemScript of the P2SH address
  * @param {string} x - The x value for the transaction
  * @param {string} wif - The revoker's private key in WIF format
