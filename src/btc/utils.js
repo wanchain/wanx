@@ -68,16 +68,15 @@ function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr
   const { address } = addressPay;
 
   return {
-    contract: {
-      address,
-      redeemScript: redeemScript.toString('hex'),
-    },
-    params: {
-      xHash,
-      lockTime,
-      redeemer: destH160Addr,
-      revoker: revokerH160Addr,
-    },
+    // contract
+    address,
+    redeemScript: redeemScript.toString('hex'),
+
+    // params
+    xHash,
+    lockTime,
+    redeemer: hex.ensurePrefix(destH160Addr),
+    revoker: hex.ensurePrefix(revokerH160Addr),
   };
 }
 
