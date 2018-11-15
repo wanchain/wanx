@@ -4,12 +4,12 @@ const testnetConfig = {
   network: 'testnet',
   chainId: 3,
   wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0xa3158cdcb24702e5612d20275745901fbc69331e',
+  wbtcTokenAddress: '0x89a3e1494bc3db81dadc893ded7476d33d47dcbd',
   ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
   wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
   ethHtlcAddrE20: '0x149f1650f0ff097bca88118b83ed58fb1cfc68ef',
   wanHtlcAddrE20: '0x27feb1785f61504619a105faa00f57c49cc4d9c3',
-  wanHtlcAddrBtc: '0xd2f14b0067f6fc0d99311c055491b29f01b72004',
+  wanHtlcAddrBtc: '0xb248ed04e1f1bbb661b56f210e4b0399b2899d16',
 };
 
 const mainnetConfig = {
