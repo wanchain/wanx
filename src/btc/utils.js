@@ -360,7 +360,7 @@ function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, w
     toAddress = address;
   }
 
-  const tx = buildIncompleteRevoke(network, txid, address, value, lockTime);
+  const tx = buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
 
   const sigHash = tx.hashForSignature(
     0,

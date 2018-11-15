@@ -213,7 +213,7 @@ class BTC_Inbound extends CrosschainBase {
     // FIXME: define default locktime interval in settings,
     // or better, add a method to get it from the contracts
     if (lockTime === undefined || lockTime === null) {
-      lockTime = new moment().add(4, 'h').unix();
+      lockTime = new moment().add(8, 'h').unix();
     }
 
     return btcUtil.buildHashTimeLockContract(

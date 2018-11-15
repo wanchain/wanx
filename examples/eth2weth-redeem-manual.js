@@ -5,7 +5,6 @@ const WanTx = require('wanchainjs-tx');
 
 /**
  * Requirements:
- * - Wanchain account is unlocked
  * - Wanchain account has enough to cover the gas to redeem the token
  */
 
@@ -71,11 +70,6 @@ web3wan.eth.getTransactionCount(opts.from).then(txCount => {
 // Handle events
 cctx.on('info', info => {
   console.log('this is the info', info);
-  if (info.receipt && info.receipt.logs) {
-    info.receipt.logs.forEach(log => {
-      console.log('LOG:', log);
-    });
-  }
 });
 
 cctx.on('error', err => {

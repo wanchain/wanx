@@ -1,6 +1,6 @@
 {
   "name": "wanx",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Utility for making crosschain transactions on the wanchain network",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,6 @@
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "secp256k1": "^3.5.2",
-    "util": "^0.11.1",
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {

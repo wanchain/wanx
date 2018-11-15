@@ -5,7 +5,6 @@ const EthTx = require('ethereumjs-tx');
 
 /**
  * Requirements:
- * - Ethereum account is unlocked
  * - Ethereum account has enough to cover the value defined in `opts` plus gas
  */
 
@@ -71,11 +70,6 @@ web3eth.eth.getTransactionCount(opts.from).then(txCount => {
 // Handle events
 cctx.on('info', info => {
   console.log('this is the info', info);
-  if (info.receipt && info.receipt.logs) {
-    info.receipt.logs.forEach(log => {
-      console.log('LOG:', log);
-    });
-  }
 });
 
 cctx.on('error', err => {

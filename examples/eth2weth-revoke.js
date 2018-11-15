@@ -33,11 +33,6 @@ cctx.sendRevoke(opts);
 // Handle events
 cctx.on('info', info => {
   console.log('this is the info', info);
-  if (info.receipt && info.receipt.logs) {
-    info.receipt.logs.forEach(log => {
-      console.log('LOG:', log);
-    });
-  }
 });
 
 cctx.on('error', err => {
