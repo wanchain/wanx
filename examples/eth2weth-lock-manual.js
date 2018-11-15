@@ -5,7 +5,6 @@ const EthTx = require('ethereumjs-tx');
 
 /**
  * Requirements:
- * - Ethereum account is unlocked
  * - Ethereum account has enough to cover the value defined in `opts` plus gas
  */
 

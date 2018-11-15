@@ -5,7 +5,6 @@ const WanTx = require('wanchainjs-tx');
 
 /**
  * Requirements:
- * - Wanchain account is unlocked
  * - Wanchain account has enough to cover the gas to redeem the token
  */
 
