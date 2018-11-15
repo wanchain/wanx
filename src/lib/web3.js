@@ -1,5 +1,3 @@
-const util = require('util');
-
 const ERR_NOVERSION = 'Unable to obtain web3 version';
 const TIMEOUT_INTERVAL = 3000
 
