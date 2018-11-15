@@ -1,6 +1,6 @@
 {
   "name": "wanx",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Utility for making crosschain transactions on the wanchain network",
   "main": "index.js",
   "scripts": {
