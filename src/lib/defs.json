@@ -1,0 +1,81 @@
+{
+  "$id": "defs.json",
+  "definitions": {
+    "base58": {
+      "$id": "#base58",
+      "type": "string",
+      "pattern": "^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$"
+    },
+    "hex": {
+      "$id": "#hex",
+      "type": "string",
+      "pattern": "^(0x)?[0123456789A-Fa-f]+$"
+    },
+    "hexArray": {
+      "$id": "#hexArray",
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "maximum": 255
+      }
+    },
+    "hash": {
+      "$id": "#hash",
+      "allOf": [
+        { "$ref": "#hex" },
+        {
+          "if": {
+            "pattern": "^0x"
+          },
+          "then": {
+            "minLength": 66,
+            "maxLength": 66
+          },
+          "else": {
+            "minLength": 64,
+            "maxLength": 64
+          }
+        }
+      ]
+    },
+    "base58Address": {
+      "$id": "#base58Address",
+      "allOf": [
+        { "$ref": "#base58" },
+        {
+          "minLength": 34,
+          "maxLength": 34
+        }
+      ]
+    },
+    "hash160Address": {
+      "$id": "#hash160Address",
+      "allOf": [
+        { "$ref": "#hex" },
+        {
+          "if": {
+            "pattern": "^0x"
+          },
+          "then": {
+            "minLength": 42,
+            "maxLength": 42
+          },
+          "else": {
+            "minLength": 40,
+            "maxLength": 40
+          }
+        }
+      ]
+    },
+    "signature": {
+      "$id": "#signature",
+      "allOf": [
+        { "$ref": "#hex" },
+        {
+          "minLength": 128,
+          "maxLength": 128
+        }
+      ]
+    }
+  }
+}
