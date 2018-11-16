@@ -1,8 +1,10 @@
 const EventEmitter = require('events');
 const Web3 = require('web3');
+const Ajv = require('ajv');
 const { find } = require('lodash');
 
 const abis = require('./abis');
+const defsSchema = require('./lib/defs.json');
 
 const web3 = new Web3();
 
@@ -39,6 +41,15 @@ class CrosschainBase extends EventEmitter {
     }
 
     return parsed;
+  }
+
+  validate(schema, opts) {
+    const ajv = new Ajv({ allErrors: true });
+    const validate = ajv.addSchema(defsSchema).compile(schema);
+
+    if (! validate(opts)) {
+      throw new Error('Invalid opts: ' + ajv.errorsText(validate.errors));
+    }
   }
 }
 
