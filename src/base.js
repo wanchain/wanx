@@ -26,8 +26,9 @@ class CrosschainBase extends EventEmitter {
 
     const parsed = web3.eth.abi.decodeLog(inputs, data, topics);
 
-    // force lowercase to avoid confusion with ethereum vs wanchain address
-    // checksums
+    // decodeLog returns addresses with ethereum checksum; to avoid confusion
+    // with ethereum vs wanchain address checksums, force lowercase on string
+    // properties
     const keys = Object.keys(parsed);
 
     for (let i = 0, l = keys.length; i < l; i++) {
