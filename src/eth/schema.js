@@ -1,60 +1,14 @@
-// FIELDS
-const storemanAll = {
-  type: 'object',
-  required: ['wan', 'eth'],
-  properties: {
-    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
-    eth: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
-
-const storemanEth = {
-  type: 'object',
-  required: ['eth'],
-  properties: {
-    eth: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
-
-const storemanWan = {
-  type: 'object',
-  required: ['wan'],
-  properties: {
-    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
-
-const redeemKeyAll = {
-  type: 'object',
-  required: ['x', 'xHash'],
-  properties: {
-    x: { '$ref': 'defs.json#/definitions/hash' },
-    xHash: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const redeemKeyX = {
-  type: 'object',
-  required: ['x'],
-  properties: {
-    x: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const redeemKeyXHash = {
-  type: 'object',
-  required: ['xHash'],
-  properties: {
-    xHash: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const value = { type: 'string' };
-const lockTime = { type: 'number' };
-const hash160 = { '$ref': 'defs.json#/definitions/hash160Address' };
-const hash = { '$ref': 'defs.json#/definitions/hash' };
-const hex = { '$ref': 'defs.json#/definitions/hex' };
-
+const {
+  hex,
+  hash,
+  hash160Address,
+  value,
+  redeemKeyAll,
+  redeemKeyX,
+  redeemKeyXHash,
+  storemanEthWan,
+  storemanWan,
+} = require('../lib/schema/fields');
 
 const InboundLockSchema = {
   type: 'object',
@@ -62,10 +16,10 @@ const InboundLockSchema = {
     'from', 'to', 'value', 'storeman', 'redeemKey',
   ],
   properties: {
-    from: hash160,
-    to: hash160,
+    from: hash160Address,
+    to: hash160Address,
     value: value,
-    storeman: storemanAll,
+    storeman: storemanEthWan,
     redeemKey: redeemKeyAll,
   },
 };
@@ -76,7 +30,7 @@ const InboundRedeemSchema = {
     'to', 'redeemKey',
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     redeemKey: redeemKeyX,
   },
 };
@@ -87,7 +41,7 @@ const InboundRevokeSchema = {
     'from', 'redeemKey',
   ],
   properties: {
-    from: hash160,
+    from: hash160Address,
     redeemKey: redeemKeyXHash,
   },
 };
@@ -98,11 +52,11 @@ const OutboundLockSchema = {
     'from', 'to', 'value', 'fee', 'storeman', 'redeemKey',
   ],
   properties: {
-    from: hash160,
-    to: hash160,
+    from: hash160Address,
+    to: hash160Address,
     value: value,
     fee: value,
-    storeman: storemanAll,
+    storeman: storemanEthWan,
     redeemKey: redeemKeyAll,
   },
 };
@@ -113,7 +67,7 @@ const OutboundRedeemSchema = {
     'to', 'redeemKey',
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     redeemKey: redeemKeyX,
   },
 };
@@ -124,7 +78,7 @@ const OutboundRevokeSchema = {
     'from', 'redeemKey',
   ],
   properties: {
-    from: hash160,
+    from: hash160Address,
     redeemKey: redeemKeyXHash,
   },
 };
@@ -135,7 +89,7 @@ const OutboundFeeSchema = {
     'to', 'value', 'storeman',
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     value: value,
     storeman: storemanWan,
   },

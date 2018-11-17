@@ -1,61 +1,18 @@
-// FIELDS
-const storemanAll = {
-  type: 'object',
-  required: ['wan', 'btc'],
-  properties: {
-    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
-    btc: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
+const {
+  hex,
+  hash,
+  hash160Address,
+  base58Address,
+  value,
+  lockTime,
+  redeemKeyAll,
+  redeemKeyX,
+  redeemKeyXHash,
+  storemanBtcWan,
+  storemanBtc,
+  storemanWan,
+} = require('../lib/schema/fields');
 
-const storemanBtc = {
-  type: 'object',
-  required: ['btc'],
-  properties: {
-    btc: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
-
-const storemanWan = {
-  type: 'object',
-  required: ['wan'],
-  properties: {
-    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
-  },
-};
-
-const redeemKeyAll = {
-  type: 'object',
-  required: ['x', 'xHash'],
-  properties: {
-    x: { '$ref': 'defs.json#/definitions/hash' },
-    xHash: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const redeemKeyX = {
-  type: 'object',
-  required: ['x'],
-  properties: {
-    x: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const redeemKeyXHash = {
-  type: 'object',
-  required: ['xHash'],
-  properties: {
-    xHash: { '$ref': 'defs.json#/definitions/hash' },
-  },
-};
-
-const value = { type: 'string' };
-const lockTime = { type: 'number' };
-const hash160 = { '$ref': 'defs.json#/definitions/hash160Address' };
-const base58 = { '$ref': 'defs.json#/definitions/base58Address' };
-const hash = { '$ref': 'defs.json#/definitions/hash' };
-const hex = { '$ref': 'defs.json#/definitions/hex' };
-const hexArray = { '$ref': 'defs.json#/definitions/hexArray' };
 
 // WAN
 //
@@ -65,12 +22,12 @@ const InboundLockSchema = {
     'from', 'to', 'txid', 'lockTime', 'value', 'storeman', 'redeemKey',
   ],
   properties: {
-    from: base58,
-    to: hash160,
+    from: base58Address,
+    to: hash160Address,
     txid: hash,
     lockTime: lockTime,
     value: value,
-    storeman: storemanAll,
+    storeman: storemanBtcWan,
     redeemKey: redeemKeyAll,
   },
 };
@@ -81,7 +38,7 @@ const InboundRedeemSchema = {
     'to', 'redeemKey',
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     redeemKey: redeemKeyX,
   },
 };
@@ -92,11 +49,11 @@ const OutboundLockSchema = {
     'from', 'to', 'value', 'fee', 'storeman', 'redeemKey',
   ],
   properties: {
-    from: hash160,
-    to: base58,
+    from: hash160Address,
+    to: base58Address,
     value: value,
     fee: value,
-    storeman: storemanAll,
+    storeman: storemanBtcWan,
     redeemKey: redeemKeyAll,
   },
 };
@@ -107,7 +64,7 @@ const OutboundRevokeSchema = {
     'from', 'redeemKey',
   ],
   properties: {
-    from: hash160,
+    from: hash160Address,
     redeemKey: redeemKeyXHash,
   },
 };
@@ -118,7 +75,7 @@ const OutboundFeeSchema = {
     'to', 'value', 'storeman',
   ],
   properties: {
-    to: base58,
+    to: base58Address,
     value: value,
     storeman: storemanWan,
   },
@@ -140,7 +97,7 @@ const InboundHTLCSchema = {
     'from', 'storeman', 'redeemKey', 'lockTime',
   ],
   properties: {
-    from: base58,
+    from: base58Address,
     storeman: storemanBtc,
     redeemKey: redeemKeyXHash,
     lockTime: lockTime,
@@ -153,7 +110,7 @@ const OutboundHTLCSchema = {
     'to', 'storeman', 'redeemKey', 'lockTime',
   ],
   properties: {
-    to: base58,
+    to: base58Address,
     storeman: storemanBtc,
     redeemKey: redeemKeyXHash,
     lockTime: lockTime,
@@ -167,7 +124,7 @@ const HashForRevokeSchema = {
   ],
   properties: {
     txid: hash,
-    from: base58,
+    from: base58Address,
     lockTime: lockTime,
     value: value,
     redeemKey: redeemKeyX,
@@ -181,7 +138,7 @@ const HashForRedeemSchema = {
   ],
   properties: {
     txid: hash,
-    to: base58,
+    to: base58Address,
     value: value,
     redeemKey: redeemKeyX,
   },
@@ -193,7 +150,7 @@ const InboundRevokeSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'publicKey', 'sigHash'
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -210,7 +167,7 @@ const InboundRevokeFromWifSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'wif'
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -226,7 +183,7 @@ const OutboundRedeemSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'publicKey', 'sigHash'
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -243,7 +200,7 @@ const OutboundRedeemFromWifSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'wif'
   ],
   properties: {
-    to: hash160,
+    to: hash160Address,
     txid: hash,
     value: value,
     redeemScript: hex,
