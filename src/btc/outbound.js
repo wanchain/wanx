@@ -9,10 +9,15 @@ const types = require('../lib/types');
 const hex = require('../lib/hex');
 
 const {
-  validateSendOpts,
-  validateRedeemOpts,
-  validateRevokeOpts,
-} = require('./validate');
+  OutboundLockSchema,
+  OutboundHTLCSchema,
+  OutboundRedeemSchema,
+  OutboundRedeemFromWifSchema,
+  OutboundRevokeSchema,
+  OutboundFeeSchema,
+  HashForRedeemSchema,
+  ScanOptsSchema,
+} = require('./schema');
 
 class BTC_Outbound extends CrosschainBase {
 
@@ -21,25 +26,24 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // first 1/2 of crosschain transaction
-  lock(opts) {
+  lock(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateSendOpts(opts);
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.getOutboundFee(opts);
+      return this.getOutboundFee(opts, true);
 
     }).then(fee => {
 
-      return this.sendLock(Object.assign({}, opts, { fee }));
+      return this.sendLock(Object.assign({}, opts, { fee }), true);
 
     }).then(receipt => {
 
-      return this.listenLock(opts, receipt.blockNumber);
+      return this.listenLock(opts, receipt.blockNumber, true);
 
     }).then(receipt => {
 
@@ -55,9 +59,11 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // make call to get storeman fee
-  getOutboundFee(opts) {
-    const callOpts = this.buildOutboundFeeTx(opts);
+  getOutboundFee(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+
+    const callOpts = this.buildOutboundFeeTx(opts, true);
     const action = this.web3wan.eth.call(callOpts);
 
     action.then(res => {
@@ -75,9 +81,11 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // send lock transaction
-  sendLock(opts) {
-    const sendOpts = this.buildLockTx(opts);
+  sendLock(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
+
+    const sendOpts = this.buildLockTx(opts, true);
     const action = this.web3wan.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -96,9 +104,11 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // listen for storeman lock notice tx
-  listenLock(opts, blockNumber) {
-    const lockNoticeScanOpts = this.buildLockScanOpts(opts, blockNumber);
+  listenLock(opts, blockNumber, skipValidation) {
 
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const lockNoticeScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
 
     action.then(log => {
@@ -116,9 +126,11 @@ class BTC_Outbound extends CrosschainBase {
 
   // listen for storeman redeem tx
   // no longer used
-  listenRedeem(opts, blockNumber) {
-    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+  listenRedeem(opts, blockNumber, skipValidation) {
 
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
 
     action.then(log => {
@@ -135,9 +147,11 @@ class BTC_Outbound extends CrosschainBase {
   }
 
   // send revoke transaction
-  sendRevoke(opts) {
-    const sendOpts = this.buildRevokeTx(opts);
+  sendRevoke(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundRevokeSchema, opts);
+
+    const sendOpts = this.buildRevokeTx(opts, true);
     const action = this.web3wan.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -155,25 +169,27 @@ class BTC_Outbound extends CrosschainBase {
     return action;
   }
 
-  buildLockTx({ to, from, value, storeman, redeemKey, fee }) {
-    const lockData = this.buildLockData({
-      to,
-      value,
-      storeman,
-      redeemKey,
-    });
+  buildLockTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
+
+    const lockData = this.buildLockData(opts, true);
 
     return {
-      from: from,
+      from: opts.from,
       to: this.config.wanHtlcAddrBtc,
       gas: 300000,
       gasPrice: 180e9,
-      value: fee,
+      value: opts.fee,
       data: lockData,
     };
   }
 
-  buildLockScanOpts({ redeemKey }, blockNumber) {
+  buildLockScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { WBTC2BTCLockNotice } = this.config.signatures.HTLCWBTC;
 
     return {
@@ -188,11 +204,14 @@ class BTC_Outbound extends CrosschainBase {
     };
   }
 
-  buildRevokeTx({ from, redeemKey }) {
-    const revokeData = this.buildRevokeData({ redeemKey });
+  buildRevokeTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundRevokeSchema, opts);
+
+    const revokeData = this.buildRevokeData(opts, true);
 
     return {
-      from: from,
+      from: opts.from,
       to: this.config.wanHtlcAddrBtc,
       gas: 120000,
       gasPrice: 180e9,
@@ -200,7 +219,11 @@ class BTC_Outbound extends CrosschainBase {
     };
   }
 
-  buildRedeemScanOpts({ redeemKey }, blockNumber) {
+  buildRedeemScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { WBTC2BTCRedeem } = this.config.signatures.HTLCWBTC;
 
     return {
@@ -215,7 +238,11 @@ class BTC_Outbound extends CrosschainBase {
     };
   }
 
-  buildLockData({ to, value, storeman, redeemKey }) {
+  buildLockData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
+
+    const { to, value, storeman, redeemKey } = opts;
     const { wbtc2btcLock } = this.config.signatures.HTLCWBTC;
     const toAddr = crypto.addressToHash160(to, 'pubkeyhash', this.config.network);
 
@@ -226,21 +253,32 @@ class BTC_Outbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
-  buildRevokeData({ redeemKey }) {
+  buildRevokeData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundRevokeSchema, opts);
+
+    const { redeemKey } = opts;
     const { wbtc2btcRevoke } = this.config.signatures.HTLCWBTC;
 
     return '0x' + wbtc2btcRevoke.substr(0, 8)
       + hex.stripPrefix(redeemKey.xHash);
   }
 
-  buildOutboundFeeTx(opts) {
+  buildOutboundFeeTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+
     const to = this.config.wanHtlcAddrBtc;
-    const data = this.buildOutboundFeeData(opts);
+    const data = this.buildOutboundFeeData(opts, true);
 
     return { to, data };
   }
 
-  buildOutboundFeeData({ storeman, value }) {
+  buildOutboundFeeData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+
+    const { storeman, value } = opts;
     const { getWbtc2BtcFee } = this.config.signatures.HTLCWBTC;
 
     return '0x' + getWbtc2BtcFee.substr(0, 8)
@@ -252,7 +290,12 @@ class BTC_Outbound extends CrosschainBase {
   // BTC methods
   //
 
-  buildHashTimeLockContract({ to, storeman, redeemKey, lockTime }) {
+  buildHashTimeLockContract(opts) {
+
+    this.validate(OutboundHTLCSchema, opts);
+
+    const { to, storeman, redeemKey } = opts;
+    let { lockTime } = opts;
 
     // auto-calculate lockTime if not set
     if (lockTime === undefined || lockTime === null) {
@@ -268,36 +311,45 @@ class BTC_Outbound extends CrosschainBase {
     );
   }
 
-  hashForRedeemSig({ to, txid, value, redeemScript }) {
+  hashForRedeemSig(opts) {
+
+    this.validate(HashForRedeemSchema, opts);
+
     return btcUtil.hashForRedeemSig(
       this.config.network,
-      txid,
-      to,
-      value,
-      redeemScript,
+      opts.txid,
+      opts.to,
+      opts.value,
+      opts.redeemScript,
     );
   }
 
-  buildRedeemTx({ txid, value, redeemKey, redeemScript, publicKey, sigHash }) {
+  buildRedeemTx(opts) {
+
+    this.validate(OutboundRedeemSchema, opts);
+
     return btcUtil.buildRedeemTx(
       this.config.network,
-      txid,
-      value,
-      redeemScript,
-      redeemKey.x,
-      publicKey,
-      sigHash,
+      opts.txid,
+      opts.value,
+      opts.redeemScript,
+      opts.redeemKey.x,
+      opts.publicKey,
+      opts.sigHash,
     );
   }
 
-  buildRedeemTxFromWif({ txid, value, redeemKey, redeemScript, wif }) {
+  buildRedeemTxFromWif(opts) {
+
+    this.validate(OutboundRedeemFromWifSchema, opts);
+
     return btcUtil.buildRedeemTxFromWif(
       this.config.network,
-      txid,
-      value,
-      redeemScript,
-      redeemKey.x,
-      wif,
+      opts.txid,
+      opts.value,
+      opts.redeemScript,
+      opts.redeemKey.x,
+      opts.wif,
     );
   }
 }
