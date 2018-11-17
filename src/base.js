@@ -4,7 +4,7 @@ const Ajv = require('ajv');
 const { find } = require('lodash');
 
 const abis = require('./abis');
-const defsSchema = require('./lib/defs.json');
+const defsSchema = require('./lib/schema/defs.json');
 
 const web3 = new Web3();
 
