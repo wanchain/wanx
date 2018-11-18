@@ -40,6 +40,31 @@ const storemanWan = {
   },
 };
 
+const tokenEthWan = {
+  type: 'object',
+  required: ['wan', 'eth'],
+  properties: {
+    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
+    eth: { '$ref': 'defs.json#/definitions/hash160Address' },
+  },
+};
+
+const tokenEth = {
+  type: 'object',
+  required: ['eth'],
+  properties: {
+    eth: { '$ref': 'defs.json#/definitions/hash160Address' },
+  },
+};
+
+const tokenWan = {
+  type: 'object',
+  required: ['wan'],
+  properties: {
+    wan: { '$ref': 'defs.json#/definitions/hash160Address' },
+  },
+};
+
 const redeemKeyAll = {
   type: 'object',
   required: ['x', 'xHash'],
@@ -79,6 +104,10 @@ module.exports = {
   storemanEth,
   storemanBtc,
   storemanWan,
+
+  tokenEthWan,
+  tokenEth,
+  tokenWan,
 
   redeemKeyAll,
   redeemKeyX,
