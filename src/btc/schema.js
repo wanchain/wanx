@@ -46,6 +46,20 @@ const InboundRedeemSchema = {
 const OutboundLockSchema = {
   type: 'object',
   required: [
+    'from', 'to', 'value', 'storeman', 'redeemKey',
+  ],
+  properties: {
+    from: hash160Address,
+    to: base58Address,
+    value: value,
+    storeman: storemanBtcWan,
+    redeemKey: redeemKeyAll,
+  },
+};
+
+const OutboundLockWithFeeSchema = {
+  type: 'object',
+  required: [
     'from', 'to', 'value', 'fee', 'storeman', 'redeemKey',
   ],
   properties: {
@@ -222,6 +236,7 @@ module.exports = {
 
   OutboundHTLCSchema,
   OutboundLockSchema,
+  OutboundLockWithFeeSchema,
   OutboundRedeemSchema,
   OutboundRedeemFromWifSchema,
   OutboundRevokeSchema,

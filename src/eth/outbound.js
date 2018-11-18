@@ -7,6 +7,7 @@ const hex = require('../lib/hex');
 
 const {
   OutboundLockSchema,
+  OutboundLockWithFeeSchema,
   OutboundRedeemSchema,
   OutboundRevokeSchema,
   OutboundFeeSchema,
@@ -163,7 +164,7 @@ class ETH_Outbound extends CrosschainBase {
   // send lock transaction on wanchain
   sendLock(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
     const action = this.web3wan.eth.sendTransaction(sendOpts);
@@ -283,7 +284,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildLockTx(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const { from, fee } = opts;
     const lockData = this.buildLockData(opts, true);
