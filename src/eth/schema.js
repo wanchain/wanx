@@ -7,6 +7,7 @@ const {
   redeemKeyX,
   redeemKeyXHash,
   storemanEthWan,
+  storemanEth,
   storemanWan,
 } = require('../lib/schema/fields');
 
