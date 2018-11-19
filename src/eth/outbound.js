@@ -11,6 +11,9 @@ const {
   OutboundRedeemSchema,
   OutboundRevokeSchema,
   OutboundFeeSchema,
+  OutboundLockDataSchema,
+  RedeemDataSchema,
+  RevokeDataSchema,
   ScanOptsSchema,
 } = require('./schema');
 
@@ -373,7 +376,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildLockData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundLockDataSchema, opts);
 
     const { to, value, storeman, redeemKey } = opts;
     const { weth2ethLock } = this.config.signatures.HTLCWETH;
@@ -387,7 +390,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildRedeemData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundRedeemSchema, opts);
+    ! skipValidation && this.validate(RedeemDataSchema, opts);
 
     const { redeemKey } = opts;
     const { weth2ethRefund } = this.config.signatures.HTLCETH;
@@ -398,7 +401,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildRevokeData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundRevokeSchema, opts);
+    ! skipValidation && this.validate(RevokeDataSchema, opts);
 
     const { redeemKey } = opts;
     const { weth2ethRevoke } = this.config.signatures.HTLCWETH;
