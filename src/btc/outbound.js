@@ -11,6 +11,9 @@ const hex = require('../lib/hex');
 const {
   OutboundLockSchema,
   OutboundLockWithFeeSchema,
+  OutboundLockDataSchema,
+  RevokeDataSchema,
+
   OutboundHTLCSchema,
   OutboundRedeemSchema,
   OutboundRedeemFromWifSchema,
@@ -241,7 +244,7 @@ class BTC_Outbound extends CrosschainBase {
 
   buildLockData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundLockDataSchema, opts);
 
     const { to, value, storeman, redeemKey } = opts;
     const { wbtc2btcLock } = this.config.signatures.HTLCWBTC;
@@ -256,7 +259,7 @@ class BTC_Outbound extends CrosschainBase {
 
   buildRevokeData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundRevokeSchema, opts);
+    ! skipValidation && this.validate(RevokeDataSchema, opts);
 
     const { redeemKey } = opts;
     const { wbtc2btcRevoke } = this.config.signatures.HTLCWBTC;

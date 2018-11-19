@@ -11,10 +11,14 @@ const hex = require('../lib/hex');
 const {
   InboundLockSchema,
   InboundRedeemSchema,
+  InboundLockDataSchema,
+  RedeemDataSchema,
+
   InboundHTLCSchema,
   InboundRevokeSchema,
   InboundRevokeFromWifSchema,
   HashForRevokeSchema,
+
   ScanOptsSchema,
 } = require('./schema');
 
@@ -199,7 +203,7 @@ class BTC_Inbound extends CrosschainBase {
 
   buildLockData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundLockDataSchema, opts);
 
     const { storeman, from, redeemKey, txid, lockTime } = opts;
     const { btc2wbtcLockNotice } = this.config.signatures.HTLCWBTC;
@@ -215,7 +219,7 @@ class BTC_Inbound extends CrosschainBase {
 
   buildRedeemData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+    ! skipValidation && this.validate(RedeemDataSchema, opts);
 
     const { redeemKey } = opts;
     const { btc2wbtcRedeem } = this.config.signatures.HTLCWBTC;

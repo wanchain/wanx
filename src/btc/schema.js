@@ -83,6 +83,53 @@ const OutboundRevokeSchema = {
   },
 };
 
+const InboundLockDataSchema = {
+  type: 'object',
+  required: [
+    'from', 'txid', 'lockTime', 'storeman', 'redeemKey',
+  ],
+  properties: {
+    from: base58Address,
+    txid: hash,
+    lockTime: lockTime,
+    storeman: storemanWan,
+    redeemKey: redeemKeyXHash,
+  },
+};
+
+const OutboundLockDataSchema = {
+  type: 'object',
+  required: [
+    'to', 'value', 'storeman', 'redeemKey',
+  ],
+  properties: {
+    to: base58Address,
+    value: value,
+    storeman: storemanWan,
+    redeemKey: redeemKeyXHash,
+  },
+};
+
+const RedeemDataSchema = {
+  type: 'object',
+  required: [
+    'redeemKey',
+  ],
+  properties: {
+    redeemKey: redeemKeyX,
+  },
+};
+
+const RevokeDataSchema = {
+  type: 'object',
+  required: [
+    'redeemKey',
+  ],
+  properties: {
+    redeemKey: redeemKeyXHash,
+  },
+};
+
 const OutboundFeeSchema = {
   type: 'object',
   required: [
@@ -225,9 +272,6 @@ const OutboundRedeemFromWifSchema = {
 };
 
 module.exports = {
-  HashForRevokeSchema,
-  HashForRedeemSchema,
-
   InboundHTLCSchema,
   InboundLockSchema,
   InboundRedeemSchema,
@@ -241,5 +285,13 @@ module.exports = {
   OutboundRedeemFromWifSchema,
   OutboundRevokeSchema,
   OutboundFeeSchema,
+
+  InboundLockDataSchema,
+  OutboundLockDataSchema,
+  RedeemDataSchema,
+  RevokeDataSchema,
+
+  HashForRevokeSchema,
+  HashForRedeemSchema,
   ScanOptsSchema,
 };
