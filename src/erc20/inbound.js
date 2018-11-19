@@ -4,10 +4,12 @@ const types = require('../lib/types');
 const hex = require('../lib/hex');
 
 const {
-  validateSendOpts,
-  validateRedeemOpts,
-  validateRevokeOpts,
-} = require('./validate');
+  InboundApproveSchema,
+  InboundLockSchema,
+  InboundRedeemSchema,
+  InboundRevokeSchema,
+  ScanOptsSchema,
+} = require('./schema');
 
 class ERC20_Inbound extends CrosschainBase {
 
@@ -16,21 +18,20 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // complete crosschain transaction
-  send(opts) {
+  send(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateSendOpts(opts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendApprove(opts);
+      return this.sendApprove(opts, true);
 
     }).then(receipt => {
 
-      return this.sendLock(opts);
+      return this.sendLock(opts, true);
 
     }).then(receipt => {
 
@@ -38,11 +39,11 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenLock(opts, blockNumber);
+      return this.listenLock(opts, blockNumber, true);
 
     }).then(receipt => {
 
-      return this.sendRedeem(opts);
+      return this.sendRedeem(opts, true);
 
     }).then(receipt => {
 
@@ -50,7 +51,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenRedeem(opts, blockNumber);
+      return this.listenRedeem(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -66,21 +67,20 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // first 1/2 of crosschain transaction
-  lock(opts) {
+  lock(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateSendOpts(opts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendApprove(opts);
+      return this.sendApprove(opts, true);
 
     }).then(receipt => {
 
-      return this.sendLock(opts);
+      return this.sendLock(opts, true);
 
     }).then(receipt => {
 
@@ -88,7 +88,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenLock(opts, blockNumber);
+      return this.listenLock(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -105,17 +105,16 @@ class ERC20_Inbound extends CrosschainBase {
 
   // second 1/2 of crosschain transaction
   // requires redeemKey to be passed in opts
-  redeem(opts) {
+  redeem(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateRedeemOpts(opts);
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendRedeem(opts);
+      return this.sendRedeem(opts, true);
 
     }).then(receipt => {
 
@@ -123,7 +122,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(blockNumber => {
 
-      return this.listenRedeem(opts, blockNumber);
+      return this.listenRedeem(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -139,9 +138,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // send approve transaction on ethereum
-  sendApprove(opts) {
-    const sendOpts = this.buildApproveTx(opts);
+  sendApprove(opts, skipValidation) {
 
+    ! skipValidation && this.validate(InboundApproveSchema, opts);
+
+    const sendOpts = this.buildApproveTx(opts, true);
     const action = this.web3eth.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -160,9 +161,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // send lock transaction on ethereum
-  sendLock(opts) {
-    const sendOpts = this.buildLockTx(opts);
+  sendLock(opts, skipValidation) {
 
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const sendOpts = this.buildLockTx(opts, true);
     const action = this.web3eth.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -181,9 +184,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // listen for storeman tx on wanchain
-  listenLock(opts, blockNumber) {
-    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
+  listenLock(opts, blockNumber, skipValidation) {
 
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
 
     action.then(log => {
@@ -200,9 +205,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // send redeem transaction on wanchain
-  sendRedeem(opts) {
-    const sendOpts = this.buildRedeemTx(opts);
+  sendRedeem(opts, skipValidation) {
 
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    const sendOpts = this.buildRedeemTx(opts, true);
     const action = this.web3wan.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -221,9 +228,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // listen for storeman tx on ethereum
-  listenRedeem(opts, blockNumber) {
-    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+  listenRedeem(opts, blockNumber, skipValidation) {
 
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Util(this.web3eth).watchLogs(redeemScanOpts);
 
     action.then(log => {
@@ -240,9 +249,11 @@ class ERC20_Inbound extends CrosschainBase {
   }
 
   // send revoke transaction on ethereum
-  sendRevoke(opts) {
-    const sendOpts = this.buildRevokeTx(opts);
+  sendRevoke(opts, skipValidation) {
 
+    ! skipValidation && this.validate(InboundRevokeSchema, opts);
+
+    const sendOpts = this.buildRevokeTx(opts, true);
     const action = this.web3eth.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
@@ -260,8 +271,12 @@ class ERC20_Inbound extends CrosschainBase {
     return action;
   }
 
-  buildApproveTx({ token, from, value }) {
-    const approveData = this.buildApproveData({ value });
+  buildApproveTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundApproveSchema, opts);
+
+    const { token, from, value } = opts;
+    const approveData = this.buildApproveData({ value }, true);
 
     return {
       from: from,
@@ -272,17 +287,14 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildLockTx({ token, to, from, value, storeman, redeemKey }) {
-    const lockData = this.buildLockData({
-      token,
-      to,
-      storeman,
-      redeemKey,
-      value,
-    });
+  buildLockTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const lockData = this.buildLockData(opts, true);
 
     return {
-      from: from,
+      from: opts.from,
       to: this.config.ethHtlcAddrE20,
       gas: hex.fromNumber(300000),
       gasPrice: hex.fromNumber(100e9),
@@ -290,8 +302,12 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildRedeemTx({ token, to, redeemKey }) {
-    const redeemData = this.buildRedeemData({ token, redeemKey });
+  buildRedeemTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    const { token, to, redeemKey } = opts;
+    const redeemData = this.buildRedeemData({ token, redeemKey }, true);
 
     return {
       Txtype: '0x01',
@@ -303,8 +319,12 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildRevokeTx({ token, from, redeemKey }) {
-    const revokeData = this.buildRevokeData({ token, redeemKey });
+  buildRevokeTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRevokeSchema, opts);
+
+    const { token, from, redeemKey } = opts;
+    const revokeData = this.buildRevokeData({ token, redeemKey }, true);
 
     return {
       from: from,
@@ -315,7 +335,11 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildLockScanOpts({ redeemKey }, blockNumber) {
+  buildLockScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { InboundLockLogger } = this.config.signatures.HTLCWAN_ERC20;
 
     return {
@@ -330,7 +354,11 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildRedeemScanOpts({ redeemKey }, blockNumber) {
+  buildRedeemScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { InboundRedeemLogger } = this.config.signatures.HTLCWAN_ERC20;
 
     return {
@@ -345,7 +373,11 @@ class ERC20_Inbound extends CrosschainBase {
     };
   }
 
-  buildApproveData({ value }) {
+  buildApproveData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundApproveSchema, opts);
+
+    const { value } = opts;
     const { approve } = this.config.signatures.ERC20;
 
     return '0x' + approve.substr(0, 8)
@@ -353,7 +385,11 @@ class ERC20_Inbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
-  buildLockData({ token, to, value, storeman, redeemKey }) {
+  buildLockData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const { token, to, value, storeman, redeemKey } = opts;
     const { inboundLock } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundLock.substr(0, 8)
@@ -364,7 +400,11 @@ class ERC20_Inbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
-  buildRedeemData({ token, redeemKey }) {
+  buildRedeemData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    const { token, redeemKey } = opts;
     const { inboundRedeem } = this.config.signatures.HTLCWAN_ERC20;
 
     return '0x' + inboundRedeem.substr(0, 8)
@@ -372,7 +412,11 @@ class ERC20_Inbound extends CrosschainBase {
       + hex.stripPrefix(redeemKey.x);
   }
 
-  buildRevokeData({ token, redeemKey }) {
+  buildRevokeData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRevokeSchema, opts);
+
+    const { token, redeemKey } = opts;
     const { inboundRevoke } = this.config.signatures.HTLCETH_ERC20;
 
     return '0x' + inboundRevoke.substr(0, 8)
