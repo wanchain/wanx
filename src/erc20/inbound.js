@@ -8,6 +8,10 @@ const {
   InboundLockSchema,
   InboundRedeemSchema,
   InboundRevokeSchema,
+  InboundLockDataSchema,
+  ApproveDataSchema,
+  RedeemDataSchema,
+  RevokeDataSchema,
   ScanOptsSchema,
 } = require('./schema');
 
@@ -375,7 +379,7 @@ class ERC20_Inbound extends CrosschainBase {
 
   buildApproveData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundApproveSchema, opts);
+    ! skipValidation && this.validate(ApproveDataSchema, opts);
 
     const { value } = opts;
     const { approve } = this.config.signatures.ERC20;
@@ -387,7 +391,7 @@ class ERC20_Inbound extends CrosschainBase {
 
   buildLockData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundLockDataSchema, opts);
 
     const { token, to, value, storeman, redeemKey } = opts;
     const { inboundLock } = this.config.signatures.HTLCETH_ERC20;
@@ -402,7 +406,7 @@ class ERC20_Inbound extends CrosschainBase {
 
   buildRedeemData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+    ! skipValidation && this.validate(RedeemDataSchema, opts);
 
     const { token, redeemKey } = opts;
     const { inboundRedeem } = this.config.signatures.HTLCWAN_ERC20;
@@ -414,7 +418,7 @@ class ERC20_Inbound extends CrosschainBase {
 
   buildRevokeData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundRevokeSchema, opts);
+    ! skipValidation && this.validate(RevokeDataSchema, opts);
 
     const { token, redeemKey } = opts;
     const { inboundRevoke } = this.config.signatures.HTLCETH_ERC20;

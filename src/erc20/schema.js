@@ -7,6 +7,7 @@ const {
   redeemKeyX,
   redeemKeyXHash,
   storemanEthWan,
+  storemanEth,
   storemanWan,
   tokenEthWan,
   tokenEth,
@@ -64,6 +65,18 @@ const InboundRevokeSchema = {
   },
 };
 
+const OutboundApproveSchema = {
+  type: 'object',
+  required: [
+    'token', 'from', 'value',
+  ],
+  properties: {
+    token: tokenWan,
+    from: hash160Address,
+    value: value,
+  },
+};
+
 const OutboundLockSchema = {
   type: 'object',
   required: [
@@ -101,7 +114,7 @@ const OutboundRedeemSchema = {
     'token', 'to', 'redeemKey',
   ],
   properties: {
-    token: tokenEthWan,
+    token: tokenEth,
     to: hash160Address,
     redeemKey: redeemKeyX,
   },
@@ -113,7 +126,7 @@ const OutboundRevokeSchema = {
     'token', 'from', 'redeemKey',
   ],
   properties: {
-    token: tokenEthWan,
+    token: tokenEth,
     from: hash160Address,
     redeemKey: redeemKeyXHash,
   },
@@ -132,6 +145,66 @@ const OutboundFeeSchema = {
   },
 };
 
+const InboundLockDataSchema = {
+  type: 'object',
+  required: [
+    'token', 'to', 'value', 'storeman', 'redeemKey',
+  ],
+  properties: {
+    token: tokenEth,
+    to: hash160Address,
+    value: value,
+    storeman: storemanEthWan,
+    redeemKey: redeemKeyAll,
+  },
+};
+
+const ApproveDataSchema = {
+  type: 'object',
+  required: [
+    'value',
+  ],
+  properties: {
+    value: value,
+  },
+};
+
+const RedeemDataSchema = {
+  type: 'object',
+  required: [
+    'token', 'redeemKey',
+  ],
+  properties: {
+    token: tokenEth,
+    redeemKey: redeemKeyX,
+  },
+};
+
+const RevokeDataSchema = {
+  type: 'object',
+  required: [
+    'token', 'redeemKey',
+  ],
+  properties: {
+    token: tokenEth,
+    redeemKey: redeemKeyXHash,
+  },
+};
+
+const OutboundLockDataSchema = {
+  type: 'object',
+  required: [
+    'token', 'to', 'value', 'storeman', 'redeemKey',
+  ],
+  properties: {
+    token: tokenEthWan,
+    to: hash160Address,
+    value: value,
+    storeman: storemanEthWan,
+    redeemKey: redeemKeyAll,
+  },
+};
+
 const ScanOptsSchema = {
   type: 'object',
   required: ['redeemKey'],
@@ -145,10 +218,16 @@ module.exports = {
   InboundLockSchema,
   InboundRedeemSchema,
   InboundRevokeSchema,
+
+  OutboundApproveSchema,
   OutboundLockSchema,
   OutboundLockWithFeeSchema,
   OutboundRedeemSchema,
   OutboundRevokeSchema,
   OutboundFeeSchema,
+
+  ApproveDataSchema,
+  RedeemDataSchema,
+  RevokeDataSchema,
   ScanOptsSchema,
 };
