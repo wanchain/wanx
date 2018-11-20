@@ -252,7 +252,7 @@ class ETH_Inbound extends CrosschainBase {
       from: opts.from,
       to: this.config.ethHtlcAddr,
       value: hex.fromNumber(opts.value),
-      gas: hex.fromNumber(300000),
+      gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
     };

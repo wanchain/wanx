@@ -300,7 +300,7 @@ class ERC20_Inbound extends CrosschainBase {
     return {
       from: opts.from,
       to: this.config.ethHtlcAddrE20,
-      gas: hex.fromNumber(300000),
+      gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
     };

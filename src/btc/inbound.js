@@ -156,13 +156,15 @@ class BTC_Inbound extends CrosschainBase {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
 
+    const { to } = opts;
     const lockNoticeData = this.buildLockData(opts, true);
 
     return {
-      from: opts.to,
+      Txtype: '0x01',
+      from: to,
       to: this.config.wanHtlcAddrBtc,
-      gas: 300000,
-      gasPrice: 180e9,
+      gas: hex.fromNumber(360000),
+      gasPrice: hex.fromNumber(180e9),
       data: lockNoticeData,
     };
   }
@@ -190,13 +192,15 @@ class BTC_Inbound extends CrosschainBase {
 
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
+    const { to } = opts;
     const redeemData = this.buildRedeemData(opts, true);
 
     return {
-      from: opts.to,
+      Txtype: '0x01',
+      from: to,
       to: this.config.wanHtlcAddrBtc,
-      gas: 120000,
-      gasPrice: 180e9,
+      gas: hex.fromNumber(120000),
+      gasPrice: hex.fromNumber(180e9),
       data: redeemData,
     };
   }

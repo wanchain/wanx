@@ -353,7 +353,7 @@ class ETH_Outbound extends CrosschainBase {
       Txtype: '0x01',
       from: from,
       to: this.config.wanHtlcAddrE20,
-      gas: hex.fromNumber(300000),
+      gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(outboundFee),
       data: lockData,

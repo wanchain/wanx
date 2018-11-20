@@ -183,14 +183,16 @@ class BTC_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
+    const { from, outboundFee } = opts;
     const lockData = this.buildLockData(opts, true);
 
     return {
-      from: opts.from,
+      Txtype: '0x01',
+      from: from,
       to: this.config.wanHtlcAddrBtc,
-      gas: 300000,
-      gasPrice: 180e9,
-      value: opts.outboundFee,
+      gas: hex.fromNumber(360000),
+      gasPrice: hex.fromNumber(180e9),
+      value: hex.fromNumber(outboundFee),
       data: lockData,
     };
   }
@@ -218,13 +220,15 @@ class BTC_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
 
+    const { from } = opts;
     const revokeData = this.buildRevokeData(opts, true);
 
     return {
-      from: opts.from,
+      Txtype: '0x01',
+      from: from,
       to: this.config.wanHtlcAddrBtc,
-      gas: 120000,
-      gasPrice: 180e9,
+      gas: hex.fromNumber(120000),
+      gasPrice: hex.fromNumber(180e9),
       data: revokeData,
     };
   }
