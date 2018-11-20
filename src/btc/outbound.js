@@ -337,13 +337,7 @@ class BTC_Outbound extends CrosschainBase {
 
     this.validate(OutboundHTLCSchema, opts);
 
-    const { to, storeman, redeemKey } = opts;
-    let { lockTime } = opts;
-
-    // auto-calculate lockTime if not set
-    if (lockTime === undefined || lockTime === null) {
-      lockTime = new moment().add(4, 'h').unix();
-    }
+    const { to, storeman, redeemKey, lockTime } = opts;
 
     return btcUtil.buildHashTimeLockContract(
       this.config.network,
