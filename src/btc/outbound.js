@@ -12,13 +12,13 @@ const {
   OutboundLockSchema,
   OutboundLockWithFeeSchema,
   OutboundLockDataSchema,
+  OutboundFeeDataSchema,
+  OutboundRevokeSchema,
   RevokeDataSchema,
 
   OutboundHTLCSchema,
   OutboundRedeemSchema,
   OutboundRedeemFromWifSchema,
-  OutboundRevokeSchema,
-  OutboundFeeSchema,
   HashForRedeemSchema,
   ScanOptsSchema,
 } = require('./schema');
@@ -290,7 +290,7 @@ class BTC_Outbound extends CrosschainBase {
 
   buildOutboundFeeData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+    ! skipValidation && this.validate(OutboundFeeDataSchema, opts);
 
     const { storeman, value } = opts;
     const { getWbtc2BtcFee } = this.config.signatures.HTLCWBTC;
