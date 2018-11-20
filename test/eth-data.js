@@ -1,6 +1,8 @@
 const { expect } = require('chai');
 
 const Wanx = require('../src/wanx');
+const ETH_Inbound = require('../src/eth/inbound');
+const ETH_Outbound = require('../src/eth/outbound');
 const config = require('../src/config');
 
 const redeemKey = {
@@ -32,10 +34,8 @@ const outboundOpts = {
 describe('eth inbound data', () => {
 
   it('should construct correct lock data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', true);
+    const tx = new ETH_Inbound(conf);
 
     const lockData = tx.buildLockData(inboundOpts);
     const expected = '0x158e00a369a1e4541ff920e1e87808bd6efedb11359007c238f16a73d9d638274128e2eb00000000000000000000000041623962c5d44565de623d53eb677e0f300467d2000000000000000000000000a6d72746a4bb19f46c99bf19b6592828435540b0';
@@ -44,8 +44,8 @@ describe('eth inbound data', () => {
   });
 
   it('should throw if lock data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', true);
+    const conf = config.get('testnet');
+    const tx = new ETH_Inbound(conf);
 
     let opts1 = {
       to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
@@ -90,10 +90,8 @@ describe('eth inbound data', () => {
   });
 
   it('should construct correct redeem data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', true);
+    const tx = new ETH_Inbound(conf);
 
     const redeemData = tx.buildRedeemData(inboundOpts);
     const expected = '0x2000fe5057d064133ccc4c92833dcdd0f2fd54b85f69e57ce6a0980d5d33c363ac552dac';
@@ -102,8 +100,8 @@ describe('eth inbound data', () => {
   });
 
   it('should throw if redeem data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', true);
+    const conf = config.get('testnet');
+    const tx = new ETH_Inbound(conf);
 
     let opts1 = {};
 
@@ -119,10 +117,8 @@ describe('eth inbound data', () => {
   });
 
   it('should construct correct revoke data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', true);
+    const tx = new ETH_Inbound(conf);
 
     const revokeData = tx.buildRevokeData(inboundOpts);
     const expected = '0xfecea9fb69a1e4541ff920e1e87808bd6efedb11359007c238f16a73d9d638274128e2eb';
@@ -131,8 +127,8 @@ describe('eth inbound data', () => {
   });
 
   it('should throw if revoke data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', true);
+    const conf = config.get('testnet');
+    const tx = new ETH_Inbound(conf);
 
     let opts1 = {};
 
@@ -152,10 +148,8 @@ describe('eth inbound data', () => {
 describe('eth outbound data', () => {
 
   it('should construct correct lock data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', false);
+    const tx = new ETH_Outbound(conf);
 
     const lockData = tx.buildLockData(outboundOpts);
     const expected = '0x004b432969a1e4541ff920e1e87808bd6efedb11359007c238f16a73d9d638274128e2eb00000000000000000000000006daa9379cbe241a84a65b217a11b38fe3b4b0630000000000000000000000004bbdfe0eb33ed498020de9286fd856f5b8331c2c0000000000000000000000000000000000000000000000000007f7164d962000';
@@ -164,8 +158,8 @@ describe('eth outbound data', () => {
   });
 
   it('should throw if lock data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', false);
+    const conf = config.get('testnet');
+    const tx = new ETH_Outbound(conf);
 
     let opts1 = {
       to: '0xa6d72746a4bb19f46c99bf19b6592828435540b0',
@@ -213,10 +207,8 @@ describe('eth outbound data', () => {
   });
 
   it('should construct correct redeem data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', false);
+    const tx = new ETH_Outbound(conf);
 
     const redeemData = tx.buildRedeemData(outboundOpts);
     const expected = '0x514d0b0157d064133ccc4c92833dcdd0f2fd54b85f69e57ce6a0980d5d33c363ac552dac';
@@ -225,8 +217,8 @@ describe('eth outbound data', () => {
   });
 
   it('should throw if redeem data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', false);
+    const conf = config.get('testnet');
+    const tx = new ETH_Outbound(conf);
 
     let opts1 = {};
 
@@ -242,10 +234,8 @@ describe('eth outbound data', () => {
   });
 
   it('should construct correct revoke data', () => {
-    const wanx = new Wanx('testnet');
     const conf = config.get('testnet');
-
-    const tx = wanx.newChain('eth', false);
+    const tx = new ETH_Outbound(conf);
 
     const revokeData = tx.buildRevokeData(outboundOpts);
     const expected = '0xa1270c4769a1e4541ff920e1e87808bd6efedb11359007c238f16a73d9d638274128e2eb';
@@ -254,8 +244,8 @@ describe('eth outbound data', () => {
   });
 
   it('should throw if revoke data schema validation fails', () => {
-    const wanx = new Wanx('testnet');
-    const tx = wanx.newChain('eth', false);
+    const conf = config.get('testnet');
+    const tx = new ETH_Outbound(conf);
 
     let opts1 = {};
 
