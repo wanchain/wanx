@@ -251,7 +251,7 @@ class BTC_Inbound extends CrosschainBase {
       redeemKey.xHash,
       storeman.btc,
       crypto.addressToHash160(from, 'pubkeyhash', this.config.network),
-      lockTime,
+      lockTime
     );
   }
 
@@ -265,7 +265,7 @@ class BTC_Inbound extends CrosschainBase {
       opts.from,
       opts.value,
       opts.lockTime,
-      opts.redeemScript,
+      opts.redeemScript
     );
   }
 
@@ -281,7 +281,7 @@ class BTC_Inbound extends CrosschainBase {
       opts.redeemKey.x,
       opts.lockTime,
       opts.publicKey,
-      opts.sigHash,
+      opts.sigHash
     );
   }
 
@@ -296,7 +296,7 @@ class BTC_Inbound extends CrosschainBase {
       opts.redeemScript,
       opts.redeemKey.x,
       opts.lockTime,
-      opts.wif,
+      opts.wif
     );
   }
 }
