@@ -23,6 +23,8 @@ module.exports = {
   buildRevokeTx,
   buildRevokeTxFromWif,
 
+  buildIncompleteRedeem,
+  buildIncompleteRevoke,
   // getTransaction,
 }
 
