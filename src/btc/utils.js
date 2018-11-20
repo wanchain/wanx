@@ -12,7 +12,8 @@ const hex = require('../lib/hex');
 
 // bitcoinRpc.init(btcNode.host, btcNode.port, btcNode.user, btcNode.pass);
 
-module.exports = {
+const btcUtil = {
+
   buildHashTimeLockContract,
 
   hashForRedeemSig,
@@ -27,6 +28,8 @@ module.exports = {
   buildIncompleteRevoke,
   // getTransaction,
 }
+
+module.exports = btcUtil;
 
 /**
  * Generate P2SH timelock contract
@@ -92,7 +95,7 @@ function buildHashTimeLockContract(network, xHash, destH160Addr, revokerH160Addr
  * @returns {string} Hash to be signed
  */
 function hashForRedeemSig(network, txid, address, value, redeemScript) {
-  const tx = buildIncompleteRedeem(network, txid, address, value);
+  const tx = btcUtil.buildIncompleteRedeem(network, txid, address, value);
   const sigHash = tx.hashForSignature(
     0,
     new Buffer.from(redeemScript, 'hex'),
@@ -113,7 +116,7 @@ function hashForRedeemSig(network, txid, address, value, redeemScript) {
  * @returns {string} Hash to be signed
  */
 function hashForRevokeSig(network, txid, address, value, lockTime, redeemScript) {
-  const tx = buildIncompleteRevoke(network, txid, address, value, lockTime);
+  const tx = btcUtil.buildIncompleteRevoke(network, txid, address, value, lockTime);
   const sigHash = tx.hashForSignature(
     0,
     new Buffer.from(redeemScript, 'hex'),
@@ -197,7 +200,7 @@ function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedS
     toAddress = address;
   }
 
-  const tx = buildIncompleteRedeem(network, txid, toAddress, value);
+  const tx = btcUtil.buildIncompleteRedeem(network, txid, toAddress, value);
 
   const signature = bitcoin.script.signature.encode(
     new Buffer.from(signedSigHash, 'base64'),
@@ -252,7 +255,7 @@ function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddr
     toAddress = address;
   }
 
-  const tx = buildIncompleteRedeem(network, txid, toAddress, value);
+  const tx = btcUtil.buildIncompleteRedeem(network, txid, toAddress, value);
 
   const sigHash = tx.hashForSignature(
     0,
@@ -311,7 +314,7 @@ function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKe
     toAddress = address;
   }
 
-  const tx = buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
+  const tx = btcUtil.buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
 
   const signature = bitcoin.script.signature.encode(
     new Buffer.from(signedSigHash, 'base64'),
@@ -362,7 +365,7 @@ function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, w
     toAddress = address;
   }
 
-  const tx = buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
+  const tx = btcUtil.buildIncompleteRevoke(network, txid, toAddress, value, lockTime);
 
   const sigHash = tx.hashForSignature(
     0,
