@@ -329,6 +329,17 @@ class ETH_Inbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Get data hex string for lock call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {string} opts.to - Destination address
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildLockData(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockDataSchema, opts);
@@ -342,6 +353,14 @@ class ETH_Inbound extends CrosschainBase {
       + types.hex2Bytes32(to);
   }
 
+  /**
+   * Get data hex string for redeem call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRedeemData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RedeemDataSchema, opts);
@@ -353,6 +372,14 @@ class ETH_Inbound extends CrosschainBase {
       + hex.stripPrefix(redeemKey.x);
   }
 
+  /**
+   * Get data hex string for revoke call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRevokeData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RevokeDataSchema, opts);

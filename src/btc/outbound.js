@@ -179,6 +179,16 @@ class BTC_Outbound extends CrosschainBase {
     return action;
   }
 
+  buildOutboundFeeTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+
+    const to = this.config.wanHtlcAddrBtc;
+    const data = this.buildOutboundFeeData(opts, true);
+
+    return { to, data };
+  }
+
   buildLockTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
@@ -252,6 +262,18 @@ class BTC_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Get data hex string for lock call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {string} opts.to - Destination btc addr
+   * @param {string} opts.value - Tx value
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildLockData(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundLockDataSchema, opts);
@@ -267,6 +289,14 @@ class BTC_Outbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
+  /**
+   * Get data hex string for revoke call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRevokeData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RevokeDataSchema, opts);
@@ -278,16 +308,15 @@ class BTC_Outbound extends CrosschainBase {
       + hex.stripPrefix(redeemKey.xHash);
   }
 
-  buildOutboundFeeTx(opts, skipValidation) {
-
-    ! skipValidation && this.validate(OutboundFeeSchema, opts);
-
-    const to = this.config.wanHtlcAddrBtc;
-    const data = this.buildOutboundFeeData(opts, true);
-
-    return { to, data };
-  }
-
+  /**
+   * Get data hex string for outboundFee call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {string} opts.value - Tx value
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildOutboundFeeData(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundFeeDataSchema, opts);

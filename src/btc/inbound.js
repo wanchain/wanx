@@ -205,6 +205,19 @@ class BTC_Inbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Get data hex string for lock call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {string} opts.from - Address that funded the P2SH addr
+   * @param {string} opts.txid - ID of tx that funded the P2SH addr
+   * @param {number} opts.lockTime - Locktime used to generate P2SH addr
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildLockData(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockDataSchema, opts);
@@ -221,6 +234,14 @@ class BTC_Inbound extends CrosschainBase {
       + types.num2Bytes32(lockTime);
   }
 
+  /**
+   * Get data hex string for redeem call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRedeemData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RedeemDataSchema, opts);

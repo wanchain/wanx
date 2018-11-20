@@ -381,6 +381,18 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Get data hex string for lock call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {string} opts.to - Destination address
+   * @param {number|string} opts.value - Tx value
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildLockData(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundLockDataSchema, opts);
@@ -395,6 +407,14 @@ class ETH_Outbound extends CrosschainBase {
       + types.num2Bytes32(value);
   }
 
+  /**
+   * Get data hex string for redeem call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRedeemData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RedeemDataSchema, opts);
@@ -406,6 +426,14 @@ class ETH_Outbound extends CrosschainBase {
       + hex.stripPrefix(redeemKey.x);
   }
 
+  /**
+   * Get data hex string for revoke call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildRevokeData(opts, skipValidation) {
 
     ! skipValidation && this.validate(RevokeDataSchema, opts);
@@ -417,6 +445,15 @@ class ETH_Outbound extends CrosschainBase {
       + hex.stripPrefix(redeemKey.xHash);
   }
 
+  /**
+   * Get data hex string for outboundFee call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {number|string} opts.value - Tx value
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
   buildOutboundFeeData(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundFeeDataSchema, opts);
