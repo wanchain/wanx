@@ -295,10 +295,11 @@ class ERC20_Inbound extends CrosschainBase {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
 
+    const { from } = opts;
     const lockData = this.buildLockData(opts, true);
 
     return {
-      from: opts.from,
+      from: from,
       to: this.config.ethHtlcAddrE20,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
