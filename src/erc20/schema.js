@@ -145,6 +145,16 @@ const OutboundFeeSchema = {
   },
 };
 
+const ApproveDataSchema = {
+  type: 'object',
+  required: [
+    'value',
+  ],
+  properties: {
+    value: value,
+  },
+};
+
 const InboundLockDataSchema = {
   type: 'object',
   required: [
@@ -154,18 +164,22 @@ const InboundLockDataSchema = {
     token: tokenEth,
     to: hash160Address,
     value: value,
-    storeman: storemanEthWan,
-    redeemKey: redeemKeyAll,
+    storeman: storemanEth,
+    redeemKey: redeemKeyXHash,
   },
 };
 
-const ApproveDataSchema = {
+const OutboundLockDataSchema = {
   type: 'object',
   required: [
-    'value',
+    'token', 'to', 'value', 'storeman', 'redeemKey',
   ],
   properties: {
+    token: tokenEth,
+    to: hash160Address,
     value: value,
+    storeman: storemanWan,
+    redeemKey: redeemKeyXHash,
   },
 };
 
@@ -191,20 +205,6 @@ const RevokeDataSchema = {
   },
 };
 
-const OutboundLockDataSchema = {
-  type: 'object',
-  required: [
-    'token', 'to', 'value', 'storeman', 'redeemKey',
-  ],
-  properties: {
-    token: tokenEthWan,
-    to: hash160Address,
-    value: value,
-    storeman: storemanEthWan,
-    redeemKey: redeemKeyAll,
-  },
-};
-
 const ScanOptsSchema = {
   type: 'object',
   required: ['redeemKey'],
@@ -227,6 +227,8 @@ module.exports = {
   OutboundFeeSchema,
 
   ApproveDataSchema,
+  InboundLockDataSchema,
+  OutboundLockDataSchema,
   RedeemDataSchema,
   RevokeDataSchema,
   ScanOptsSchema,
