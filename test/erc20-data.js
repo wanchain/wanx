@@ -220,6 +220,37 @@ describe('erc20 outbound data', () => {
     expect(() => tx.buildApproveData(opts2)).to.not.throw();
   });
 
+  it('should construct correct outboundFee data', () => {
+    const conf = config.get('testnet');
+    const tx = new ERC20_Outbound(conf);
+
+    const feeData = tx.buildOutboundFeeData(outboundOpts);
+    const expected = '0x25a5377c000000000000000000000000dbf193627ee704d38495c2f5eb3afc3512eafa4c00000000000000000000000006daa9379cbe241a84a65b217a11b38fe3b4b0630000000000000000000000000000000000000000000000000007f7164d962000';
+
+    expect(feeData).to.equal(expected);
+  });
+
+  it('should throw if outboundFee data schema validation fails', () => {
+    const conf = config.get('testnet');
+    const tx = new ERC20_Outbound(conf);
+
+    let opts1 = {};
+
+    expect(() => tx.buildOutboundFeeData(opts1)).to.throw();
+
+    let opts2 = {
+      token: {
+        eth: '0xdbf193627ee704d38495c2f5eb3afc3512eafa4c',
+      },
+      storeman: {
+        wan: '0x06daa9379cbe241a84a65b217a11b38fe3b4b063',
+      },
+      value: '1234567890',
+    };
+
+    expect(() => tx.buildOutboundFeeData(opts2)).to.not.throw();
+  });
+
   it('should construct correct lock data', () => {
     const conf = config.get('testnet');
     const tx = new ERC20_Outbound(conf);

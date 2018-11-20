@@ -12,6 +12,7 @@ const {
   OutboundRedeemSchema,
   OutboundRevokeSchema,
   OutboundFeeSchema,
+  OutboundFeeDataSchema,
   OutboundLockDataSchema,
   ApproveDataSchema,
   RedeemDataSchema,
@@ -482,7 +483,7 @@ class ETH_Outbound extends CrosschainBase {
 
   buildOutboundFeeData(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+    ! skipValidation && this.validate(OutboundFeeDataSchema, opts);
 
     const { token, storeman, value } = opts;
     const { getOutboundFee } = this.config.signatures.HTLCWAN_ERC20;

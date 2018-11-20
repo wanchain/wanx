@@ -155,6 +155,18 @@ const ApproveDataSchema = {
   },
 };
 
+const OutboundFeeDataSchema = {
+  type: 'object',
+  required: [
+    'token', 'value', 'storeman',
+  ],
+  properties: {
+    token: tokenEth,
+    value: value,
+    storeman: storemanWan,
+  },
+};
+
 const InboundLockDataSchema = {
   type: 'object',
   required: [
@@ -227,6 +239,7 @@ module.exports = {
   OutboundFeeSchema,
 
   ApproveDataSchema,
+  OutboundFeeDataSchema,
   InboundLockDataSchema,
   OutboundLockDataSchema,
   RedeemDataSchema,

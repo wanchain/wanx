@@ -110,6 +110,17 @@ const OutboundFeeSchema = {
   },
 };
 
+const OutboundFeeDataSchema = {
+  type: 'object',
+  required: [
+    'value', 'storeman',
+  ],
+  properties: {
+    value: value,
+    storeman: storemanWan,
+  },
+};
+
 const InboundLockDataSchema = {
   type: 'object',
   required: [
@@ -176,6 +187,7 @@ module.exports = {
 
   InboundLockDataSchema,
   OutboundLockDataSchema,
+  OutboundFeeDataSchema,
   RedeemDataSchema,
   RevokeDataSchema,
 
