@@ -41,9 +41,9 @@ class BTC_Outbound extends CrosschainBase {
 
       return this.getOutboundFee(opts, true);
 
-    }).then(fee => {
+    }).then(outboundFee => {
 
-      return this.sendLock(Object.assign({}, opts, { fee }), true);
+      return this.sendLock(Object.assign({}, opts, { outboundFee }), true);
 
     }).then(receipt => {
 
@@ -67,14 +67,20 @@ class BTC_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
 
+    if (opts.outboundFee) {
+      return Promise.resolve(opts.outboundFee);
+    }
+
     const callOpts = this.buildOutboundFeeTx(opts, true);
     const action = this.web3wan.eth.call(callOpts);
 
     action.then(res => {
-      const fee = new BigNumber(res).toString();
+      res = res === '0x' ? '0x0' : res;
 
-      this.emit('info', { status: 'outboundFee', fee });
-      return fee;
+      const outboundFee = new BigNumber(res).toString();
+      this.emit('info', { status: 'outboundFee', outboundFee });
+
+      return outboundFee;
     });
 
     action.catch(err => {
@@ -184,7 +190,7 @@ class BTC_Outbound extends CrosschainBase {
       to: this.config.wanHtlcAddrBtc,
       gas: 300000,
       gasPrice: 180e9,
-      value: opts.fee,
+      value: opts.outboundFee,
       data: lockData,
     };
   }

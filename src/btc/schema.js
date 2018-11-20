@@ -60,13 +60,13 @@ const OutboundLockSchema = {
 const OutboundLockWithFeeSchema = {
   type: 'object',
   required: [
-    'from', 'to', 'value', 'fee', 'storeman', 'redeemKey',
+    'from', 'to', 'value', 'outboundFee', 'storeman', 'redeemKey',
   ],
   properties: {
     from: hash160Address,
     to: base58Address,
     value: value,
-    fee: value,
+    outboundFee: value,
     storeman: storemanBtcWan,
     redeemKey: redeemKeyAll,
   },

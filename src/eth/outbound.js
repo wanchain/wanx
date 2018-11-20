@@ -35,9 +35,9 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.getOutboundFee(opts, true);
 
-    }).then(fee => {
+    }).then(outboundFee => {
 
-      return this.sendLock(Object.assign({}, opts, { fee }), true);
+      return this.sendLock(Object.assign({}, opts, { outboundFee }), true);
 
     }).then(receipt => {
 
@@ -84,9 +84,9 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.getOutboundFee(opts, true);
 
-    }).then(fee => {
+    }).then(outboundFee => {
 
-      return this.sendLock(Object.assign({}, opts, { fee }), true);
+      return this.sendLock(Object.assign({}, opts, { outboundFee }), true);
 
     }).then(receipt => {
 
@@ -147,14 +147,20 @@ class ETH_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
 
+    if (opts.outboundFee) {
+      return Promise.resolve(opts.outboundFee);
+    }
+
     const callOpts = this.buildOutboundFeeTx(opts, true);
     const action = this.web3wan.eth.call(callOpts);
 
     action.then(res => {
-      const fee = new BigNumber(res).toString();
+      res = res === '0x' ? '0x0' : res;
 
-      this.emit('info', { status: 'outboundFee', fee });
-      return fee;
+      const outboundFee = new BigNumber(res).toString();
+      this.emit('info', { status: 'outboundFee', outboundFee });
+
+      return outboundFee;
     })
 
     action.catch(err => {
@@ -289,7 +295,7 @@ class ETH_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
-    const { from, fee } = opts;
+    const { from, outboundFee } = opts;
     const lockData = this.buildLockData(opts, true);
 
     return {
@@ -298,7 +304,7 @@ class ETH_Outbound extends CrosschainBase {
       to: this.config.wanHtlcAddr,
       gas: hex.fromNumber(300000),
       gasPrice: hex.fromNumber(180e9),
-      value: hex.fromNumber(fee),
+      value: hex.fromNumber(outboundFee),
       data: lockData,
     };
   }
