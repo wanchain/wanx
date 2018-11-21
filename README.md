@@ -6,7 +6,7 @@ testnet. Feel free to check it out, but please use at your own risk!
 
 ## Install
 ```
-npm install wanx
+npm install --save wanx
 ```
 
 ## Configure
@@ -61,8 +61,8 @@ const wanx = new WanX('testnet', config);
 ### Define the transaction
 
 Start by generating a new redeem key. The redeem key contains the `x` and its
-hash, `xHash`, which are used as the identifier and locking keys for crosschain
-transaction.
+hash, `xHash`, which are used as the identifier and locking keys for the
+crosschain transaction.
 
 ```
 const redeemKey = wanx.newRedeemKey();
