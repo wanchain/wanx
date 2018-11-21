@@ -1,5 +1,5 @@
 # WanX
-### Utility for making crosschain transactions on the wanchain network
+### Utility for making crosschain transactions on the Wanchain network
 
 NB: This project is still under heavy development and currently only works with
 testnet. Feel free to check it out, but please use at your own risk!
@@ -15,6 +15,7 @@ If you do not plan to have WanX connect to Wanchain or Ethereum nodes, you can
 start with no configuration other than the network.
 
 ```
+
 const WanX = require('wanx');
 
 const wanx = new WanX('testnet');
@@ -28,6 +29,7 @@ the node urls or by passing in the web3 objects directly.
 (Note: currently WanX does not connect to Bitcoin nodes.)
 
 ```
+
 const WanX = require('wanx');
 
 // configure with node urls
@@ -58,11 +60,29 @@ const wanx = new WanX('testnet', config);
 
 ### Define the transaction
 
-Basically all of the WanX crosschain methods require you to pass an object
-describing the transaction, shown here as `opts`.
+Start by generating a new redeem key. The redeem key contains the `x` and its
+hash, `xHash`, which are used as the identifier and locking keys for crosschain
+transaction.
 
 ```
-// Options for ETH inbound
+const redeemKey = wanx.newRedeemKey();
+```
+
+The default hash algorithm for the redeem key is `keccak256`. If you are working
+with Bitcoin, you will instead need a redeem key based on `sha256`.
+
+```
+const redeemKey = wanx.newRedeemKey('sha256');
+```
+
+Then define the details of the crosschain transaction. Basically all of the WanX
+crosschain methods require you to pass in this transaction object. The required
+values depend on chain and direction (more documentation is coming, but for
+now, check out the examples to see what is required).
+
+```
+
+// ETH inbound
 const opts = {
   // from ETH address
   from: '0x8a964f3932ba80aa1c2310a6cf3fbe5ddbabc673',
@@ -78,6 +98,9 @@ const opts = {
     wan: '0x06daa9379cbe241a84a65b217a11b38fe3b4b063',
     eth: '0x41623962c5d44565de623d53eb677e0f300467d2',
   },
+
+  // add in the redeem key
+  redeemKey,
 };
 
 ```
@@ -135,7 +158,7 @@ const serializedTx = transaction.serialize().toString('hex');
 There are generally 3 or 4 independent transactions that comprise a crosschain
 transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
-with signing outside of WanX.
+with signing handled outside of WanX.
 
 ## Examples
 
@@ -160,5 +183,5 @@ with signing outside of WanX.
 - Make gas price/limit configurable
 - Add documentation for all chains and multiple use cases
 - Add jsdoc throughout codebase
-- Add syncStoremanGroups and syncErc20StoremanGroups methods
-- Add getRegErc20Tokens method
+- Add method to get available storemen
+- Add method to get registered tokens
