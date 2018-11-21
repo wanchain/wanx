@@ -39,7 +39,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -51,7 +51,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -88,7 +88,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -122,7 +122,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -147,7 +147,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundApproveSchema, opts);
 
     const sendOpts = this.buildApproveTx(opts, true);
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'approveHash', hash });
@@ -170,7 +170,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundLockSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -193,7 +193,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
+    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWAN_ERC20', 'InboundLockLogger', log);
@@ -214,7 +214,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     const sendOpts = this.buildRedeemTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'redeemHash', hash });
@@ -237,7 +237,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3eth).watchLogs(redeemScanOpts);
+    const action = web3Util(this.ethereum.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCETH_ERC20', 'InboundRedeemLogger', log);
@@ -258,7 +258,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundRevokeSchema, opts);
 
     const sendOpts = this.buildRevokeTx(opts, true);
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'revokeHash', hash });

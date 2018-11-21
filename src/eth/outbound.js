@@ -42,7 +42,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -54,7 +54,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -91,7 +91,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -125,7 +125,7 @@ class ETH_Outbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
@@ -153,7 +153,7 @@ class ETH_Outbound extends CrosschainBase {
     }
 
     const callOpts = this.buildOutboundFeeTx(opts, true);
-    const action = this.web3wan.eth.call(callOpts);
+    const action = this.wanchain.web3.eth.call(callOpts);
 
     action.then(res => {
       res = res === '0x' ? '0x0' : res;
@@ -177,7 +177,7 @@ class ETH_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -200,7 +200,7 @@ class ETH_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3eth).watchLogs(lockScanOpts);
+    const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCETH', 'WETH2ETHLock', log);
@@ -221,7 +221,7 @@ class ETH_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundRedeemSchema, opts);
 
     const sendOpts = this.buildRedeemTx(opts, true);
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'redeemHash', hash });
@@ -244,7 +244,7 @@ class ETH_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
+    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWETH', 'WETH2ETHRefund', log);
@@ -265,7 +265,7 @@ class ETH_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
 
     const sendOpts = this.buildRevokeTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'revokeHash', hash });

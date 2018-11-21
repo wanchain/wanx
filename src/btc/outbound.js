@@ -72,7 +72,7 @@ class BTC_Outbound extends CrosschainBase {
     }
 
     const callOpts = this.buildOutboundFeeTx(opts, true);
-    const action = this.web3wan.eth.call(callOpts);
+    const action = this.wanchain.web3.eth.call(callOpts);
 
     action.then(res => {
       res = res === '0x' ? '0x0' : res;
@@ -96,7 +96,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -119,7 +119,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockNoticeScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3wan).watchLogs(lockNoticeScanOpts);
+    const action = web3Util(this.wanchain.web3).watchLogs(lockNoticeScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
@@ -141,7 +141,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3wan).watchLogs(redeemScanOpts);
+    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
@@ -162,7 +162,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
 
     const sendOpts = this.buildRevokeTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'revokeHash', hash });

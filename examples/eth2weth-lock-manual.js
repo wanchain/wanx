@@ -9,9 +9,12 @@ const EthTx = require('ethereumjs-tx');
  */
 
 const config = {
-  wanNodeUrl: 'http://localhost:8545',
-  ethNodeUrl: 'http://localhost:18545',
+  wanchain: { url: 'http://localhost:8545' },
+  ethereum: { url: 'http://localhost:18545'},
 };
+
+const web3wan = new Web3(new Web3.providers.HttpProvider(config.wanchain.url));
+const web3eth = new Web3(new Web3.providers.HttpProvider(config.ethereum.url));
 
 const wanx = new WanX('testnet', config);
 

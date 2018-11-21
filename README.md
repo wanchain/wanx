@@ -10,19 +10,43 @@ npm install wanx
 ```
 
 ## Configure
+
+If you do not plan to have WanX connect to Wanchain or Ethereum nodes, you can
+start with no configuration other than the network.
+
+```
+const WanX = require('wanx');
+const wanx = new WanX('testnet');
+
+```
+
+If you would like WanX to connect to Wanchain and/or Ethereum nodes, to do things
+like submit transactions or listen for events, you can do so by either defining
+the node urls or by passing in the web3 objects directly.
+
+(Note: currently WanX does not connect to Bitcoin nodes.)
+
 ```
 const WanX = require('wanx');
 
 // configure with node urls
 const config = {
-  wanNodeUrl: 'http://localhost:8545',
-  ethNodeUrl: 'http://13.57.92.468:8545',
+  wanchain: {
+    url: 'http://localhost:8545',
+  },
+  ethereum: {
+    url: 'http://13.57.92.468:8545',
+  }
 };
 
 // or configure with pre-initialized web3 objects
 const config = {
-  web3wan: wan3,
-  web3eth: web3,
+  wanchain: {
+    web3: wan3,
+  },
+  ethereum: {
+    web3: web3
+  },
 };
 
 const wanx = new WanX('testnet', config);
@@ -45,6 +69,7 @@ const opts = {
 // inbound = true
 const cctx = wanx.newChain('ETH', true);
 
+// do the inbound crosschain tx
 cctx.send(opts);
 
 cctx.on('info', info => {
@@ -82,9 +107,6 @@ cctx.on('complete', res => {
 
 
 ## Next Todos
-- Use validate.js for validating call options
-- Add tests for chain class methods
-- Add tests for btc functions
 - Add support for more of the contract methods
 - Make gas price/limit configurable
 - Add documentation for all chains and multiple use cases

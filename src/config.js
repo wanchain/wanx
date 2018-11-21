@@ -25,8 +25,20 @@ const mainnetConfig = {
 };
 
 const defaultConfig = {
-  wanNodeUrl: null,
-  ethNodeUrl: null,
+
+  wanchain: {
+    web3: null,
+    url: null,
+  },
+
+  ethereum: {
+    web3: null,
+    url: null,
+  },
+
+  bitcoin: {
+    url: null,
+  },
 
   signatures: {
     ERC20: {

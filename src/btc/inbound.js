@@ -91,7 +91,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundLockSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.on('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -114,7 +114,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
+    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
@@ -135,7 +135,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     const sendOpts = this.buildRedeemTx(opts);
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.on('transactionHash', hash => {
       this.emit('info', { status: 'redeemHash', hash });

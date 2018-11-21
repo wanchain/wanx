@@ -24,19 +24,19 @@ class WanX {
 
     // initialize web3 objects if objects are not passed in config and if
     // config urls are set
-    if (! this.config.web3wan && this.config.wanNodeUrl) {
-      const provider = new Web3.providers.HttpProvider(this.config.wanNodeUrl);
-      this.config.web3wan = new Web3(provider);
+    if (! this.config.wanchain.web3 && this.config.wanchain.url) {
+      const provider = new Web3.providers.HttpProvider(this.config.wanchain.url);
+      this.config.wanchain.web3 = new Web3(provider);
     }
-    else if (this.config.web3wan && typeof this.config.web3wan.version !== 'string') {
+    else if (this.config.wanchain.web3 && typeof this.config.wanchain.web3.version !== 'string') {
       throw new Error('Unsupported web3 version');
     }
 
-    if (! this.config.web3eth && this.config.ethNodeUrl) {
-      const provider = new Web3.providers.HttpProvider(this.config.ethNodeUrl);
-      this.config.web3eth = new Web3(provider);
+    if (! this.config.ethereum.web3 && this.config.ethereum.url) {
+      const provider = new Web3.providers.HttpProvider(this.config.ethereum.url);
+      this.config.ethereum.web3 = new Web3(provider);
     }
-    else if (this.config.web3eth && typeof this.config.web3eth.version !== 'string') {
+    else if (this.config.ethereum.web3 && typeof this.config.ethereum.web3.version !== 'string') {
       throw new Error('Unsupported web3 version');
     }
 

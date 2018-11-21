@@ -15,8 +15,8 @@ class CrosschainBase extends EventEmitter {
 
     this.config = config;
 
-    this.web3wan = config.web3wan;
-    this.web3eth = config.web3eth;
+    this.wanchain = config.wanchain;
+    this.ethereum = config.ethereum;
   }
 
   parseLog(abiName, eventName, log) {
