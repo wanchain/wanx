@@ -1,6 +1,6 @@
 {
   "name": "wanx",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "Utility for making crosschain transactions on the wanchain network",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "jsgoyette",
   "license": "ISC",
   "dependencies": {
+    "ajv": "^6.5.5",
     "bignumber.js": "^7.2.1",
     "binstring": "^0.2.1",
     "bitcoinjs-lib": "^4.0.2",

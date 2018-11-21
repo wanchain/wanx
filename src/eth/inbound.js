@@ -4,10 +4,14 @@ const types = require('../lib/types');
 const hex = require('../lib/hex');
 
 const {
-  validateSendOpts,
-  validateRedeemOpts,
-  validateRevokeOpts,
-} = require('./validate');
+  InboundLockSchema,
+  InboundRedeemSchema,
+  InboundRevokeSchema,
+  InboundLockDataSchema,
+  RedeemDataSchema,
+  RevokeDataSchema,
+  ScanOptsSchema,
+} = require('./schema');
 
 class ETH_Inbound extends CrosschainBase {
 
@@ -16,37 +20,36 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // complete crosschain transaction
-  send(opts) {
+  send(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateSendOpts(opts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendLock(opts);
+      return this.sendLock(opts, true);
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenLock(opts, blockNumber);
+      return this.listenLock(opts, blockNumber, true);
 
     }).then(receipt => {
 
-      return this.sendRedeem(opts);
+      return this.sendRedeem(opts, true);
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenRedeem(opts, blockNumber);
+      return this.listenRedeem(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -62,25 +65,24 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // first 1/2 of crosschain transaction
-  lock(opts) {
+  lock(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateSendOpts(opts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendLock(opts);
+      return this.sendLock(opts, true);
 
     }).then(receipt => {
 
-      return this.web3wan.eth.getBlockNumber();
+      return this.wanchain.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenLock(opts, blockNumber);
+      return this.listenLock(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -97,25 +99,24 @@ class ETH_Inbound extends CrosschainBase {
 
   // second 1/2 of crosschain transaction
   // requires redeemKey to be passed in opts
-  redeem(opts) {
+  redeem(opts, skipValidation) {
 
-    // validate inputs
-    opts = validateRedeemOpts(opts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
       this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
 
-      return this.sendRedeem(opts);
+      return this.sendRedeem(opts, true);
 
     }).then(receipt => {
 
-      return this.web3eth.eth.getBlockNumber();
+      return this.ethereum.web3.eth.getBlockNumber();
 
     }).then(blockNumber => {
 
-      return this.listenRedeem(opts, blockNumber);
+      return this.listenRedeem(opts, blockNumber, true);
 
     }).then(receipt => {
 
@@ -131,10 +132,12 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // send lock transaction on ethereum
-  sendLock(opts) {
-    const sendOpts = this.buildLockTx(opts);
+  sendLock(opts, skipValidation) {
 
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const sendOpts = this.buildLockTx(opts, true);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -152,10 +155,12 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // listen for storeman tx on wanchain
-  listenLock(opts, blockNumber) {
-    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber);
+  listenLock(opts, blockNumber, skipValidation) {
 
-    const action = web3Util(this.web3wan).watchLogs(lockScanOpts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCWETH', 'ETH2WETHLock', log);
@@ -171,10 +176,12 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // send refund transaction on wanchain
-  sendRedeem(opts) {
-    const sendOpts = this.buildRedeemTx(opts);
+  sendRedeem(opts, skipValidation) {
 
-    const action = this.web3wan.eth.sendTransaction(sendOpts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const sendOpts = this.buildRedeemTx(opts, true);
+    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'redeemHash', hash });
@@ -192,10 +199,12 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // listen for storeman tx on ethereum
-  listenRedeem(opts, blockNumber) {
-    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber);
+  listenRedeem(opts, blockNumber, skipValidation) {
 
-    const action = web3Util(this.web3eth).watchLogs(redeemScanOpts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.ethereum.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const parsed = this.parseLog('HTLCETH', 'ETH2WETHRefund', log);
@@ -211,10 +220,12 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // send revoke transaction on ethereum
-  sendRevoke(opts) {
-    const sendOpts = this.buildRevokeTx(opts);
+  sendRevoke(opts, skipValidation) {
 
-    const action = this.web3eth.eth.sendTransaction(sendOpts);
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const sendOpts = this.buildRevokeTx(opts, true);
+    const action = this.ethereum.web3.eth.sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'revokeHash', hash });
@@ -231,25 +242,28 @@ class ETH_Inbound extends CrosschainBase {
     return action;
   }
 
-  buildLockTx({ to, from, value, storeman, redeemKey }) {
-    const lockData = this.buildLockData({
-      to,
-      storeman,
-      redeemKey,
-    });
+  buildLockTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+
+    const lockData = this.buildLockData(opts, true);
 
     return {
-      from: from,
+      from: opts.from,
       to: this.config.ethHtlcAddr,
-      value: hex.fromNumber(value),
-      gas: hex.fromNumber(300000),
+      value: hex.fromNumber(opts.value),
+      gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
     };
   }
 
-  buildRedeemTx({ to, redeemKey }) {
-    const redeemData = this.buildRedeemData({ redeemKey });
+  buildRedeemTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    const { to, redeemKey } = opts;
+    const redeemData = this.buildRedeemData({ redeemKey }, true);
 
     return {
       Txtype: '0x01',
@@ -261,8 +275,12 @@ class ETH_Inbound extends CrosschainBase {
     };
   }
 
-  buildRevokeTx({ from, redeemKey }) {
-    const revokeData = this.buildRevokeData({ redeemKey });
+  buildRevokeTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRevokeSchema, opts);
+
+    const { from, redeemKey } = opts;
+    const revokeData = this.buildRevokeData({ redeemKey }, true);
 
     return {
       from: from,
@@ -273,7 +291,11 @@ class ETH_Inbound extends CrosschainBase {
     };
   }
 
-  buildLockScanOpts({ redeemKey }, blockNumber) {
+  buildLockScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { ETH2WETHLock } = this.config.signatures.HTLCWETH;
 
     return {
@@ -288,7 +310,11 @@ class ETH_Inbound extends CrosschainBase {
     };
   }
 
-  buildRedeemScanOpts({ redeemKey }, blockNumber) {
+  buildRedeemScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
     const { ETH2WETHRefund } = this.config.signatures.HTLCETH;
 
     return {
@@ -303,7 +329,22 @@ class ETH_Inbound extends CrosschainBase {
     };
   }
 
-  buildLockData({ storeman, to, redeemKey }) {
+  /**
+   * Get data hex string for lock call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman addr pair
+   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {string} opts.to - Destination address
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
+  buildLockData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundLockDataSchema, opts);
+
+    const { storeman, to, redeemKey } = opts;
     const { eth2wethLock } = this.config.signatures.HTLCETH;
 
     return '0x' + eth2wethLock.substr(0, 8)
@@ -312,14 +353,38 @@ class ETH_Inbound extends CrosschainBase {
       + types.hex2Bytes32(to);
   }
 
-  buildRedeemData({ redeemKey }) {
+  /**
+   * Get data hex string for redeem call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
+  buildRedeemData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(RedeemDataSchema, opts);
+
+    const { redeemKey } = opts;
     const { eth2wethRefund } = this.config.signatures.HTLCWETH;
 
     return '0x' + eth2wethRefund.substr(0, 8)
       + hex.stripPrefix(redeemKey.x);
   }
 
-  buildRevokeData({ redeemKey }) {
+  /**
+   * Get data hex string for revoke call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
+  buildRevokeData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(RevokeDataSchema, opts);
+
+    const { redeemKey } = opts;
     const { eth2wethRevoke } = this.config.signatures.HTLCETH;
 
     return '0x' + eth2wethRevoke.substr(0, 8)

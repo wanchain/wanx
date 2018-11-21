@@ -16,17 +16,29 @@ const mainnetConfig = {
   network: 'mainnet',
   chainId: 1,
   wethTokenAddress: '0x28362cd634646620ef2290058744f9244bb90ed9',
-  wbtcTokenAddress: '0xfa4b6988e8cb90bb25e51ea80257ffcdd8ebdd24',
+  wbtcTokenAddress: '0xd15e200060fc17ef90546ad93c1c61bfefdc89c7',
   ethHtlcAddr: '0x78eb00ec1c005fec86a074060cc1bc7513b1ee88',
   wanHtlcAddr: '0x7a333ba427fce2e0c6dd6a2d727e5be6beb13ac2',
-  ethHtlcAddrE20: '0x4a8f5dd531e4cd1993b79b23dbda21faacb9c731',
-  wanHtlcAddrE20: '0xfc0eba261b49763decb6c911146e3cf524fa7ebc',
-  wanHtlcAddrBtc: '0x802894ef36050c9b8e94f8d0979c75512491b7d5',
+  ethHtlcAddrE20: '0xa4becceba748f8a2b0e6c2ed69e1079a9a5062ab',
+  wanHtlcAddrE20: '0x71d23563729f81fc535cbb772e52660ca5be755e',
+  wanHtlcAddrBtc: '0x50c53a4f6702c2713b3535fc896bc21597534906',
 };
 
 const defaultConfig = {
-  wanNodeUrl: null,
-  ethNodeUrl: null,
+
+  wanchain: {
+    web3: null,
+    url: null,
+  },
+
+  ethereum: {
+    web3: null,
+    url: null,
+  },
+
+  bitcoin: {
+    url: null,
+  },
 
   signatures: {
     ERC20: {

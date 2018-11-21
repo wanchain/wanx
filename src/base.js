@@ -1,8 +1,10 @@
 const EventEmitter = require('events');
 const Web3 = require('web3');
+const Ajv = require('ajv');
 const { find } = require('lodash');
 
 const abis = require('./abis');
+const defsSchema = require('./lib/schema/defs.json');
 
 const web3 = new Web3();
 
@@ -13,8 +15,8 @@ class CrosschainBase extends EventEmitter {
 
     this.config = config;
 
-    this.web3wan = config.web3wan;
-    this.web3eth = config.web3eth;
+    this.wanchain = config.wanchain;
+    this.ethereum = config.ethereum;
   }
 
   parseLog(abiName, eventName, log) {
@@ -26,8 +28,9 @@ class CrosschainBase extends EventEmitter {
 
     const parsed = web3.eth.abi.decodeLog(inputs, data, topics);
 
-    // force lowercase to avoid confusion with ethereum vs wanchain address
-    // checksums
+    // decodeLog returns addresses with ethereum checksum; to avoid confusion
+    // with ethereum vs wanchain address checksums, force lowercase on string
+    // properties
     const keys = Object.keys(parsed);
 
     for (let i = 0, l = keys.length; i < l; i++) {
@@ -38,6 +41,15 @@ class CrosschainBase extends EventEmitter {
     }
 
     return parsed;
+  }
+
+  validate(schema, opts) {
+    const ajv = new Ajv({ allErrors: true });
+    const validate = ajv.addSchema(defsSchema).compile(schema);
+
+    if (! validate(opts)) {
+      throw new Error('Invalid opts: ' + ajv.errorsText(validate.errors));
+    }
   }
 }
 
