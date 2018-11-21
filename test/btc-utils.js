@@ -30,34 +30,34 @@ const xHash = '52185649fdb94058ff9b3194b2757f090aa5a7432032c43c84e81ccb11ccea43'
 describe('btc incomplete txs', () => {
 
   it('should construct correct redeem tx', () => {
-    const mockTxBuilder = getMockTxBuilder();
-    const builder = sinon.stub(bitcoin, 'TransactionBuilder').returns(mockTxBuilder);
+    const txBuilder = getMockTxBuilder();
+    const builder = sinon.stub(bitcoin, 'TransactionBuilder').returns(txBuilder);
 
     const tx = btcUtil.buildIncompleteRedeem(network, txid, address, value);
 
     expect(builder.calledWith(bitcoin.networks[network])).to.be.true;
-    expect(mockTxBuilder.setVersion.calledOnceWithExactly(1)).to.be.true;
-    expect(mockTxBuilder.addInput.calledOnceWithExactly(txid, 0)).to.be.true;
-    expect(mockTxBuilder.addOutput.calledOnceWithExactly(address, 123456)).to.be.true;
-    expect(mockTxBuilder.setLockTime.notCalled).to.be.true;
-    expect(mockTxBuilder.buildIncomplete.calledOnce).to.be.true;
+    expect(txBuilder.setVersion.calledOnceWithExactly(1)).to.be.true;
+    expect(txBuilder.addInput.calledOnceWithExactly(txid, 0)).to.be.true;
+    expect(txBuilder.addOutput.calledOnceWithExactly(address, 123456)).to.be.true;
+    expect(txBuilder.setLockTime.notCalled).to.be.true;
+    expect(txBuilder.buildIncomplete.calledOnce).to.be.true;
     expect(tx).to.equal('asdf');
 
     builder.restore();
   });
 
   it('should construct correct revoke tx', () => {
-    const mockTxBuilder = getMockTxBuilder();
-    const builder = sinon.stub(bitcoin, 'TransactionBuilder').returns(mockTxBuilder);
+    const txBuilder = getMockTxBuilder();
+    const builder = sinon.stub(bitcoin, 'TransactionBuilder').returns(txBuilder);
 
     const tx = btcUtil.buildIncompleteRevoke(network, txid, address, value, lockTime);
 
     expect(builder.calledWith(bitcoin.networks[network])).to.be.true;
-    expect(mockTxBuilder.setVersion.calledOnceWithExactly(1)).to.be.true;
-    expect(mockTxBuilder.addInput.calledOnceWithExactly(txid, 0, 0)).to.be.true;
-    expect(mockTxBuilder.addOutput.calledOnceWithExactly(address, 123456)).to.be.true;
-    expect(mockTxBuilder.setLockTime.calledOnceWithExactly(lockTime)).to.be.true;
-    expect(mockTxBuilder.buildIncomplete.calledOnce).to.be.true;
+    expect(txBuilder.setVersion.calledOnceWithExactly(1)).to.be.true;
+    expect(txBuilder.addInput.calledOnceWithExactly(txid, 0, 0)).to.be.true;
+    expect(txBuilder.addOutput.calledOnceWithExactly(address, 123456)).to.be.true;
+    expect(txBuilder.setLockTime.calledOnceWithExactly(lockTime)).to.be.true;
+    expect(txBuilder.buildIncomplete.calledOnce).to.be.true;
     expect(tx).to.equal('asdf');
 
     builder.restore();
