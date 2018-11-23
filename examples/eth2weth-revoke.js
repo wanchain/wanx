@@ -2,7 +2,7 @@ const WanX = require('wanx');
 
 /**
  * Requirements:
- * - Ethereum accounts are unlocked
+ * - Ethereum account is unlocked
  * - Ethereum account has enough to cover the gas
  * - Redeem timelock has expired
  */
@@ -22,7 +22,6 @@ const cctx = wanx.newChain('eth', true);
 const opts = {
   from: '0x026a6301477c59ab17d11cade5fd00e5c8c6fa90',
   redeemKey: {
-    x: '4d5569480ddd42fb1a8ddd641a36f384913480e621dacd038f234131f69b9b9d',
     xHash: '2cb53e1ae99fb341bf674076f9bcc2f4e170b08354fe74eb3bb9e7c325f584f0',
   }
 };
@@ -33,16 +32,16 @@ cctx.sendRevoke(opts);
 // Handle events
 cctx.on('info', info => {
   console.log('this is the info', info);
+
+  if (info.status === 'revoked') {
+    console.log('COMPLETE!!!');
+    cctx.removeAllListeners();
+    clearInterval(loop);
+  }
 });
 
 cctx.on('error', err => {
   console.log('this is the error', err);
-  cctx.removeAllListeners();
-  clearInterval(loop);
-});
-
-cctx.on('complete', () => {
-  console.log('COMPLETE!!!');
   cctx.removeAllListeners();
   clearInterval(loop);
 });

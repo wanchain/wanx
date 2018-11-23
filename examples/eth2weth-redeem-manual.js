@@ -42,52 +42,48 @@ const wanDatadir = '/home/user/.wanchain/testnet/';
 const wanKeyObject = keythereum.importFromFile(opts.to, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
-// Get the nonce for Wanchain
-web3wan.eth.getTransactionCount(opts.from).then(txCount => {
+// Do inbound redeem transaction
+Promise.resolve([]).then(() => {
+
+  console.log('Starting eth inbound redeem', opts);
+
+  // Get the tx count to determine next nonce
+  return web3wan.eth.getTransactionCount(opts.to);
+
+}).then(txCount => {
 
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
   redeemTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign the tx
+  // Sign and send the tx
   const transaction = new WanTx(redeemTx);
   transaction.sign(wanPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the redeem transaction on Wanchain
-  web3wan.eth.sendSignedTransaction('0x' + serializedTx).on('receipt', receipt => {
+  return web3wan.eth.sendSignedTransaction('0x' + serializedTx);
 
-    console.log('Redeem confirmed and is now pending on storeman');
-    console.log(receipt);
+}).then(receipt => {
 
-    // Get the current Ethereum blockNumber for scanning
-    web3eth.eth.getBlockNumber().then(blockNumber => {
+  console.log('Redeem confirmed and is now pending on storeman');
+  console.log(receipt);
 
-      // Scan for the redeem confirmation from the storeman
-      console.log('Scanning from blockNumber:', blockNumber);
-      cctx.listenRedeem(opts, blockNumber);
-    });
-  });
-});
+  // Get the current block number on Ethereum
+  return web3eth.eth.getBlockNumber();
 
-// Handle events
-cctx.on('info', info => {
-  console.log('this is the info', info);
-});
+}).then(blockNumber => {
 
-cctx.on('error', err => {
-  console.log('this is the error', err);
-  cctx.removeAllListeners();
-  clearInterval(loop);
-});
+  // Scan for the redeem confirmation from the storeman
+  return cctx.listenRedeem(opts, blockNumber);
 
-cctx.on('complete', () => {
+}).then(log => {
+
+  console.log(log);
   console.log('COMPLETE!!!');
-  cctx.removeAllListeners();
-  clearInterval(loop);
-});
 
-// Loop to keep script alive
-let loop = setInterval(() => {
-  console.log('tick');
-}, 5000);
+}).catch(err => {
+
+  console.log('Error:', err);
+
+});

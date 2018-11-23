@@ -12,7 +12,7 @@ npm install --save wanx
 ## Configure
 
 If you do not plan to have WanX connect to Wanchain or Ethereum nodes, you can
-start with no configuration other than the network.
+initialize WanX with just the network (mainnet or testnet).
 
 ```
 
@@ -155,7 +155,7 @@ const serializedTx = transaction.serialize().toString('hex');
 
 ```
 
-There are generally 3 or 4 independent transactions that comprise a crosschain
+There are generally several independent transactions that comprise a crosschain
 transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
 with signing handled outside of WanX.
@@ -165,10 +165,8 @@ with signing handled outside of WanX.
 #### Ethereum
 - [ETH to WETH complete](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-complete.js)
 - [ETH to WETH revoke](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-revoke.js)
-
-#### Ethereum, with manual signing
-- [ETH to WETH lock](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
-- [ETH to WETH redeem](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
+- [ETH to WETH lock, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
+- [ETH to WETH redeem, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
 
 #### Bitcoin
 - [BTC to WBTC complete](https://github.com/wanchain/wanx/blob/master/examples/btc2wbtc-complete.js)
@@ -180,8 +178,9 @@ with signing handled outside of WanX.
 
 ## Next Todos
 - Add support for more of the contract methods
-- Make gas price/limit configurable
-- Add documentation for all chains and multiple use cases
-- Add jsdoc throughout codebase
 - Add method to get available storemen
 - Add method to get registered tokens
+- Make gas price/limit configurable
+- Add documentation for all chains and multiple use cases
+- Improve and add more examples
+- Add jsdoc throughout codebase
