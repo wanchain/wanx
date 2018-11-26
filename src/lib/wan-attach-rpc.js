@@ -22,39 +22,6 @@ function Wan3(web3) {
 
 const methods = function() {
 
-    const pendingTransactions = new Method({
-        name: 'pendingTransactions',
-        call: 'eth_pendingTransactions',
-        params: 1
-    });
-
-    const getOTAMixSet = new Method({
-        name: 'getOTAMixSet',
-        call: 'wan_getOTAMixSet',
-        params: 2
-    });
-
-    const getWanAddress = new Method({
-        name: 'getWanAddress',
-        call: 'wan_getWanAddress',
-        params: 1,
-        inputFormatter: [formatters.inputAddressFormatter]
-    });
-
-    const generateOneTimeAddress = new Method({
-        name: 'generateOneTimeAddress',
-        call: 'wan_generateOneTimeAddress',
-        params: 1,
-        inputFormatter: [null]
-    });
-
-    const sendPrivacyCxtTransaction = new Method({
-        name: 'sendPrivacyCxtTransaction',
-        call: 'personal_sendPrivacyCxtTransaction',
-        params: 2,
-        inputFormatter: [formatters.inputTransactionFormatter, null]
-    });
-
     const computeOTAPPKeys = new Method({
         name: 'computeOTAPPKeys',
         call: 'wan_computeOTAPPKeys',
@@ -62,10 +29,11 @@ const methods = function() {
         inputFormatter: [formatters.inputAddressFormatter, null]
     });
 
-    const genRingSignData = new Method({
-        name: 'genRingSignData',
-        call: 'personal_genRingSignData',
-        params: 3,
+    const generateOneTimeAddress = new Method({
+        name: 'generateOneTimeAddress',
+        call: 'wan_generateOneTimeAddress',
+        params: 1,
+        inputFormatter: [null]
     });
 
     const getOTABalance = new Method({
@@ -76,17 +44,10 @@ const methods = function() {
         outputFormatter: formatters.outputBigNumberFormatter
     });
 
-    const scanOTAbyAccount = new Method({
-        name: 'scanOTAbyAccount',
-        call: 'wan_scanOTAbyAccount',
-        params: 2,
-        inputFormatter: [formatters.inputAddressFormatter,formatters.inputBlockNumberFormatter]
-    });
-
-    const getSupportWanCoinOTABalances = new Method({
-        name: 'getSupportWanCoinOTABalances',
-        call: 'wan_getSupportWanCoinOTABalances',
-        params: 0,
+    const getOTAMixSet = new Method({
+        name: 'getOTAMixSet',
+        call: 'wan_getOTAMixSet',
+        params: 2
     });
 
     const getSupportStampOTABalances = new Method({
@@ -95,18 +56,51 @@ const methods = function() {
         params: 0,
     });
 
+    const getSupportWanCoinOTABalances = new Method({
+        name: 'getSupportWanCoinOTABalances',
+        call: 'wan_getSupportWanCoinOTABalances',
+        params: 0,
+    });
+
+    const getWanAddress = new Method({
+        name: 'getWanAddress',
+        call: 'wan_getWanAddress',
+        params: 1,
+        inputFormatter: [formatters.inputAddressFormatter]
+    });
+
+    const scanOTAbyAccount = new Method({
+        name: 'scanOTAbyAccount',
+        call: 'wan_scanOTAbyAccount',
+        params: 2,
+        inputFormatter: [formatters.inputAddressFormatter,formatters.inputBlockNumberFormatter]
+    });
+
+    const genRingSignData = new Method({
+        name: 'genRingSignData',
+        call: 'personal_genRingSignData',
+        params: 3,
+    });
+
+    const sendPrivacyCxtTransaction = new Method({
+        name: 'sendPrivacyCxtTransaction',
+        call: 'personal_sendPrivacyCxtTransaction',
+        params: 2,
+        inputFormatter: [formatters.inputTransactionFormatter, null]
+    });
+
+
     return [
-        pendingTransactions,
         computeOTAPPKeys,
-        getOTAMixSet,
-        getWanAddress,
         generateOneTimeAddress,
-        sendPrivacyCxtTransaction,
-        genRingSignData,
         getOTABalance,
-        scanOTAbyAccount,
+        getOTAMixSet,
         getSupportWanCoinOTABalances,
-        getSupportStampOTABalances
+        getSupportStampOTABalances,
+        getWanAddress,
+        scanOTAbyAccount,
+        genRingSignData,
+        sendPrivacyCxtTransaction,
     ];
 };
 
