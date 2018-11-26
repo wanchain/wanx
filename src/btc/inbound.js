@@ -93,7 +93,7 @@ class BTC_Inbound extends CrosschainBase {
 
     }).then(receipt => {
 
-      return this.listenLock(opts, receipt.blockNumber, true);
+      return this.listenRedeem(opts, receipt.blockNumber, true);
 
     }).then(log => {
 
