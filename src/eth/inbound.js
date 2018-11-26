@@ -163,8 +163,8 @@ class ETH_Inbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWETH', 'ETH2WETHLock', log);
-      this.emit('info', { status: 'locked', log, parsed });
+      const values = this.parseLog('HTLCWETH', 'ETH2WETHLock', log);
+      this.emit('info', { status: 'locked', log, values });
       return log;
     });
 
@@ -207,8 +207,8 @@ class ETH_Inbound extends CrosschainBase {
     const action = web3Util(this.ethereum.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCETH', 'ETH2WETHRefund', log);
-      this.emit('info', { status: 'redeemed', log, parsed });
+      const values = this.parseLog('HTLCETH', 'ETH2WETHRefund', log);
+      this.emit('info', { status: 'redeemed', log, values });
       return log;
     });
 

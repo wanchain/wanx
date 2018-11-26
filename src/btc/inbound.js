@@ -117,8 +117,8 @@ class BTC_Inbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
-      this.emit('info', { status: 'locked', log, parsed });
+      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
+      this.emit('info', { status: 'locked', log, values });
       return log;
     });
 
