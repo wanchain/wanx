@@ -23,43 +23,15 @@ class ETH_Inbound extends CrosschainBase {
   send(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
-      // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      return this.lock(opts, true);
 
-      return this.sendLock(opts, true);
+    }).then(() => {
 
-    }).then(receipt => {
-
-      return this.wanchain.web3.eth.getBlockNumber();
-
-    }).then(blockNumber => {
-
-      return this.listenLock(opts, blockNumber, true);
-
-    }).then(receipt => {
-
-      return this.sendRedeem(opts, true);
-
-    }).then(receipt => {
-
-      return this.ethereum.web3.eth.getBlockNumber();
-
-    }).then(blockNumber => {
-
-      return this.listenRedeem(opts, blockNumber, true);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete');
-
-    }).catch(err => {
-
-      // notify error
-      this.emit('error', err)
+      return this.redeem(opts, true);
 
     });
   }
@@ -72,7 +44,7 @@ class ETH_Inbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'lockStart', opts });
 
       return this.sendLock(opts, true);
 
@@ -84,10 +56,10 @@ class ETH_Inbound extends CrosschainBase {
 
       return this.listenLock(opts, blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'locked' });
 
     }).catch(err => {
 
@@ -98,15 +70,14 @@ class ETH_Inbound extends CrosschainBase {
   }
 
   // second 1/2 of crosschain transaction
-  // requires redeemKey to be passed in opts
   redeem(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'redeemStart', opts });
 
       return this.sendRedeem(opts, true);
 
@@ -118,10 +89,10 @@ class ETH_Inbound extends CrosschainBase {
 
       return this.listenRedeem(opts, blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'redeemed' });
 
     }).catch(err => {
 

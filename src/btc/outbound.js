@@ -29,15 +29,34 @@ class BTC_Outbound extends CrosschainBase {
     super(config);
   }
 
+  // complete crosschain transaction
+  send(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
+
+    return Promise.resolve([]).then(() => {
+
+      return this.lock(opts, true);
+
+    }).then(() => {
+
+      // btc outbound requires manual btc redeem
+      // return this.redeem(opts, true);
+
+    });
+  }
+
   // first 1/2 of crosschain transaction
   lock(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
     ! skipValidation && this.validate(OutboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'lockStart', opts });
 
       return this.getOutboundFee(opts, true);
 
@@ -49,10 +68,10 @@ class BTC_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, receipt.blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'locked' });
 
     }).catch(err => {
 
