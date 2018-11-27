@@ -36,9 +36,9 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
    * @param {boolean} skipValidation
    * @returns {Promise} Promise object
    */
@@ -67,9 +67,9 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
    * @param {boolean} skipValidation
    * @returns {Promise} Promise object
    */
@@ -154,8 +154,8 @@ class ETH_Outbound extends CrosschainBase {
    * Get outbound fee amount
    * @param {Object} opts - Tx options
    * @param {string} opts.value - Tx value
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
    * @param {boolean} skipValidation
    * @returns {Promise} Promise object
    */
@@ -196,9 +196,9 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
    * @param {boolean} skipValidation
    * @returns {Promise} Promise object
    */
@@ -347,8 +347,8 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts - Tx options
    * @param {string} opts.to - Destination address
    * @param {string} opts.value - Tx value
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
    * @param {boolean} skipValidation
    * @returns {Object} Tx object
    */
@@ -372,9 +372,9 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.storeman.eth - Storeman eth addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
    * @param {boolean} skipValidation
    * @returns {Object} Tx object
    */
@@ -506,8 +506,8 @@ class ETH_Outbound extends CrosschainBase {
    * @param {Object} opts - Tx options
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
    * @param {string} opts.to - Destination address
    * @param {number|string} opts.value - Tx value
    * @param {boolean} skipValidation
@@ -568,8 +568,8 @@ class ETH_Outbound extends CrosschainBase {
   /**
    * Get data hex string for outboundFee call
    * @param {Object} opts - Tx options
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
    * @param {number|string} opts.value - Tx value
    * @param {boolean} skipValidation
    * @returns {string} Data hex string
