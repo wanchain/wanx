@@ -256,7 +256,7 @@ const OutboundRedeemSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'publicKey', 'sigHash'
   ],
   properties: {
-    to: hash160Address,
+    to: base58Address,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -273,7 +273,7 @@ const OutboundRedeemFromWifSchema = {
     'to', 'txid', 'value', 'redeemScript', 'redeemKey', 'lockTime', 'wif'
   ],
   properties: {
-    to: hash160Address,
+    to: base58Address,
     txid: hash,
     value: value,
     redeemScript: hex,
