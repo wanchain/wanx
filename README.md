@@ -163,18 +163,18 @@ with signing handled outside of WanX.
 
 ## Documentation
 
-### API Reference
-- [Reference](https://github.com/wanchain/wanx/blob/master/docs/api-reference.md)
+#### Reference
+- [API Reference](https://github.com/wanchain/wanx/blob/master/docs/api-reference.md)
 
-### Ethereum
+#### Ethereum
 - [Inbound](https://github.com/wanchain/wanx/blob/master/docs/eth-inbound.md)
 - [Outbound](https://github.com/wanchain/wanx/blob/master/docs/eth-outbound.md)
 
-### ERC20
+#### ERC20
 - [Inbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-inbound.md)
 - [Outbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-outbound.md)
 
-### Bitcoin
+#### Bitcoin
 - [Inbound](https://github.com/wanchain/wanx/blob/master/docs/btc-inbound.md)
 - [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
 
