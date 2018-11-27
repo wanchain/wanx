@@ -9,10 +9,11 @@ const types = require('../lib/types');
 const hex = require('../lib/hex');
 
 const {
+  OutboundFeeSchema,
   OutboundLockSchema,
   OutboundLockWithFeeSchema,
-  OutboundLockDataSchema,
   OutboundFeeDataSchema,
+  OutboundLockDataSchema,
   OutboundRevokeSchema,
   RevokeDataSchema,
 
