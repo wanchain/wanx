@@ -225,34 +225,6 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   /**
-   * Listen for storeman lock confirmation on Ethereum
-   * @param {Object} opts - Tx options
-   * @param {Object} opts.redeemKey - Redeem key pair
-   * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {boolean} skipValidation
-   * @returns {Promise} Promise object
-   */
-  listenLock(opts, blockNumber, skipValidation) {
-
-    ! skipValidation && this.validate(ScanOptsSchema, opts);
-
-    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
-
-    action.then(log => {
-      const values = this.parseLog('HTLCETH', 'WETH2ETHLock', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
-
-    action.catch(err => {
-      this.emit('error', err);
-    });
-
-    return action;
-  }
-
-  /**
    * Send redeem tx on Ethereum
    * @param {Object} opts - Tx options
    * @param {string} opts.to - Destination address
@@ -284,34 +256,6 @@ class ETH_Outbound extends CrosschainBase {
   }
 
   /**
-   * Listen for storeman redeem confirmation on Wanchain
-   * @param {Object} opts - Tx options
-   * @param {Object} opts.redeemKey - Redeem key pair
-   * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {boolean} skipValidation
-   * @returns {Promise} Promise object
-   */
-  listenRedeem(opts, blockNumber, skipValidation) {
-
-    ! skipValidation && this.validate(ScanOptsSchema, opts);
-
-    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
-
-    action.then(log => {
-      const values = this.parseLog('HTLCWETH', 'WETH2ETHRefund', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
-
-    action.catch(err => {
-      this.emit('error', err);
-    });
-
-    return action;
-  }
-
-  /**
    * Send revoke tx on Wanchain
    * @param {Object} opts - Tx options
    * @param {string} opts.from - Sender address
@@ -336,6 +280,62 @@ class ETH_Outbound extends CrosschainBase {
     });
 
     action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  /**
+   * Listen for storeman lock confirmation on Ethereum
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
+  listenLock(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCETH', 'WETH2ETHLock', log);
+      this.emit('info', { status: 'locked', log, values });
+      return log;
+    });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  /**
+   * Listen for storeman redeem confirmation on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
+  listenRedeem(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCWETH', 'WETH2ETHRefund', log);
+      this.emit('info', { status: 'redeemed', log, values });
+      return log;
+    });
+
+    action.catch(err => {
       this.emit('error', err);
     });
 
