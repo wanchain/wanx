@@ -374,7 +374,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.hashForRedeemSig(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.to,
       opts.value,
       opts.redeemScript
@@ -387,7 +387,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.buildRedeemTx(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
@@ -402,7 +402,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.buildRedeemTxFromWif(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,

@@ -349,7 +349,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.hashForRevokeSig(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.from,
       opts.value,
       opts.lockTime,
@@ -363,7 +363,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.buildRevokeTx(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
@@ -379,7 +379,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.buildRevokeTxFromWif(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
