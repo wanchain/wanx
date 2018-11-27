@@ -176,39 +176,7 @@ with signing handled outside of WanX.
 - [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
 
 
-__Inbound__
-- Send lock tx on Ethereum
-- Wait for storeman response on Wanchain
-- Send redeem tx on Wanchain
-- Wait for storeman response on Ethereum
-
-```javascript
-
-// simplest version (where Wanchain and Ethereum accounts are open)
-cctx.send(opts);
-
-// handling lock and redeem separately
-cctx.lock(opts).then(() => {
-  cctx.redeem(opts);
-});
-
-// fine grain handling
-Promise.resolve([]).then(() => {
-  const lockTx = cctx.buildLockTx(opts);
-  return webeth.eth.sendTransaction(lockTx);
-}).then(receipt => {
-  return cctx.listenLock(opts);
-}).then(log => {
-...
-
-```
-
 __Outbound__
-- Get outbound fee
-- Send lock tx on Wanchain with outbound fee
-- Wait for storeman response on Ethereum
-- Send redeem tx on Ethereum
-- Wait for storeman response on Wanchain
 
 ### ERC20 Tokens
 
