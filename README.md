@@ -161,19 +161,49 @@ transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
 with signing handled outside of WanX.
 
-## Chain-specific Steps
-
-The following are the steps that are needed to be taken for each of the chain integrations.
+## Chain-specific Documentation
 
 ### Ethereum
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/eth-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/eth-outbound.md)
 
-__Inbound Steps__
+### ERC20
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-outbound.md)
+
+### Bitcoin
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/btc-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
+
+
+__Inbound__
 - Send lock tx on Ethereum
 - Wait for storeman response on Wanchain
 - Send redeem tx on Wanchain
 - Wait for storeman response on Ethereum
 
-__Outbound Steps__
+```javascript
+
+// simplest version (where Wanchain and Ethereum accounts are open)
+cctx.send(opts);
+
+// handling lock and redeem separately
+cctx.lock(opts).then(() => {
+  cctx.redeem(opts);
+});
+
+// fine grain handling
+Promise.resolve([]).then(() => {
+  const lockTx = cctx.buildLockTx(opts);
+  return webeth.eth.sendTransaction(lockTx);
+}).then(receipt => {
+  return cctx.listenLock(opts);
+}).then(log => {
+...
+
+```
+
+__Outbound__
 - Get outbound fee
 - Send lock tx on Wanchain with outbound fee
 - Wait for storeman response on Ethereum
@@ -182,14 +212,14 @@ __Outbound Steps__
 
 ### ERC20 Tokens
 
-__Inbound Steps__
+__Inbound__
 - Send approve tx on Ethereum
 - Send lock tx on Ethereum
 - Wait for storeman response on Wanchain
 - Send redeem tx on Wanchain
 - Wait for storeman response on Ethereum
 
-__Outbound Steps__
+__Outbound__
 - Send approve tx on Wanchain
 - Get outbound fee
 - Send lock tx on Wanchain with outbound fee
@@ -200,7 +230,7 @@ __Outbound Steps__
 
 ### Bitcoin
 
-__Inbound Steps__
+__Inbound__
 - Generate new Bitcoin P2SH lock address
 - Send bitcoin to the lock address
 - Send lock tx on Wanchain with lockTime and txid of funding tx
@@ -208,7 +238,7 @@ __Inbound Steps__
 - Send redeem tx on Wanchain
 - Wait for storeman response on Wanchain
 
-__Outbound Steps__
+__Outbound__
 - Get outbound fee
 - Send lock tx on Wanchain with outbound fee
 - Wait for storeman response on Wanchain
