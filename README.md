@@ -5,7 +5,7 @@ NB: This project is still under heavy development and currently only works with
 testnet. Feel free to check it out, but please use at your own risk!
 
 ## Install
-```javascript
+```bash
 npm install --save wanx
 ```
 
@@ -56,7 +56,7 @@ const wanx = new WanX('testnet', config);
 
 ```
 
-## Usage
+## Basic Usage
 
 ### Define the transaction
 
@@ -160,6 +160,61 @@ There are generally several independent transactions that comprise a crosschain
 transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
 with signing handled outside of WanX.
+
+## Chain-specific Steps
+
+The following are the steps that are needed to be taken for each of the chain integrations.
+
+### Ethereum
+
+__Inbound Steps__
+- Send lock tx on Ethereum
+- Wait for storeman response on Wanchain
+- Send redeem tx on Wanchain
+- Wait for storeman response on Ethereum
+
+__Outbound Steps__
+- Get outbound fee
+- Send lock tx on Wanchain with outbound fee
+- Wait for storeman response on Ethereum
+- Send redeem tx on Ethereum
+- Wait for storeman response on Wanchain
+
+### ERC20 Tokens
+
+__Inbound Steps__
+- Send approve tx on Ethereum
+- Send lock tx on Ethereum
+- Wait for storeman response on Wanchain
+- Send redeem tx on Wanchain
+- Wait for storeman response on Ethereum
+
+__Outbound Steps__
+- Send approve tx on Wanchain
+- Get outbound fee
+- Send lock tx on Wanchain with outbound fee
+- Wait for storeman response on Ethereum
+- Send redeem tx on Ethereum
+- Wait for storeman response on Wanchain
+
+
+### Bitcoin
+
+__Inbound Steps__
+- Generate new Bitcoin P2SH lock address
+- Send bitcoin to the lock address
+- Send lock tx on Wanchain with lockTime and txid of funding tx
+- Wait for storeman response on Wanchain
+- Send redeem tx on Wanchain
+- Wait for storeman response on Wanchain
+
+__Outbound Steps__
+- Get outbound fee
+- Send lock tx on Wanchain with outbound fee
+- Wait for storeman response on Wanchain
+- Get txid and lockTime from response
+- Send redeem tx on Bitcoin
+
 
 ## Examples
 
