@@ -166,7 +166,8 @@ const ScanOptsSchema = {
 const InboundHTLCSchema = {
   type: 'object',
   required: [
-    'from', 'storeman', 'redeemKey', 'lockTime',
+    // lockTime not required
+    'from', 'storeman', 'redeemKey',
   ],
   properties: {
     from: base58Address,
