@@ -3,6 +3,7 @@ const Web3 = require('web3');
 
 const config = require('./config');
 const crypto = require('./lib/crypto');
+const attachWanRpc = require('./lib/wan-attach-rpc.js');
 const abis = require('./abis');
 
 const ETH_Inbound = require('./eth/inbound');
@@ -22,26 +23,38 @@ class WanX {
     // default config + network config + user config
     this.config = config.get(network, conf);
 
-    // initialize web3 objects if objects are not passed in config and if
-    // config urls are set
-    if (! this.config.wanchain.web3 && this.config.wanchain.url) {
-      const provider = new Web3.providers.HttpProvider(this.config.wanchain.url);
-      this.config.wanchain.web3 = new Web3(provider);
+    const { wanchain, ethereum } = this.config;
+
+    // initialize Wanchain web3 object
+    if (! wanchain.web3 && wanchain.url) {
+      const provider = new Web3.providers.HttpProvider(wanchain.url);
+      wanchain.web3 = new Web3(provider);
     }
-    else if (this.config.wanchain.web3 && typeof this.config.wanchain.web3.version !== 'string') {
+    else if (wanchain.web3 && typeof wanchain.web3.version !== 'string') {
       throw new Error('Unsupported web3 version');
     }
 
-    if (! this.config.ethereum.web3 && this.config.ethereum.url) {
-      const provider = new Web3.providers.HttpProvider(this.config.ethereum.url);
-      this.config.ethereum.web3 = new Web3(provider);
+    // attach Wanchain methods
+    if (wanchain.web3 && ! wanchain.web3.wan) {
+      wanchain.web3.wan = attachWanRpc(wanchain.web3);
     }
-    else if (this.config.ethereum.web3 && typeof this.config.ethereum.web3.version !== 'string') {
+
+    // initialize Ethereum web3 object
+    if (! ethereum.web3 && ethereum.url) {
+      const provider = new Web3.providers.HttpProvider(ethereum.url);
+      ethereum.web3 = new Web3(provider);
+    }
+    else if (ethereum.web3 && typeof ethereum.web3.version !== 'string') {
       throw new Error('Unsupported web3 version');
     }
+
+    this.config.wanchain = wanchain;
+    this.config.ethereum = ethereum;
 
     this.crypto = crypto;
     this.abis = abis;
+    this.attachWanRpc = attachWanRpc;
+
   }
 
   newChain(type, inbound) {

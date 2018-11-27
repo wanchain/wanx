@@ -28,6 +28,25 @@ class BTC_Inbound extends CrosschainBase {
     super(config);
   }
 
+  // complete crosschain transaction
+  // assumes that you have already created a new HTLC address and have sent
+  // bitcoin to it
+  send(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    return Promise.resolve([]).then(() => {
+
+      return this.lock(opts, true);
+
+    }).then(() => {
+
+      return this.redeem(opts, true);
+
+    });
+  }
+
   // first 1/2 of crosschain transaction
   // assumes that you have already created a new HTLC address and have sent
   // bitcoin to it
@@ -38,18 +57,18 @@ class BTC_Inbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'lockStart', opts });
 
-      return this.sendLock(opts);
+      return this.sendLock(opts, true);
 
     }).then(receipt => {
 
       return this.listenLock(opts, receipt.blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'locked' });
 
     }).catch(err => {
 
@@ -63,19 +82,23 @@ class BTC_Inbound extends CrosschainBase {
   // requires redeemKey to be passed in opts
   redeem(opts, skipValidation) {
 
-    ! skipValidation && this.validate(InboundLockSchema, opts);
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'redeemStart', opts });
 
       return this.sendRedeem(opts, true);
 
     }).then(receipt => {
 
+      return this.listenRedeem(opts, receipt.blockNumber, true);
+
+    }).then(log => {
+
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'redeemed' });
 
     }).catch(err => {
 
@@ -117,8 +140,8 @@ class BTC_Inbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
-      this.emit('info', { status: 'locked', log, parsed });
+      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
+      this.emit('info', { status: 'locked', log, values });
       return log;
     });
 
@@ -146,6 +169,27 @@ class BTC_Inbound extends CrosschainBase {
     });
 
     action.on('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  // listen for storeman tx on wanchain
+  listenRedeem(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCRedeem', log);
+      this.emit('info', { status: 'redeemed', log, values });
+      return log;
+    });
+
+    action.catch(err => {
       this.emit('error', err);
     });
 
@@ -202,6 +246,25 @@ class BTC_Inbound extends CrosschainBase {
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
+    };
+  }
+
+  buildRedeemScanOpts(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const { redeemKey } = opts;
+    const { BTC2WBTCRedeem } = this.config.signatures.HTLCWBTC;
+
+    return {
+      blockNumber,
+      address: this.config.wanHtlcAddrBtc,
+      topics: [
+        '0x' + BTC2WBTCRedeem,
+        null,
+        null,
+        '0x' + hex.stripPrefix(redeemKey.xHash),
+      ],
     };
   }
 
@@ -286,7 +349,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.hashForRevokeSig(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.from,
       opts.value,
       opts.lockTime,
@@ -300,7 +363,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.buildRevokeTx(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
@@ -316,7 +379,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return btcUtil.buildRevokeTxFromWif(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,

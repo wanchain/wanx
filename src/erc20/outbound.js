@@ -30,52 +30,18 @@ class ETH_Outbound extends CrosschainBase {
   // complete crosschain transaction
   send(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundApproveSchema, opts);
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
     ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundRedeemSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
-      // notify status
-      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
+      return this.lock(opts, true);
 
-      return this.sendApprove(opts, true);
+    }).then(() => {
 
-    }).then(receipt => {
-
-      return this.getOutboundFee(opts, true);
-
-    }).then(outboundFee => {
-
-      return this.sendLock(Object.assign({}, opts, { outboundFee }), true);
-
-    }).then(receipt => {
-
-      return this.ethereum.web3.eth.getBlockNumber();
-
-    }).then(blockNumber => {
-
-      return this.listenLock(opts, blockNumber, true);
-
-    }).then(receipt => {
-
-      return this.sendRedeem(opts, true);
-
-    }).then(receipt => {
-
-      return this.wanchain.web3.eth.getBlockNumber();
-
-    }).then(blockNumber => {
-
-      return this.listenRedeem(opts, blockNumber, true);
-
-    }).then(receipt => {
-
-      // notify complete
-      this.emit('complete');
-
-    }).catch(err => {
-
-      // notify error
-      this.emit('error', err)
+      return this.redeem(opts, true);
 
     });
   }
@@ -83,12 +49,14 @@ class ETH_Outbound extends CrosschainBase {
   // first 1/2 of crosschain transaction
   lock(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundApproveSchema, opts);
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
     ! skipValidation && this.validate(OutboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'lockStart', opts });
 
       return this.sendApprove(opts, true);
 
@@ -108,10 +76,10 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'locked' });
 
     }).catch(err => {
 
@@ -130,7 +98,7 @@ class ETH_Outbound extends CrosschainBase {
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'start', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'redeemStart', opts });
 
       return this.sendRedeem(opts, true);
 
@@ -142,10 +110,10 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenRedeem(opts, blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'redeemed' });
 
     }).catch(err => {
 
@@ -237,8 +205,8 @@ class ETH_Outbound extends CrosschainBase {
     const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCETH_ERC20', 'OutboundLockLogger', log);
-      this.emit('info', { status: 'locked', log, parsed });
+      const values = this.parseLog('HTLCETH_ERC20', 'OutboundLockLogger', log);
+      this.emit('info', { status: 'locked', log, values });
       return log;
     });
 
@@ -281,8 +249,8 @@ class ETH_Outbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWAN_ERC20', 'OutboundRedeemLogger', log);
-      this.emit('info', { status: 'redeemed', log, parsed });
+      const values = this.parseLog('HTLCWAN_ERC20', 'OutboundRedeemLogger', log);
+      this.emit('info', { status: 'redeemed', log, values });
       return log;
     });
 

@@ -5,16 +5,16 @@ NB: This project is still under heavy development and currently only works with
 testnet. Feel free to check it out, but please use at your own risk!
 
 ## Install
-```
+```javascript
 npm install --save wanx
 ```
 
 ## Configure
 
 If you do not plan to have WanX connect to Wanchain or Ethereum nodes, you can
-start with no configuration other than the network.
+initialize WanX with just the network (mainnet or testnet).
 
-```
+```javascript
 
 const WanX = require('wanx');
 
@@ -28,7 +28,7 @@ the node urls or by passing in the web3 objects directly.
 
 (Note: currently WanX does not connect to Bitcoin nodes.)
 
-```
+```javascript
 
 const WanX = require('wanx');
 
@@ -64,14 +64,14 @@ Start by generating a new redeem key. The redeem key contains the `x` and its
 hash, `xHash`, which are used as the identifier and locking keys for the
 crosschain transaction.
 
-```
+```javascript
 const redeemKey = wanx.newRedeemKey();
 ```
 
 The default hash algorithm for the redeem key is `keccak256`. If you are working
 with Bitcoin, you will instead need a redeem key based on `sha256`.
 
-```
+```javascript
 const redeemKey = wanx.newRedeemKey('sha256');
 ```
 
@@ -80,7 +80,7 @@ crosschain methods require you to pass in this transaction object. The required
 values depend on chain and direction (more documentation is coming, but for
 now, check out the examples to see what is required).
 
-```
+```javascript
 
 // ETH inbound
 const opts = {
@@ -107,12 +107,13 @@ const opts = {
 
 ### Do the transaction
 
-If you have web3 objects that are already open for signing (either with an
-unlocked account or a provider that can sign, such as MetaMask), then sending
-is as easy as creating the new transaction object and calling `send`. You then
-can use events to log or react to each step of the crosschain transaction.
+If you have web3 objects that are already able to sign (where the provider is
+an unlocked account or something else that can sign, like MetaMask), then
+sending is as easy as creating the new transaction object and calling `send`.
+You then can use events to log or react to each step of the crosschain
+transaction.
 
-```
+```javascript
 
 // create a new crosschain tx (chain = 'ETH', inbound = true)
 const cctx = wanx.newChain('ETH', true);
@@ -140,7 +141,7 @@ cctx.on('complete', res => {
 If you need to handle the signing separately, you can get the raw transactions
 to be signed. For example, use the `buildLockTx` method to get the raw lock tx.
 
-```
+```javascript
 
 // get the raw lock tx
 const lockTx = cctx.buildLockTx(opts);
@@ -155,7 +156,7 @@ const serializedTx = transaction.serialize().toString('hex');
 
 ```
 
-There are generally 3 or 4 independent transactions that comprise a crosschain
+There are generally several independent transactions that comprise a crosschain
 transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
 with signing handled outside of WanX.
@@ -165,23 +166,22 @@ with signing handled outside of WanX.
 #### Ethereum
 - [ETH to WETH complete](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-complete.js)
 - [ETH to WETH revoke](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-revoke.js)
-
-#### Ethereum, with manual signing
-- [ETH to WETH lock](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
-- [ETH to WETH redeem](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
+- [ETH to WETH lock, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
+- [ETH to WETH redeem, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
 
 #### Bitcoin
 - [BTC to WBTC complete](https://github.com/wanchain/wanx/blob/master/examples/btc2wbtc-complete.js)
 - [WBTC to BTC complete](https://github.com/wanchain/wanx/blob/master/examples/wbtc2btc-complete.js)
 
 #### ERC20
-- [ZRX to WZRX lock](https://github.com/wanchain/wanx/blob/master/examples/zrx2wzrx-lock-manual.js)
+- [MKR to WMKR lock](https://github.com/wanchain/wanx/blob/master/examples/mkr2wmkr-lock-manual.js)
 
 
 ## Next Todos
 - Add support for more of the contract methods
-- Make gas price/limit configurable
-- Add documentation for all chains and multiple use cases
-- Add jsdoc throughout codebase
 - Add method to get available storemen
 - Add method to get registered tokens
+- Make gas price/limit configurable
+- Add documentation for all chains and multiple use cases
+- Improve and add more examples
+- Add jsdoc throughout codebase

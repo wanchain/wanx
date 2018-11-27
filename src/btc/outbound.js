@@ -9,10 +9,11 @@ const types = require('../lib/types');
 const hex = require('../lib/hex');
 
 const {
+  OutboundFeeSchema,
   OutboundLockSchema,
   OutboundLockWithFeeSchema,
-  OutboundLockDataSchema,
   OutboundFeeDataSchema,
+  OutboundLockDataSchema,
   OutboundRevokeSchema,
   RevokeDataSchema,
 
@@ -29,15 +30,34 @@ class BTC_Outbound extends CrosschainBase {
     super(config);
   }
 
+  // complete crosschain transaction
+  send(opts, skipValidation) {
+
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
+    ! skipValidation && this.validate(OutboundLockSchema, opts);
+
+    return Promise.resolve([]).then(() => {
+
+      return this.lock(opts, true);
+
+    }).then(() => {
+
+      // btc outbound requires manual btc redeem
+      // return this.redeem(opts, true);
+
+    });
+  }
+
   // first 1/2 of crosschain transaction
   lock(opts, skipValidation) {
 
+    ! skipValidation && this.validate(OutboundFeeSchema, opts);
     ! skipValidation && this.validate(OutboundLockSchema, opts);
 
     return Promise.resolve([]).then(() => {
 
       // notify status
-      this.emit('info', { status: 'starting', redeemKey: opts.redeemKey });
+      this.emit('info', { status: 'lockStart', opts });
 
       return this.getOutboundFee(opts, true);
 
@@ -49,10 +69,10 @@ class BTC_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, receipt.blockNumber, true);
 
-    }).then(receipt => {
+    }).then(log => {
 
       // notify complete
-      this.emit('complete');
+      this.emit('complete', { status: 'locked' });
 
     }).catch(err => {
 
@@ -122,8 +142,8 @@ class BTC_Outbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(lockNoticeScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
-      this.emit('info', { status: 'locked', log, parsed });
+      const values = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
+      this.emit('info', { status: 'locked', log, values });
       return log;
     });
 
@@ -144,8 +164,8 @@ class BTC_Outbound extends CrosschainBase {
     const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
-      const parsed = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
-      this.emit('info', { status: 'redeemed', log, parsed });
+      const values = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
+      this.emit('info', { status: 'redeemed', log, values });
       return log;
     });
 
@@ -354,7 +374,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.hashForRedeemSig(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.to,
       opts.value,
       opts.redeemScript
@@ -367,7 +387,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.buildRedeemTx(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
@@ -382,7 +402,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return btcUtil.buildRedeemTxFromWif(
       this.config.network,
-      opts.txid,
+      hex.stripPrefix(opts.txid),
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,

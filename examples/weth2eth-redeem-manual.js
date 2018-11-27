@@ -1,7 +1,7 @@
 const WanX = require('wanx');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
-const WanTx = require('wanchainjs-tx');
+const EthTx = require('ethereumjs-tx');
 
 /**
  * Requirements:
@@ -19,8 +19,8 @@ const web3eth = new Web3(new Web3.providers.HttpProvider(config.ethereum.url));
 const wanx = new WanX('testnet', config);
 
 // New crosschain transaction
-// ethereum, inbound
-const cctx = wanx.newChain('eth', true);
+// ethereum, outbound
+const cctx = wanx.newChain('eth', false);
 
 // Define the transaction opts
 const opts = {
@@ -38,39 +38,39 @@ const opts = {
 };
 
 // Get Wanchain private keys
-const wanDatadir = '/home/user/.wanchain/testnet/';
-const wanKeyObject = keythereum.importFromFile(opts.to, wanDatadir);
-const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
+const ethDatadir = '/home/user/.ethereum/testnet/';
+const ethKeyObject = keythereum.importFromFile(opts.to, ethDatadir);
+const ethPrivateKey = keythereum.recover('mypassword', ethKeyObject);
 
-// Do inbound redeem transaction
+// Do outbound redeem transaction
 Promise.resolve([]).then(() => {
 
-  console.log('Starting eth inbound redeem', opts);
+  console.log('Starting eth outbound redeem', opts);
 
   // Get the tx count to determine next nonce
-  return web3wan.eth.getTransactionCount(opts.to);
+  return web3eth.eth.getTransactionCount(opts.to);
 
 }).then(txCount => {
 
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
-  redeemTx.nonce = web3wan.utils.toHex(txCount);
+  redeemTx.nonce = web3eth.utils.toHex(txCount);
 
   // Sign and send the tx
-  const transaction = new WanTx(redeemTx);
-  transaction.sign(wanPrivateKey);
+  const transaction = new EthTx(redeemTx);
+  transaction.sign(ethPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
-  // Send the redeem transaction on Wanchain
-  return web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  // Send the redeem transaction on Ethereum
+  return web3eth.eth.sendSignedTransaction('0x' + serializedTx);
 
 }).then(receipt => {
 
   console.log('Redeem confirmed and is now pending on storeman');
   console.log(receipt);
 
-  // Get the current block number on Ethereum
-  return web3eth.eth.getBlockNumber();
+  // Get the current block number on Wanchain
+  return web3wan.eth.getBlockNumber();
 
 }).then(blockNumber => {
 
