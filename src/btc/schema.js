@@ -133,18 +133,6 @@ const RevokeDataSchema = {
 const OutboundFeeSchema = {
   type: 'object',
   required: [
-    'to', 'value', 'storeman',
-  ],
-  properties: {
-    to: base58Address,
-    value: value,
-    storeman: storemanWan,
-  },
-};
-
-const OutboundFeeDataSchema = {
-  type: 'object',
-  required: [
     'value', 'storeman',
   ],
   properties: {
@@ -298,7 +286,6 @@ module.exports = {
   OutboundRevokeSchema,
   OutboundFeeSchema,
 
-  OutboundFeeDataSchema,
   InboundLockDataSchema,
   OutboundLockDataSchema,
   RedeemDataSchema,

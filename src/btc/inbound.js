@@ -22,15 +22,33 @@ const {
   ScanOptsSchema,
 } = require('./schema');
 
+/**
+ * Bitcoin Inbound
+ */
 class BTC_Inbound extends CrosschainBase {
 
   constructor(config) {
     super(config);
   }
 
-  // complete crosschain transaction
-  // assumes that you have already created a new HTLC address and have sent
-  // bitcoin to it
+  /**
+   * Complete crosschain transaction (lock + redeem); Assumes you have already
+   * generated and sent funds to an HTLC lock address
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {string} opts.lockTime - LockTime used to generate lock address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.btc - Storeman Bitcoin address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   send(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
@@ -47,9 +65,24 @@ class BTC_Inbound extends CrosschainBase {
     });
   }
 
-  // first 1/2 of crosschain transaction
-  // assumes that you have already created a new HTLC address and have sent
-  // bitcoin to it
+  /**
+   * Lock transaction and confirmation; Assumes you have already
+   * generated and sent funds to an HTLC lock address
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {string} opts.lockTime - LockTime used to generate lock address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.btc - Storeman Bitcoin address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   lock(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
@@ -78,8 +111,15 @@ class BTC_Inbound extends CrosschainBase {
     });
   }
 
-  // second 1/2 of crosschain transaction
-  // requires redeemKey to be passed in opts
+  /**
+   * Redeem transaction and confirmation
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   redeem(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
@@ -108,7 +148,23 @@ class BTC_Inbound extends CrosschainBase {
     });
   }
 
-  // send lock notice transaction on wanchain
+  /**
+   * Send lock tx on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {string} opts.lockTime - LockTime used to generate lock address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.btc - Storeman Bitcoin address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendLock(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
@@ -131,28 +187,15 @@ class BTC_Inbound extends CrosschainBase {
     return action;
   }
 
-  // listen for storeman tx on wanchain
-  listenLock(opts, blockNumber, skipValidation) {
-
-    ! skipValidation && this.validate(ScanOptsSchema, opts);
-
-    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
-
-    action.then(log => {
-      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
-
-    action.catch(err => {
-      this.emit('error', err);
-    });
-
-    return action;
-  }
-
-  // send redeem transaction on wanchain
+  /**
+   * Send redeem tx on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendRedeem(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
@@ -175,7 +218,42 @@ class BTC_Inbound extends CrosschainBase {
     return action;
   }
 
-  // listen for storeman tx on wanchain
+  /**
+   * Listen for storeman lock confirmation on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
+  listenLock(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
+      this.emit('info', { status: 'locked', log, values });
+      return log;
+    });
+
+    action.catch(err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  /**
+   * Listen for storeman redeem confirmation on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   listenRedeem(opts, blockNumber, skipValidation) {
 
     ! skipValidation && this.validate(ScanOptsSchema, opts);
@@ -196,6 +274,23 @@ class BTC_Inbound extends CrosschainBase {
     return action;
   }
 
+  /**
+   * Build lock tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {string} opts.lockTime - LockTime used to generate lock address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.btc - Storeman Bitcoin address
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
   buildLockTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(InboundLockSchema, opts);
@@ -213,6 +308,40 @@ class BTC_Inbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build redeem tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
+  buildRedeemTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(InboundRedeemSchema, opts);
+
+    const { to } = opts;
+    const redeemData = this.buildRedeemData(opts, true);
+
+    return {
+      Txtype: '0x01',
+      from: to,
+      to: this.config.wanHtlcAddrBtc,
+      gas: hex.fromNumber(120000),
+      gasPrice: hex.fromNumber(180e9),
+      data: redeemData,
+    };
+  }
+
+  /**
+   * Build lock scan opts
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Object} Call opts object
+   */
   buildLockScanOpts(opts, blockNumber, skipValidation) {
 
     ! skipValidation && this.validate(ScanOptsSchema, opts);
@@ -232,23 +361,14 @@ class BTC_Inbound extends CrosschainBase {
     };
   }
 
-  buildRedeemTx(opts, skipValidation) {
-
-    ! skipValidation && this.validate(InboundRedeemSchema, opts);
-
-    const { to } = opts;
-    const redeemData = this.buildRedeemData(opts, true);
-
-    return {
-      Txtype: '0x01',
-      from: to,
-      to: this.config.wanHtlcAddrBtc,
-      gas: hex.fromNumber(120000),
-      gasPrice: hex.fromNumber(180e9),
-      data: redeemData,
-    };
-  }
-
+  /**
+   * Build redeem scan opts
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Object} Call opts object
+   */
   buildRedeemScanOpts(opts, blockNumber, skipValidation) {
 
     ! skipValidation && this.validate(ScanOptsSchema, opts);
@@ -273,11 +393,11 @@ class BTC_Inbound extends CrosschainBase {
    * @param {Object} opts - Tx options
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
-   * @param {Object} opts.storeman - Storeman addr pair
-   * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.from - Address that funded the P2SH addr
-   * @param {string} opts.txid - ID of tx that funded the P2SH addr
-   * @param {number} opts.lockTime - Locktime used to generate P2SH addr
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman wan address
+   * @param {string} opts.from - Address that funded the P2SH address
+   * @param {string} opts.txid - ID of tx that funded the P2SH address
+   * @param {number} opts.lockTime - Locktime used to generate P2SH address
    * @param {boolean} skipValidation
    * @returns {string} Data hex string
    */
@@ -320,6 +440,17 @@ class BTC_Inbound extends CrosschainBase {
   // BTC methods
   //
 
+  /**
+   * Build new P2SH lock contract address
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {number} opts.lockTime - LockTime for lock address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.btc - Storeman Bitcoin address
+   * @returns {Object} Contract object
+   */
   buildHashTimeLockContract(opts) {
 
     this.validate(InboundHTLCSchema, opts);
@@ -343,6 +474,16 @@ class BTC_Inbound extends CrosschainBase {
     );
   }
 
+  /**
+   * Build the hash for signature for revoke tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.value - Tx value (minus miner fee)
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {number} opts.lockTime - LockTime for lock address
+   * @param {string} opts.redeemScript - Lock address redeemScript
+   * @returns {string} Hash string
+   */
   hashForRevokeSig(opts) {
 
     this.validate(HashForRevokeSchema, opts);
@@ -357,6 +498,19 @@ class BTC_Inbound extends CrosschainBase {
     );
   }
 
+  /**
+   * Build revoke tx from sigHash
+   * @param {Object} opts - Tx options
+   * @param {string} opts.value - Tx value (minus miner fee)
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {number} opts.lockTime - LockTime for lock address
+   * @param {string} opts.redeemScript - Lock address redeemScript
+   * @param {string} opts.publicKey - Public key of the revoker
+   * @param {string} opts.sigHash - Signed hash for signature
+   * @returns {string} Signed tx as hex string
+   */
   buildRevokeTx(opts) {
 
     this.validate(InboundRevokeSchema, opts);
@@ -373,6 +527,18 @@ class BTC_Inbound extends CrosschainBase {
     );
   }
 
+  /**
+   * Build revoke tx from WIF
+   * @param {Object} opts - Tx options
+   * @param {string} opts.value - Tx value (minus miner fee)
+   * @param {string} opts.txid - Id of funding btc tx
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {number} opts.lockTime - LockTime for lock address
+   * @param {string} opts.redeemScript - Lock address redeemScript
+   * @param {string} opts.wif - Private key of the revoker
+   * @returns {string} Signed tx as hex string
+   */
   buildRevokeTxFromWif(opts) {
 
     this.validate(InboundRevokeFromWifSchema, opts);
