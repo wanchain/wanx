@@ -211,5 +211,5 @@ with signing handled outside of WanX.
 [npm]: https://img.shields.io/npm/v/wanx.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/wanx
 
-[license]: https://img.shields.io/badge/license-MIT-blue.svg
+[license]: https://img.shields.io/badge/license-GNUGPL3-blue.svg
 [license-url]: https://github.com/wanchain/wanx/blob/dev/LICENSE
