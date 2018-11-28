@@ -9,6 +9,9 @@ NB: the Wanchain integrations to Bitcoin and ERC20 tokens are still in beta.
 Currently only Ethereum can be used on mainnet.
 
 ## Install
+
+Use NPM or Yarn to install the library:
+
 ```bash
 npm install --save wanx
 ```
@@ -20,6 +23,8 @@ initialize WanX with just the network (mainnet or testnet).
 
 ```javascript
 
+import WanX from 'wanx';
+// or
 const WanX = require('wanx');
 
 const wanx = new WanX('testnet');
@@ -34,8 +39,6 @@ the node urls or by passing in the web3 objects directly.
 manage the connection to a node.)
 
 ```javascript
-
-const WanX = require('wanx');
 
 // configure with node urls
 const config = {
@@ -179,30 +182,27 @@ with signing handled outside of WanX.
 #### References
 - [API Reference](docs/api-reference.md)
 
-## Examples
+#### Examples
 
-#### Ethereum
 - [ETH to WETH complete](examples/eth2weth-complete.js)
 - [ETH to WETH revoke](examples/eth2weth-revoke.js)
 - [ETH to WETH lock, manual signing](examples/eth2weth-lock-manual.js)
 - [ETH to WETH redeem, manual signing](examples/eth2weth-redeem-manual.js)
-
-#### Bitcoin
 - [BTC to WBTC complete, manual signing](examples/btc2wbtc-complete-manual.js)
 - [WBTC to BTC complete, manual signing](examples/wbtc2btc-complete-manual.js)
-
-#### ERC20
 - [MKR to WMKR lock](examples/mkr2wmkr-lock-manual.js)
 
+## Development
+
+1. `git clone https://github.com/wanchain/wanx.git`
+2. `yarn install`
+3. `yarn test`
 
 ## Next Todos
 - Add support for more of the contract methods
 - Add method to get available storemen
 - Add method to get registered tokens
 - Make gas price/limit configurable
-- Add documentation for all chains and multiple use cases
-- Improve and add more examples
-- Add jsdoc throughout codebase
 
 ## License
 
