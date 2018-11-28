@@ -1,4 +1,4 @@
-# ETH Outbound
+# ERC20 - Outbound (WRC20 ⇒  ERC20)
 
 ## Basic Steps
 

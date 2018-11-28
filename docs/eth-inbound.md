@@ -1,4 +1,4 @@
-# ETH Inbound
+# Ethereum - Inbound (ETH ⇒  WETH)
 
 ## Basic Steps
 

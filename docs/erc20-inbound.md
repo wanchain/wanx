@@ -1,4 +1,4 @@
-# ERC20 Inbound
+# ERC20 - Inbound (ERC20 ⇒  WRC20)
 
 ## Basic Steps
 

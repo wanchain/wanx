@@ -1,4 +1,4 @@
-# ETH Outbound
+# Ethereum - Outbound (WETH ⇒  ETH)
 
 ## Basic Steps
 

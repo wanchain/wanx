@@ -1,4 +1,4 @@
-# ETH Inbound
+# Bitcoin - Inbound (BTC ⇒  WBTC)
 
 ## Basic Steps
 
