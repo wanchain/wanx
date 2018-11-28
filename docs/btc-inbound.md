@@ -9,7 +9,7 @@
 - Send redeem tx on Wanchain
 - Wait for storeman response on Wanchain
 
-## Required fields
+## Required values for lock
 
 - `to` - the receiving Wanchain account
 - `from` - the sending Bitcoin address
@@ -20,6 +20,8 @@
 - `lockTime` - the lockTime of the P2SH lock address
 
 ## Using Wanx
+
+### Lock Bitcoin and redeem on Wanchain
 
 All inbound transactions must start by generating a new P2SH lock address and
 sending funds to it.
@@ -37,8 +39,8 @@ sendBtc(contract.address, opts.value);
 Once the bitcoin transaction is sent and the txid and lockTime are added to the
 opts, you can continue with either the simple version or advance version.
 
-__Simple Usage__: if the specified Wanchain is open, then you can do the
-whole crosschain transaction all in one call. You would want to set up event
+__Simple Usage__: if the specified Wanchain account is open, then you can do
+the whole crosschain transaction all in one call. You will want to set up event
 handlers to watch for progress.
 
 ```javascript
@@ -65,7 +67,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Usage__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle each step separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 
@@ -74,8 +76,7 @@ handle each step of the crosschain transaction.
 // fine grain handling
 Promise.resolve([]).then(() => {
 
-  const lockTx = cctx.buildLockTx(opts);
-  return webwan.eth.sendTransaction(lockTx);
+  return cctx.sendLock(opts);
 
 }).then(receipt => {
 
@@ -86,9 +87,12 @@ Promise.resolve([]).then(() => {
 
 ```
 
-#### Revoke Bitcoin
+### Revoke Bitcoin
 
-Once the lockTime expires, you can generate a revoke transaction on Bitcoin. This can be done either by passing in the private key to the function that builds the bitcoin revoke tx, or by getting the hashForSignature, signing it and passing the signed sigHash to the build tx function.
+Once the lockTime expires, you can generate a revoke transaction on Bitcoin,
+either by passing in the private key to the method that builds the bitcoin
+revoke tx, or by getting the hashForSignature, signing it and passing the
+signed sigHash to the build tx method.
 
 __Build revoke using WIF__
 
@@ -104,6 +108,10 @@ const signedTx = cctx.buildRevokeTxFromWif(opts);
 __Build revoke using sigHash__
 
 ```javascript
+
+const bitcoin = require('bitcoinjs-lib');
+
+...
 
 // build revoke tx
 const hashForSignature = cctx.hashForRevokeSig(opts);

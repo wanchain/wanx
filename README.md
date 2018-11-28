@@ -1,8 +1,8 @@
 # WanX
 ### Utility for making crosschain transactions on the Wanchain network
 
-NB: This project is still under heavy development and currently only works with
-testnet. Feel free to check it out, but please use at your own risk!
+NB: the Wanchain integrations to Bitcoin and ERC20 tokens are still in beta.
+Currently only Ethereum can be used on mainnet.
 
 ## Install
 ```bash
@@ -26,7 +26,8 @@ If you would like WanX to connect to Wanchain and/or Ethereum nodes, to do thing
 like submit transactions or listen for events, you can do so by either defining
 the node urls or by passing in the web3 objects directly.
 
-(Note: currently WanX does not connect to Bitcoin nodes.)
+(Note: WanX does not connect to the Bitcoin network, and instead expects you to
+manage the connection to a node.)
 
 ```javascript
 

@@ -8,7 +8,7 @@
 - Send redeem tx on Wanchain
 - Wait for storeman response on Ethereum
 
-## Required fields
+## Required values for lock
 
 - `to` - the receiving Wanchain account
 - `from` - the sending Ethereum account
@@ -19,9 +19,9 @@
 
 ## Using Wanx
 
-__Simple Usage__: if the specified Wanchain and Ethereum are open, then you
-can do the whole crosschain transaction all in one call. You would want to set
-up event handlers to watch for progress.
+__Simple Usage__: if the specified Wanchain and Ethereum accounts are open,
+then you can do the whole crosschain transaction all in one call. You will want
+to set up event handlers to watch for progress.
 
 ```javascript
 
@@ -47,7 +47,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Usage__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle each step separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 
