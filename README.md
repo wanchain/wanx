@@ -206,7 +206,7 @@ with signing handled outside of WanX.
 
 ## License
 
-**WanX** is available under the MIT license included with the code.
+**WanX** is available under the GNU GPL3 license included with the code.
 
 [npm]: https://img.shields.io/npm/v/wanx.svg?style=flat
 [npm-url]: https://www.npmjs.com/package/wanx
