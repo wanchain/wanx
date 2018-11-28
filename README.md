@@ -5,7 +5,7 @@ NB: This project is still under heavy development and currently only works with
 testnet. Feel free to check it out, but please use at your own risk!
 
 ## Install
-```javascript
+```bash
 npm install --save wanx
 ```
 
@@ -56,7 +56,7 @@ const wanx = new WanX('testnet', config);
 
 ```
 
-## Usage
+## Basic Usage
 
 ### Define the transaction
 
@@ -160,6 +160,24 @@ There are generally several independent transactions that comprise a crosschain
 transaction, and thus the downside of signing manually is that you will have to
 handle the steps yourself. See examples below for a full crosschain transaction
 with signing handled outside of WanX.
+
+## Documentation
+
+#### Reference
+- [API Reference](https://github.com/wanchain/wanx/blob/master/docs/api-reference.md)
+
+#### Ethereum
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/eth-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/eth-outbound.md)
+
+#### ERC20
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-outbound.md)
+
+#### Bitcoin
+- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/btc-inbound.md)
+- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
+
 
 ## Examples
 

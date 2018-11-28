@@ -20,14 +20,33 @@ const {
   ScanOptsSchema,
 } = require('./schema');
 
-
-class ETH_Outbound extends CrosschainBase {
+/**
+ * ERC20 Outbound
+ */
+class ERC20_Outbound extends CrosschainBase {
 
   constructor(config) {
     super(config);
   }
 
-  // complete crosschain transaction
+  /**
+   * Complete crosschain transaction (lock + redeem)
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   send(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundApproveSchema, opts);
@@ -46,7 +65,24 @@ class ETH_Outbound extends CrosschainBase {
     });
   }
 
-  // first 1/2 of crosschain transaction
+  /**
+   * Lock transaction and confirmation
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   lock(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundApproveSchema, opts);
@@ -89,8 +125,17 @@ class ETH_Outbound extends CrosschainBase {
     });
   }
 
-  // second 1/2 of crosschain transaction
-  // requires redeemKey to be passed in opts
+  /**
+   * Redeem transaction and confirmation
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   redeem(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundRedeemSchema, opts);
@@ -123,6 +168,19 @@ class ETH_Outbound extends CrosschainBase {
     });
   }
 
+  /**
+   * Get outbound fee amount
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   getOutboundFee(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
@@ -150,7 +208,16 @@ class ETH_Outbound extends CrosschainBase {
     return action;
   }
 
-  // send approve transaction on wanchain
+  /**
+   * Send approve tx on Ethereum
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendApprove(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundApproveSchema, opts);
@@ -173,7 +240,25 @@ class ETH_Outbound extends CrosschainBase {
     return action;
   }
 
-  // send lock transaction on wanchain
+  /**
+   * Send lock tx on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.outboundFee - Tx outbound fee
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendLock(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
@@ -196,28 +281,17 @@ class ETH_Outbound extends CrosschainBase {
     return action;
   }
 
-  // listen for storeman tx on ethereum
-  listenLock(opts, blockNumber, skipValidation) {
-
-    ! skipValidation && this.validate(ScanOptsSchema, opts);
-
-    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
-
-    action.then(log => {
-      const values = this.parseLog('HTLCETH_ERC20', 'OutboundLockLogger', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
-
-    action.catch('error', err => {
-      this.emit('error', err);
-    });
-
-    return action;
-  }
-
-  // send refund transaction on ethereum
+  /**
+   * Send redeem tx on Ethereum
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendRedeem(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundRedeemSchema, opts);
@@ -240,28 +314,17 @@ class ETH_Outbound extends CrosschainBase {
     return action;
   }
 
-  // listen for storeman tx on wanchain
-  listenRedeem(opts, blockNumber, skipValidation) {
-
-    ! skipValidation && this.validate(ScanOptsSchema, opts);
-
-    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
-
-    action.then(log => {
-      const values = this.parseLog('HTLCWAN_ERC20', 'OutboundRedeemLogger', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
-
-    action.catch('error', err => {
-      this.emit('error', err);
-    });
-
-    return action;
-  }
-
-  // send revoke transaction on wanchain
+  /**
+   * Send revoke tx on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   sendRevoke(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
@@ -284,6 +347,75 @@ class ETH_Outbound extends CrosschainBase {
     return action;
   }
 
+  /**
+   * Listen for storeman lock confirmation on Ethereum
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
+  listenLock(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.ethereum.web3).watchLogs(lockScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCETH_ERC20', 'OutboundLockLogger', log);
+      this.emit('info', { status: 'locked', log, values });
+      return log;
+    });
+
+    action.catch('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  /**
+   * Listen for storeman redeem confirmation on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
+  listenRedeem(opts, blockNumber, skipValidation) {
+
+    ! skipValidation && this.validate(ScanOptsSchema, opts);
+
+    const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
+    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
+
+    action.then(log => {
+      const values = this.parseLog('HTLCWAN_ERC20', 'OutboundRedeemLogger', log);
+      this.emit('info', { status: 'redeemed', log, values });
+      return log;
+    });
+
+    action.catch('error', err => {
+      this.emit('error', err);
+    });
+
+    return action;
+  }
+
+  /**
+   * Build outbound fee tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   buildOutboundFeeTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
@@ -294,6 +426,16 @@ class ETH_Outbound extends CrosschainBase {
     return { to, data };
   }
 
+  /**
+   * Build approve tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.value - Tx value
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
   buildApproveTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundApproveSchema, opts);
@@ -311,9 +453,28 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build lock tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {string} opts.to - Destination address
+   * @param {string} opts.value - Tx value
+   * @param {string} opts.outboundFee - Tx outbound fee
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.wan - Token address on Wanchain
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {string} opts.storeman.eth - Storeman Ethereum address
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise object
+   */
   buildLockTx(opts, skipValidation) {
 
-    ! skipValidation && this.validate(OutboundLockSchema, opts);
+    ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const { from, outboundFee } = opts;
     const lockData = this.buildLockData(opts, true);
@@ -329,6 +490,17 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build redeem tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.to - Destination address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.x - Redeem key x
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
   buildRedeemTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundRedeemSchema, opts);
@@ -344,6 +516,17 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build redeem tx
+   * @param {Object} opts - Tx options
+   * @param {string} opts.from - Sender address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
   buildRevokeTx(opts, skipValidation) {
 
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
@@ -360,6 +543,14 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build lock scan opts
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Object} Call opts object
+   */
   buildLockScanOpts(opts, blockNumber, skipValidation) {
 
     ! skipValidation && this.validate(ScanOptsSchema, opts);
@@ -379,6 +570,14 @@ class ETH_Outbound extends CrosschainBase {
     };
   }
 
+  /**
+   * Build redeem scan opts
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.redeemKey - Redeem key pair
+   * @param {string} opts.redeemKey.xHash - Redeem key xHash
+   * @param {boolean} skipValidation
+   * @returns {Object} Call opts object
+   */
   buildRedeemScanOpts(opts, blockNumber, skipValidation) {
 
     ! skipValidation && this.validate(ScanOptsSchema, opts);
@@ -515,4 +714,4 @@ class ETH_Outbound extends CrosschainBase {
   }
 }
 
-module.exports = ETH_Outbound;
+module.exports = ERC20_Outbound;
