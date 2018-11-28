@@ -163,36 +163,31 @@ with signing handled outside of WanX.
 
 ## Documentation
 
-#### Reference
-- [API Reference](https://github.com/wanchain/wanx/blob/master/docs/api-reference.md)
+#### Cross-chain Transactions
+- [Ethereum Inbound](docs/eth-inbound.md)
+- [Ethereum Outbound](docs/eth-outbound.md)
+- [ERC20 Inbound](docs/erc20-inbound.md)
+- [ERC20 Outbound](docs/erc20-outbound.md)
+- [Bitcoin Inbound](docs/btc-inbound.md)
+- [Bitcoin Outbound](docs/btc-outbound.md)
 
-#### Ethereum
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/eth-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/eth-outbound.md)
-
-#### ERC20
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-outbound.md)
-
-#### Bitcoin
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/btc-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
-
+#### References
+- [API Reference](docs/api-reference.md)
 
 ## Examples
 
 #### Ethereum
-- [ETH to WETH complete](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-complete.js)
-- [ETH to WETH revoke](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-revoke.js)
-- [ETH to WETH lock, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
-- [ETH to WETH redeem, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
+- [ETH to WETH complete](examples/eth2weth-complete.js)
+- [ETH to WETH revoke](examples/eth2weth-revoke.js)
+- [ETH to WETH lock, manual signing](examples/eth2weth-lock-manual.js)
+- [ETH to WETH redeem, manual signing](examples/eth2weth-redeem-manual.js)
 
 #### Bitcoin
-- [BTC to WBTC complete](https://github.com/wanchain/wanx/blob/master/examples/btc2wbtc-complete.js)
-- [WBTC to BTC complete](https://github.com/wanchain/wanx/blob/master/examples/wbtc2btc-complete.js)
+- [BTC to WBTC complete, manual signing](examples/btc2wbtc-complete-manual.js)
+- [WBTC to BTC complete, manual signing](examples/wbtc2btc-complete-manual.js)
 
 #### ERC20
-- [MKR to WMKR lock](https://github.com/wanchain/wanx/blob/master/examples/mkr2wmkr-lock-manual.js)
+- [MKR to WMKR lock](examples/mkr2wmkr-lock-manual.js)
 
 
 ## Next Todos
