@@ -26,7 +26,6 @@ const btcUtil = {
 
   buildIncompleteRedeem,
   buildIncompleteRevoke,
-  // getTransaction,
 }
 
 module.exports = btcUtil;
@@ -395,43 +394,4 @@ function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, w
   tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
-}
-
-/**
- * Get transaction from blockchain or mempool
- * @param {string} txHash - The hash of the transaction
- * @returns {Promise} Promise object returning tx object
- */
-function getTransaction(txHash) {
-  return new Promise((resolve, reject) => {
-    bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
-      if (err !== null) {
-        return reject(err);
-      }
-
-      // if tx found, return it
-      if (res && res.result) {
-        return resolve(res.result);
-      }
-
-      // otherwise, check the mempool
-      bitcoinRpc.call('getrawmempool', [], (err, res) => {
-        if (err !== null) {
-          return reject(err);
-        } else if (res.error !== null) {
-          return reject(res.error);
-        }
-
-        const transactions = res.result;
-
-        if (! Array.isArray(transactions)) {
-          return reject(new Error('mempool transactions is not an array'));
-        }
-
-        const tx = transactions.filter(t => t.txid === txHash).shift();
-
-        resolve(tx);
-      });
-    });
-  });
 }
