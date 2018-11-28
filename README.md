@@ -1,4 +1,8 @@
 # WanX
+
+[![GitHub License][license]][license-url]
+[![NPM][npm]][npm-url]
+
 ### Utility for making crosschain transactions on the Wanchain network
 
 NB: the Wanchain integrations to Bitcoin and ERC20 tokens are still in beta.
@@ -199,3 +203,13 @@ with signing handled outside of WanX.
 - Add documentation for all chains and multiple use cases
 - Improve and add more examples
 - Add jsdoc throughout codebase
+
+## License
+
+**WanX** is available under the MIT license included with the code.
+
+[npm]: https://img.shields.io/npm/v/wanx.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/wanx
+
+[license]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-url]: https://github.com/wanchain/wanx/blob/dev/LICENSE
