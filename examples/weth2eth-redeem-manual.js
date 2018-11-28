@@ -66,7 +66,7 @@ Promise.resolve([]).then(() => {
 
 }).then(receipt => {
 
-  console.log('Redeem confirmed and is now pending on storeman');
+  console.log('Redeem submitted and now pending on storeman');
   console.log(receipt);
 
   // Get the current block number on Wanchain
