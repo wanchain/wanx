@@ -34,10 +34,10 @@ sendBtc(contract.address, opts.value);
 
 ```
 
-Once the bitcoin transaction is sent and the txid and lockTime is added to the
+Once the bitcoin transaction is sent and the txid and lockTime are added to the
 opts, you can continue with either the simple version or advance version.
 
-__Simple Version__: if the specified Wanchain is open, then you can do the
+__Simple Usage__: if the specified Wanchain is open, then you can do the
 whole crosschain transaction all in one call. You would want to set up event
 handlers to watch for progress.
 
@@ -65,7 +65,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Version__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle the steps separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 

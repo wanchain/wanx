@@ -17,7 +17,7 @@
 
 ## Using Wanx
 
-__Simple Version__: if the specified Wanchain and Ethereum are open, then you
+__Simple Usage__: if the specified Wanchain and Ethereum are open, then you
 can do the whole crosschain transaction all in one call. You would want to set
 up event handlers to watch for progress.
 
@@ -45,7 +45,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Version__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle the steps separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 
