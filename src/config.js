@@ -199,6 +199,9 @@ const get = function(network, conf = {}) {
   if (typeof network !== 'string') {
     throw new Error('Network must be a string');
   }
+  else if (network !== 'mainnet' && network !== 'testnet') {
+    throw new Error('Invalid network');
+  }
 
   const networkConfig = network === 'mainnet' ? mainnetConfig : testnetConfig;
   const config = Object.assign({}, defaultConfig, networkConfig, conf);
