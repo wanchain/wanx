@@ -63,7 +63,7 @@ Promise.resolve([]).then(() => {
   opts.outboundFee = fee;
 
   const lockTx = cctx.buildLockTx(opts);
-  return webeth.eth.sendTransaction(lockTx);
+  return webwan.eth.sendTransaction(lockTx);
 
 }).then(receipt => {
 
