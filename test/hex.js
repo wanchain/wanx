@@ -33,6 +33,11 @@ describe('hex prefixing', () => {
     res = hex.ensurePrefix(str);
 
     expect(res).to.equal('0x686920746865726521');
+
+    str = 123;
+    res = hex.ensurePrefix(str);
+
+    expect(res).to.equal(123);
   });
 
 });
