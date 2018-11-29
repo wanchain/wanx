@@ -44,7 +44,7 @@
         { "$ref": "#base58" },
         {
           "minLength": 34,
-          "maxLength": 34
+          "maxLength": 35
         }
       ]
     },
