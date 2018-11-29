@@ -9,15 +9,36 @@
 - Send redeem tx on Wanchain
 - Wait for storeman response on Wanchain
 
-## Required values for lock
+## Required and optional fields
+
+### Lock fields
 
 - `to` - the receiving Wanchain account
-- `from` - the sending Bitcoin address
+- `from` - the revoker Bitcoin address (legacy type only)
 - `value` - the value to be transferred (in satoshis)
 - `storeman` - the storeman (wan/btc) accounts to use
 - `redeemKey` - the tx redeem key, including x and xHash
 - `txid` - the id of the BTC tx funding the P2SH lock address
 - `lockTime` - the lockTime of the P2SH lock address
+
+### Redeem fields
+
+- `to` - the receiving Wanchain account
+- `redeemKey` - the tx redeem key, including x and xHash
+
+### Revoke fields
+
+- `from` - the revoker Bitcoin address
+- `payTo` - the Bitcoin address where to send funds (optional, defaults to `from`; legacy or P2SH)
+- `value` - the value to be transferred (in satoshis, excluding the mining fee)
+- `storeman` - the storeman btc account
+- `redeemKey` - the tx redeem key, including x and xHash
+- `txid` - the txid of the tx that funds the P2SH lock address
+- `lockTime` - the lockTime of the P2SH lock address
+- `redeemScript` - the redeemScript of the P2SH lock address
+- `publicKey` - the public key of the redeeming `to` address
+- `sigHash` - the signature hash of the redeeming tx, signed externally with redeeming private key
+- `wif` - use in place of `publicKey` and `sigHash`; the private key of the `from` address, in WIF format
 
 ## Using Wanx
 

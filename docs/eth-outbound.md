@@ -8,14 +8,26 @@
 - Send redeem tx on Ethereum
 - Wait for storeman response on Wanchain
 
-## Required values for lock
+## Required and optional fields
 
-- `to` - the receiving Wanchain account
-- `from` - the sending Ethereum account
+### Lock fields
+
+- `to` - the receiving Ethereum account
+- `from` - the sending Wanchain account
 - `value` - the value to be transferred (in wei)
 - `storeman` - the storeman (wan/eth) accounts to use
 - `redeemKey` - the tx redeem key, including x and xHash
 - `outboundFee` - the value of fee (in wei)
+
+### Redeem fields
+
+- `to` - the receiving Ethereum account
+- `redeemKey` - the tx redeem key, including x and xHash
+
+### Revoke fields
+
+- `from` - the sending Wanchain account
+- `redeemKey` - the tx redeem key, including x and xHash
 
 ## Using Wanx
 
