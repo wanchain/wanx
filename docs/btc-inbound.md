@@ -111,9 +111,10 @@ Promise.resolve([]).then(() => {
 ### Revoke Bitcoin
 
 Once the lockTime expires, you can generate a revoke transaction on Bitcoin,
-either by passing in the private key to the method that builds the bitcoin
-revoke tx, or by getting the hashForSignature, signing it and passing the
-signed sigHash to the build tx method.
+either by passing in the revoker private key to the `buildRevokeTxFromWif`
+method, or by using `hashForRevokeSig` to get the hash for signature, then
+signing it and passing it along with the public key of the revoker address to
+the `buildRevokeTx` method.
 
 __Build revoke using WIF__
 
@@ -134,12 +135,18 @@ const bitcoin = require('bitcoinjs-lib');
 
 ...
 
-// build revoke tx
+// get hash for signature
 const hashForSignature = cctx.hashForRevokeSig(opts);
 
+// sign hash
 const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.testnet);
 const sigHash = keyPair.sign(new Buffer.from(sigHash, 'hex'));
 
-const tx = cctx.buildRevokeTx(Object.assign({}, opts, { sigHash }));
+// build revoke tx
+const signedTx = cctx.buildRevokeTx(Object.assign({}, opts, { sigHash }));
 
 ```
+
+Both the `buildRevokeTx` and `buildRevokeTxFromWif` methods return the signed
+transaction in hex format, ready to be sent on to the network through a Bitcoin
+node.

@@ -111,10 +111,10 @@ opts.redeemScript = contract.redeemScript;
 ```
 
 With the lockTime and redeemScript added to `opts`, build the redeem
-transaction either by passing in the private key to the `buildRedeemTxFromWif`
-method, or by using `hashForRedeemSig` to get the hash for signature, then
-signing it and passing it along with the public key of the redeeming address to
-the `buildRedeemTx` method.
+transaction either by passing in the redeemer private key to the
+`buildRedeemTxFromWif` method, or by using `hashForRedeemSig` to get the hash
+for signature, then signing it and passing it along with the public key of the
+redeemer address to the `buildRedeemTx` method.
 
 __Build redeem using WIF__
 
@@ -131,15 +131,21 @@ __Build redeem using sigHash__
 
 ```javascript
 
+const bitcoin = require('bitcoinjs-lib');
+
+...
+
 const publicKey = '03e55a948b017ad25994cbe3e10842bffc8835054f56528fe2ed32b9e6ec853e4c';
 
-// build redeem tx
+// get hash for signature
 const hashForSignature = cctx.hashForRedeemSig(opts);
 
+// sign hash
 const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.testnet);
 const sigHash = keyPair.sign(new Buffer.from(sigHash, 'hex'));
 
-const tx = cctx.buildRedeemTx(Object.assign({}, opts, { sigHash, publicKey }));
+// build redeem tx
+const signedTx = cctx.buildRedeemTx(Object.assign({}, opts, { sigHash, publicKey }));
 
 ```
 
