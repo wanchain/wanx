@@ -102,7 +102,7 @@ Promise.resolve([]).then(() => {
 
 }).then(receipt => {
 
-  console.log('Lock confirmed and is now pending on storeman');
+  console.log('Lock submitted and now pending on storeman');
   console.log(receipt);
 
   // Scan for the lock confirmation from the storeman
@@ -134,7 +134,7 @@ Promise.resolve([]).then(() => {
 
 }).then(receipt => {
 
-  console.log('Redeem confirmed and is now pending on storeman');
+  console.log('Redeem submitted and now pending on storeman');
   console.log(receipt);
 
   // Scan for the lock confirmation from the storeman

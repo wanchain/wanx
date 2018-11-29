@@ -26,7 +26,6 @@ const btcUtil = {
 
   buildIncompleteRedeem,
   buildIncompleteRevoke,
-  // getTransaction,
 }
 
 module.exports = btcUtil;
@@ -186,7 +185,7 @@ function buildIncompleteRevoke(network, txid, address, value, lockTime) {
  * @param {string} toAddress - The address where to send funds (defaults to redeemer)
  * @returns {string} Signed transaction as hex string
  */
-function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress = '') {
+function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // if toAddress is not supplied, derive it from the publicKey
@@ -236,7 +235,7 @@ function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedS
  * @param {string} toAddress - The address where to send funds (defaults to redeemer)
  * @returns {string} Signed transaction as hex string
  */
-function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress = '') {
+function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // NB: storemen address validation requires that vout is 0
@@ -300,7 +299,7 @@ function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddr
  * @param {string} toAddress - The address where to send funds (defaults to revoker)
  * @returns {string} Signed transaction as hex string
  */
-function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress = '') {
+function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // if toAddress is not supplied, derive it from the publicKey
@@ -349,7 +348,7 @@ function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKe
  * @param {string} toAddress - The address where to send funds (defaults to revoker)
  * @returns {string} Signed transaction as hex string
  */
-function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress = '') {
+function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoinNetwork);
@@ -395,43 +394,4 @@ function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, w
   tx.setInputScript(0, scriptSig);
 
   return tx.toHex();
-}
-
-/**
- * Get transaction from blockchain or mempool
- * @param {string} txHash - The hash of the transaction
- * @returns {Promise} Promise object returning tx object
- */
-function getTransaction(txHash) {
-  return new Promise((resolve, reject) => {
-    bitcoinRpc.call('getrawtransaction', [txHash, 1], (err, res) => {
-      if (err !== null) {
-        return reject(err);
-      }
-
-      // if tx found, return it
-      if (res && res.result) {
-        return resolve(res.result);
-      }
-
-      // otherwise, check the mempool
-      bitcoinRpc.call('getrawmempool', [], (err, res) => {
-        if (err !== null) {
-          return reject(err);
-        } else if (res.error !== null) {
-          return reject(res.error);
-        }
-
-        const transactions = res.result;
-
-        if (! Array.isArray(transactions)) {
-          return reject(new Error('mempool transactions is not an array'));
-        }
-
-        const tx = transactions.filter(t => t.txid === txHash).shift();
-
-        resolve(tx);
-      });
-    });
-  });
 }

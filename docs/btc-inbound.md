@@ -1,4 +1,4 @@
-# ETH Inbound
+# Bitcoin - Inbound (BTC ⇒  WBTC)
 
 ## Basic Steps
 
@@ -9,17 +9,40 @@
 - Send redeem tx on Wanchain
 - Wait for storeman response on Wanchain
 
-## Required fields
+## Required and optional fields
+
+### Lock fields
 
 - `to` - the receiving Wanchain account
-- `from` - the sending Bitcoin address
+- `from` - the revoker Bitcoin address (legacy type only)
 - `value` - the value to be transferred (in satoshis)
 - `storeman` - the storeman (wan/btc) accounts to use
 - `redeemKey` - the tx redeem key, including x and xHash
 - `txid` - the id of the BTC tx funding the P2SH lock address
 - `lockTime` - the lockTime of the P2SH lock address
 
+### Redeem fields
+
+- `to` - the receiving Wanchain account
+- `redeemKey` - the tx redeem key, including x and xHash
+
+### Revoke fields
+
+- `from` - the revoker Bitcoin address
+- `payTo` - the Bitcoin address where to send funds (optional, defaults to `from`; legacy or P2SH)
+- `value` - the value to be transferred (in satoshis, excluding the mining fee)
+- `storeman` - the storeman btc account
+- `redeemKey` - the tx redeem key, including x and xHash
+- `txid` - the txid of the tx that funds the P2SH lock address
+- `lockTime` - the lockTime of the P2SH lock address
+- `redeemScript` - the redeemScript of the P2SH lock address
+- `publicKey` - the public key of the redeeming `to` address
+- `sigHash` - the signature hash of the redeeming tx, signed externally with redeeming private key
+- `wif` - use in place of `publicKey` and `sigHash`; the private key of the `from` address, in WIF format
+
 ## Using Wanx
+
+### Lock Bitcoin and redeem on Wanchain
 
 All inbound transactions must start by generating a new P2SH lock address and
 sending funds to it.
@@ -34,11 +57,11 @@ sendBtc(contract.address, opts.value);
 
 ```
 
-Once the bitcoin transaction is sent and the txid and lockTime is added to the
+Once the bitcoin transaction is sent and the txid and lockTime are added to the
 opts, you can continue with either the simple version or advance version.
 
-__Simple Version__: if the specified Wanchain is open, then you can do the
-whole crosschain transaction all in one call. You would want to set up event
+__Simple Usage__: if the specified Wanchain account is open, then you can do
+the whole crosschain transaction all in one call. You will want to set up event
 handlers to watch for progress.
 
 ```javascript
@@ -65,7 +88,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Version__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle each step separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 
@@ -74,8 +97,7 @@ handle each step of the crosschain transaction.
 // fine grain handling
 Promise.resolve([]).then(() => {
 
-  const lockTx = cctx.buildLockTx(opts);
-  return webwan.eth.sendTransaction(lockTx);
+  return cctx.sendLock(opts);
 
 }).then(receipt => {
 
@@ -86,9 +108,13 @@ Promise.resolve([]).then(() => {
 
 ```
 
-#### Revoke Bitcoin
+### Revoke Bitcoin
 
-Once the lockTime expires, you can generate a revoke transaction on Bitcoin. This can be done either by passing in the private key to the function that builds the bitcoin revoke tx, or by getting the hashForSignature, signing it and passing the signed sigHash to the build tx function.
+Once the lockTime expires, you can generate a revoke transaction on Bitcoin,
+either by passing in the revoker private key to the `buildRevokeTxFromWif`
+method, or by using `hashForRevokeSig` to get the hash for signature, then
+signing it and passing it along with the public key of the revoker address to
+the `buildRevokeTx` method.
 
 __Build revoke using WIF__
 
@@ -105,12 +131,22 @@ __Build revoke using sigHash__
 
 ```javascript
 
-// build revoke tx
+const bitcoin = require('bitcoinjs-lib');
+
+...
+
+// get hash for signature
 const hashForSignature = cctx.hashForRevokeSig(opts);
 
+// sign hash
 const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.testnet);
 const sigHash = keyPair.sign(new Buffer.from(sigHash, 'hex'));
 
-const tx = cctx.buildRevokeTx(Object.assign({}, opts, { sigHash }));
+// build revoke tx
+const signedTx = cctx.buildRevokeTx(Object.assign({}, opts, { sigHash }));
 
 ```
+
+Both the `buildRevokeTx` and `buildRevokeTxFromWif` methods return the signed
+transaction in hex format, ready to be sent on to the network through a Bitcoin
+node.

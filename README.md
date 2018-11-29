@@ -1,10 +1,17 @@
 # WanX
+
+[![GitHub License][license]][license-url]
+[![NPM][npm]][npm-url]
+
 ### Utility for making crosschain transactions on the Wanchain network
 
-NB: This project is still under heavy development and currently only works with
-testnet. Feel free to check it out, but please use at your own risk!
+NB: the Wanchain integrations to Bitcoin and ERC20 tokens are still in beta.
+Currently only Ethereum can be used on mainnet.
 
 ## Install
+
+Use NPM or Yarn to install the library:
+
 ```bash
 npm install --save wanx
 ```
@@ -16,6 +23,8 @@ initialize WanX with just the network (mainnet or testnet).
 
 ```javascript
 
+import WanX from 'wanx';
+// or
 const WanX = require('wanx');
 
 const wanx = new WanX('testnet');
@@ -26,11 +35,10 @@ If you would like WanX to connect to Wanchain and/or Ethereum nodes, to do thing
 like submit transactions or listen for events, you can do so by either defining
 the node urls or by passing in the web3 objects directly.
 
-(Note: currently WanX does not connect to Bitcoin nodes.)
+(Note: WanX does not connect to the Bitcoin network, and instead expects you to
+manage the connection to a node.)
 
 ```javascript
-
-const WanX = require('wanx');
 
 // configure with node urls
 const config = {
@@ -163,43 +171,46 @@ with signing handled outside of WanX.
 
 ## Documentation
 
-#### Reference
-- [API Reference](https://github.com/wanchain/wanx/blob/master/docs/api-reference.md)
+#### Cross-chain Transactions
+- [Ethereum Inbound](docs/eth-inbound.md)
+- [Ethereum Outbound](docs/eth-outbound.md)
+- [ERC20 Inbound](docs/erc20-inbound.md)
+- [ERC20 Outbound](docs/erc20-outbound.md)
+- [Bitcoin Inbound](docs/btc-inbound.md)
+- [Bitcoin Outbound](docs/btc-outbound.md)
 
-#### Ethereum
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/eth-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/eth-outbound.md)
+#### References
+- [API Reference](docs/api-reference.md)
 
-#### ERC20
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/erc20-outbound.md)
+#### Examples
 
-#### Bitcoin
-- [Inbound](https://github.com/wanchain/wanx/blob/master/docs/btc-inbound.md)
-- [Outbound](https://github.com/wanchain/wanx/blob/master/docs/btc-outbound.md)
+- [ETH to WETH complete](examples/eth2weth-complete.js)
+- [ETH to WETH revoke](examples/eth2weth-revoke.js)
+- [ETH to WETH lock, manual signing](examples/eth2weth-lock-manual.js)
+- [ETH to WETH redeem, manual signing](examples/eth2weth-redeem-manual.js)
+- [BTC to WBTC complete, manual signing](examples/btc2wbtc-complete-manual.js)
+- [WBTC to BTC complete, manual signing](examples/wbtc2btc-complete-manual.js)
+- [MKR to WMKR complete, manual signing](examples/mkr2wmkr-complete-manual.js)
+- [WMKR to MKR complete, manual signing](examples/wmkr2mkr-complete-manual.js)
 
+## Development
 
-## Examples
-
-#### Ethereum
-- [ETH to WETH complete](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-complete.js)
-- [ETH to WETH revoke](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-revoke.js)
-- [ETH to WETH lock, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-lock-manual.js)
-- [ETH to WETH redeem, manual signing](https://github.com/wanchain/wanx/blob/master/examples/eth2weth-redeem-manual.js)
-
-#### Bitcoin
-- [BTC to WBTC complete](https://github.com/wanchain/wanx/blob/master/examples/btc2wbtc-complete.js)
-- [WBTC to BTC complete](https://github.com/wanchain/wanx/blob/master/examples/wbtc2btc-complete.js)
-
-#### ERC20
-- [MKR to WMKR lock](https://github.com/wanchain/wanx/blob/master/examples/mkr2wmkr-lock-manual.js)
-
+1. `git clone https://github.com/wanchain/wanx.git`
+2. `yarn install`
+3. `yarn test`
 
 ## Next Todos
 - Add support for more of the contract methods
 - Add method to get available storemen
 - Add method to get registered tokens
 - Make gas price/limit configurable
-- Add documentation for all chains and multiple use cases
-- Improve and add more examples
-- Add jsdoc throughout codebase
+
+## License
+
+**WanX** is available under the GNU GPL3 license included with the code.
+
+[npm]: https://img.shields.io/npm/v/wanx.svg?style=flat
+[npm-url]: https://www.npmjs.com/package/wanx
+
+[license]: https://img.shields.io/badge/license-GNUGPL3-blue.svg
+[license-url]: https://github.com/wanchain/wanx/blob/dev/LICENSE

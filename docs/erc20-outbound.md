@@ -1,4 +1,4 @@
-# ETH Outbound
+# ERC20 - Outbound (WRC20 ⇒  ERC20)
 
 ## Basic Steps
 
@@ -9,7 +9,9 @@
 - Send redeem tx on Ethereum
 - Wait for storeman response on Wanchain
 
-## Required fields
+## Required and optional fields
+
+### Lock fields
 
 - `to` - the receiving Wanchain account
 - `from` - the sending Ethereum account
@@ -19,11 +21,23 @@
 - `token` - the token addresses on Wanchain and Ethereum
 - `outboundFee` - the value of fee (in wei)
 
+### Redeem fields
+
+- `to` - the receiving Ethereum account
+- `redeemKey` - the tx redeem key, including x and xHash
+- `token` - the token addresses on Wanchain and Ethereum
+
+### Revoke fields
+
+- `from` - the sending Wanchain account
+- `redeemKey` - the tx redeem key, including x and xHash
+- `token` - the token addresses on Wanchain and Ethereum
+
 ## Using Wanx
 
-__Simple Version__: if the specified Wanchain and Ethereum are open, then you
-can do the whole crosschain transaction all in one call. You would want to set
-up event handlers to watch for progress.
+__Simple Usage__: if the specified Wanchain and Ethereum accounts are open,
+then you can do the whole crosschain transaction all in one call. You will want
+to set up event handlers to watch for progress.
 
 ```javascript
 
@@ -49,7 +63,7 @@ cctx.redeem(opts);
 
 ```
 
-__Advanced Version__: if you need to handle the steps separately, like if some
+__Advanced Usage__: if you need to handle each step separately, like if some
 steps need to happen on the client and others on the server, you can manually
 handle each step of the crosschain transaction.
 
