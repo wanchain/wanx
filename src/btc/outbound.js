@@ -35,8 +35,8 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Complete crosschain transaction (lock + redeem)
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Sender wan address
+   * @param {string} opts.to - Redeemer btc address
    * @param {string} opts.value - Tx value
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
@@ -67,8 +67,8 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Lock transaction and confirmation
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Sender wan address
+   * @param {string} opts.to - Redeemer btc address
    * @param {string} opts.value - Tx value
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
@@ -115,7 +115,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Get outbound fee amount
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Sender wan address
    * @param {string} opts.value - Tx value
    * @param {Object} opts.storeman - Storeman address pair
    * @param {string} opts.storeman.wan - Storeman Wanchain address
@@ -152,8 +152,8 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Send lock tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Sender wan address
+   * @param {string} opts.to - Redeemer btc address
    * @param {string} opts.value - Tx value
    * @param {string} opts.outboundFee - Tx outbound fee
    * @param {Object} opts.redeemKey - Redeem key pair
@@ -190,7 +190,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Send revoke tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Sender wan address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
    * @param {boolean} skipValidation
@@ -277,7 +277,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Build outboundFee tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Sender wan address
    * @param {string} opts.value - Tx value
    * @param {Object} opts.storeman - Storeman address pair
    * @param {string} opts.storeman.wan - Storeman Wanchain address
@@ -297,8 +297,8 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Build lock tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Sender wan address
+   * @param {string} opts.to - Redeemer btc address
    * @param {string} opts.value - Tx value
    * @param {string} opts.outboundFee - Tx outbound fee
    * @param {Object} opts.redeemKey - Redeem key pair
@@ -331,7 +331,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Build revoke tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Sender wan address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
    * @param {boolean} skipValidation
@@ -415,7 +415,7 @@ class BTC_Outbound extends CrosschainBase {
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
    * @param {Object} opts.storeman - Storeman addr pair
    * @param {string} opts.storeman.wan - Storeman wan addr
-   * @param {string} opts.to - Destination btc addr
+   * @param {string} opts.to - Redeemer btc addr
    * @param {string} opts.value - Tx value
    * @param {boolean} skipValidation
    * @returns {string} Data hex string
@@ -482,7 +482,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Build P2SH lock contract address
    * @param {Object} opts - Tx options
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.to - Redeemer btc address
    * @param {number} opts.lockTime - LockTime for lock address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
@@ -508,7 +508,7 @@ class BTC_Outbound extends CrosschainBase {
   /**
    * Build the hash for signature for redeem tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.to - Redeemer btc address
    * @param {string} opts.value - Tx value (minus miner fee)
    * @param {string} opts.txid - Id of funding btc tx
    * @param {string} opts.redeemScript - Lock address redeemScript
@@ -521,7 +521,7 @@ class BTC_Outbound extends CrosschainBase {
     return btcUtil.hashForRedeemSig(
       this.config.network,
       hex.stripPrefix(opts.txid),
-      opts.to,
+      opts.payTo || opts.to,
       opts.value,
       opts.redeemScript
     );
@@ -535,8 +535,9 @@ class BTC_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemScript - Lock address redeemScript
-   * @param {string} opts.publicKey - Public key of the revoker
+   * @param {string} opts.publicKey - Public key of the redeemer
    * @param {string} opts.sigHash - Signed hash for signature
+   * @param {string} opts.payTo - Address to redeem funds to (optional, defaults to redeemer)
    * @returns {string} Signed tx as hex string
    */
   buildRedeemTx(opts) {
@@ -550,7 +551,8 @@ class BTC_Outbound extends CrosschainBase {
       opts.redeemScript,
       opts.redeemKey.x,
       opts.publicKey,
-      opts.sigHash
+      opts.sigHash,
+      opts.payTo
     );
   }
 
@@ -562,7 +564,8 @@ class BTC_Outbound extends CrosschainBase {
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {string} opts.redeemScript - Lock address redeemScript
-   * @param {string} opts.wif - Private key of the revoker
+   * @param {string} opts.wif - Private key of the redeemer
+   * @param {string} opts.payTo - Address to redeem funds to (optional, defaults to redeemer)
    * @returns {string} Signed tx as hex string
    */
   buildRedeemTxFromWif(opts) {
@@ -575,7 +578,8 @@ class BTC_Outbound extends CrosschainBase {
       opts.value,
       opts.redeemScript,
       opts.redeemKey.x,
-      opts.wif
+      opts.wif,
+      opts.payTo
     );
   }
 }

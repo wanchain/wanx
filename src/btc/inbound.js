@@ -35,8 +35,8 @@ class BTC_Inbound extends CrosschainBase {
    * Complete crosschain transaction (lock + redeem); Assumes you have already
    * generated and sent funds to an HTLC lock address
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Revoker btc address
+   * @param {string} opts.to - Destination wan address
    * @param {string} opts.value - Tx value
    * @param {string} opts.txid - Id of funding btc tx
    * @param {string} opts.lockTime - LockTime used to generate lock address
@@ -69,8 +69,8 @@ class BTC_Inbound extends CrosschainBase {
    * Lock transaction and confirmation; Assumes you have already
    * generated and sent funds to an HTLC lock address
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Revoker btc address
+   * @param {string} opts.to - Destination wan address
    * @param {string} opts.value - Tx value
    * @param {string} opts.txid - Id of funding btc tx
    * @param {string} opts.lockTime - LockTime used to generate lock address
@@ -114,7 +114,7 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Redeem transaction and confirmation
    * @param {Object} opts - Tx options
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.to - Destination wan address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {boolean} skipValidation
@@ -151,8 +151,8 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Send lock tx on Wanchain
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Revoker btc address
+   * @param {string} opts.to - Destination wan address
    * @param {string} opts.value - Tx value
    * @param {string} opts.txid - Id of funding btc tx
    * @param {string} opts.lockTime - LockTime used to generate lock address
@@ -190,7 +190,7 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Send redeem tx on Wanchain
    * @param {Object} opts - Tx options
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.to - Destination wan address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {boolean} skipValidation
@@ -277,8 +277,8 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Build lock tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.from - Revoker btc address
+   * @param {string} opts.to - Destination wan address
    * @param {string} opts.value - Tx value
    * @param {string} opts.txid - Id of funding btc tx
    * @param {string} opts.lockTime - LockTime used to generate lock address
@@ -311,7 +311,7 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Build redeem tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.to - Destination address
+   * @param {string} opts.to - Destination wan address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.x - Redeem key x
    * @param {boolean} skipValidation
@@ -443,7 +443,7 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Build new P2SH lock contract address
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Revoker btc address
    * @param {number} opts.lockTime - LockTime for lock address
    * @param {Object} opts.redeemKey - Redeem key pair
    * @param {string} opts.redeemKey.xHash - Redeem key xHash
@@ -477,7 +477,8 @@ class BTC_Inbound extends CrosschainBase {
   /**
    * Build the hash for signature for revoke tx
    * @param {Object} opts - Tx options
-   * @param {string} opts.from - Sender address
+   * @param {string} opts.from - Revoker btc address
+   * @param {string} opts.payTo - Address to revoke funds to (optional, defaults to revoker)
    * @param {string} opts.value - Tx value (minus miner fee)
    * @param {string} opts.txid - Id of funding btc tx
    * @param {number} opts.lockTime - LockTime for lock address
@@ -491,7 +492,7 @@ class BTC_Inbound extends CrosschainBase {
     return btcUtil.hashForRevokeSig(
       this.config.network,
       hex.stripPrefix(opts.txid),
-      opts.from,
+      opts.payTo || opts.from,
       opts.value,
       opts.lockTime,
       opts.redeemScript
@@ -509,6 +510,7 @@ class BTC_Inbound extends CrosschainBase {
    * @param {string} opts.redeemScript - Lock address redeemScript
    * @param {string} opts.publicKey - Public key of the revoker
    * @param {string} opts.sigHash - Signed hash for signature
+   * @param {string} opts.payTo - Address to revoke funds to (optional, defaults to revoker)
    * @returns {string} Signed tx as hex string
    */
   buildRevokeTx(opts) {
@@ -523,7 +525,8 @@ class BTC_Inbound extends CrosschainBase {
       opts.redeemKey.x,
       opts.lockTime,
       opts.publicKey,
-      opts.sigHash
+      opts.sigHash,
+      opts.payTo
     );
   }
 
@@ -537,6 +540,7 @@ class BTC_Inbound extends CrosschainBase {
    * @param {number} opts.lockTime - LockTime for lock address
    * @param {string} opts.redeemScript - Lock address redeemScript
    * @param {string} opts.wif - Private key of the revoker
+   * @param {string} opts.payTo - Address to revoke funds to (optional, defaults to revoker)
    * @returns {string} Signed tx as hex string
    */
   buildRevokeTxFromWif(opts) {
@@ -550,7 +554,8 @@ class BTC_Inbound extends CrosschainBase {
       opts.redeemScript,
       opts.redeemKey.x,
       opts.lockTime,
-      opts.wif
+      opts.wif,
+      opts.payTo
     );
   }
 }

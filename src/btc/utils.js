@@ -185,7 +185,7 @@ function buildIncompleteRevoke(network, txid, address, value, lockTime) {
  * @param {string} toAddress - The address where to send funds (defaults to redeemer)
  * @returns {string} Signed transaction as hex string
  */
-function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress = '') {
+function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedSigHash, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // if toAddress is not supplied, derive it from the publicKey
@@ -235,7 +235,7 @@ function buildRedeemTx(network, txid, value, redeemScript, x, publicKey, signedS
  * @param {string} toAddress - The address where to send funds (defaults to redeemer)
  * @returns {string} Signed transaction as hex string
  */
-function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress = '') {
+function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // NB: storemen address validation requires that vout is 0
@@ -299,7 +299,7 @@ function buildRedeemTxFromWif(network, txid, value, redeemScript, x, wif, toAddr
  * @param {string} toAddress - The address where to send funds (defaults to revoker)
  * @returns {string} Signed transaction as hex string
  */
-function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress = '') {
+function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKey, signedSigHash, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   // if toAddress is not supplied, derive it from the publicKey
@@ -348,7 +348,7 @@ function buildRevokeTx(network, txid, value, redeemScript, x, lockTime, publicKe
  * @param {string} toAddress - The address where to send funds (defaults to revoker)
  * @returns {string} Signed transaction as hex string
  */
-function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress = '') {
+function buildRevokeTxFromWif(network, txid, value, redeemScript, x, lockTime, wif, toAddress) {
   const bitcoinNetwork = bitcoin.networks[network];
 
   const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoinNetwork);
