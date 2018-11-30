@@ -3,7 +3,7 @@ const BigNumber = require('bignumber.js');
 
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
-const web3Util = require('../lib/web3');
+const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -131,7 +131,7 @@ class BTC_Outbound extends CrosschainBase {
     }
 
     const callOpts = this.buildOutboundFeeTx(opts, true);
-    const action = this.wanchain.web3.eth.call(callOpts);
+    const action = web3Shim(this.wanchain.web3).call(callOpts);
 
     action.then(res => {
       res = res === '0x' ? '0x0' : res;
@@ -170,7 +170,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundLockWithFeeSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
+    const action = web3Shim(this.wanchain.web3).sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -201,7 +201,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(OutboundRevokeSchema, opts);
 
     const sendOpts = this.buildRevokeTx(opts, true);
-    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
+    const action = web3Shim(this.wanchain.web3).sendTransaction(sendOpts);
 
     action.once('transactionHash', hash => {
       this.emit('info', { status: 'revokeHash', hash });
@@ -231,7 +231,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockNoticeScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(lockNoticeScanOpts);
+    const action = web3Shim(this.wanchain.web3).watchLogs(lockNoticeScanOpts);
 
     action.then(log => {
       const values = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
@@ -259,7 +259,7 @@ class BTC_Outbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
+    const action = web3Shim(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const values = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
