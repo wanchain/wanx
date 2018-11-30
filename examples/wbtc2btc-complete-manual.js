@@ -121,6 +121,8 @@ Promise.resolve([]).then(() => {
 
   console.log('P2SH contract', contract);
 
+  opts.redeemScript = contract.redeemScript;
+
   // Subtract miner fee
   const redeemValue = (new BigNumber(opts.value)).minus(minerFee).toString();
 
@@ -128,7 +130,6 @@ Promise.resolve([]).then(() => {
   const signedTx = cctx.buildRedeemTxFromWif(
     Object.assign({}, opts, {
       value: redeemValue,
-      redeemScript: contract.redeemScript,
     }),
   );
 
