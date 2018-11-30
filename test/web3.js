@@ -8,6 +8,7 @@ const sandbox = sinon.createSandbox();
 let count = 0
 
 const web3 = {
+  version: '1.0.0',
   eth: {
     getPastLogs() {
       count++
