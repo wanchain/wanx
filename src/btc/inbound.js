@@ -3,7 +3,7 @@ const moment = require('moment');
 
 const CrosschainBase = require('../base');
 const btcUtil = require('./utils');
-const web3Util = require('../lib/web3');
+const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -170,7 +170,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundLockSchema, opts);
 
     const sendOpts = this.buildLockTx(opts, true);
-    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
+    const action = web3Shim(this.wanchain.web3).sendTransaction(sendOpts);
 
     action.on('transactionHash', hash => {
       this.emit('info', { status: 'lockHash', hash });
@@ -201,7 +201,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(InboundRedeemSchema, opts);
 
     const sendOpts = this.buildRedeemTx(opts);
-    const action = this.wanchain.web3.eth.sendTransaction(sendOpts);
+    const action = web3Shim(this.wanchain.web3).sendTransaction(sendOpts);
 
     action.on('transactionHash', hash => {
       this.emit('info', { status: 'redeemHash', hash });
@@ -231,7 +231,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(lockScanOpts);
+    const action = web3Shim(this.wanchain.web3).watchLogs(lockScanOpts);
 
     action.then(log => {
       const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
@@ -259,7 +259,7 @@ class BTC_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
-    const action = web3Util(this.wanchain.web3).watchLogs(redeemScanOpts);
+    const action = web3Shim(this.wanchain.web3).watchLogs(redeemScanOpts);
 
     action.then(log => {
       const values = this.parseLog('HTLCWBTC', 'BTC2WBTCRedeem', log);

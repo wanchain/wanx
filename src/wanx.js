@@ -3,7 +3,7 @@ const Web3 = require('web3');
 
 const config = require('./config');
 const crypto = require('./lib/crypto');
-const attachWanRpc = require('./lib/wan-attach-rpc.js');
+const attachWanRpc = require('./lib/wan-attach-rpc');
 const abis = require('./abis');
 
 const ETH_Inbound = require('./eth/inbound');
@@ -30,22 +30,16 @@ class WanX {
       const provider = new Web3.providers.HttpProvider(wanchain.url);
       wanchain.web3 = new Web3(provider);
     }
-    else if (wanchain.web3 && typeof wanchain.web3.version !== 'string') {
-      throw new Error('Unsupported web3 version');
-    }
 
     // attach Wanchain methods
-    if (wanchain.web3 && ! wanchain.web3.wan) {
-      wanchain.web3.wan = attachWanRpc(wanchain.web3);
-    }
+    // if (wanchain.web3 && ! wanchain.web3.wan) {
+    //   wanchain.web3.wan = attachWanRpc(wanchain.web3);
+    // }
 
     // initialize Ethereum web3 object
     if (! ethereum.web3 && ethereum.url) {
       const provider = new Web3.providers.HttpProvider(ethereum.url);
       ethereum.web3 = new Web3(provider);
-    }
-    else if (ethereum.web3 && typeof ethereum.web3.version !== 'string') {
-      throw new Error('Unsupported web3 version');
     }
 
     this.config.wanchain = wanchain;
