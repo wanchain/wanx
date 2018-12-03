@@ -5,8 +5,9 @@ const WanTx = require('wanchainjs-tx');
 
 /**
  * Requirements:
- * - Wanchain account has enough to cover the value defined in `opts` plus gas
- *   and outboundFee
+ * - Wanchain account has enough WETH token to cover the value defined in
+ *   `opts`, and enough WAN to cover gas and outboundFee
+ * - Ethereum account has enough to cover the gas to redeem
  */
 
 const config = {
