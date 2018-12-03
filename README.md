@@ -188,6 +188,7 @@ with signing handled outside of WanX.
 - [ETH to WETH revoke](examples/eth2weth-revoke.js)
 - [ETH to WETH lock, manual signing](examples/eth2weth-lock-manual.js)
 - [ETH to WETH redeem, manual signing](examples/eth2weth-redeem-manual.js)
+- [WETH to ETH complete, manual signing](examples/weth2eth-complete-manual.js)
 - [BTC to WBTC complete, manual signing](examples/btc2wbtc-complete-manual.js)
 - [WBTC to BTC complete, manual signing](examples/wbtc2btc-complete-manual.js)
 - [MKR to WMKR complete, manual signing](examples/mkr2wmkr-complete-manual.js)

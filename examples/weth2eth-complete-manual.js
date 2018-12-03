@@ -38,6 +38,11 @@ const opts = {
   redeemKey,
 };
 
+// Get Ethereum private keys
+const ethDatadir = '/home/user/.ethereum/testnet/';
+const ethKeyObject = keythereum.importFromFile(opts.to, ethDatadir);
+const ethPrivateKey = keythereum.recover('mypassword', ethKeyObject);
+
 // Get Wanchain private keys
 const wanDatadir = '/home/user/.wanchain/testnet/';
 const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
@@ -91,7 +96,42 @@ Promise.resolve([]).then(() => {
 
 }).then(log => {
 
-  console.log(log);
+  console.log('Lock confirmed', log);
+  console.log('Starting eth outbound redeem', opts);
+
+  // Get the tx count to determine next nonce
+  return web3eth.eth.getTransactionCount(opts.to);
+
+}).then(txCount => {
+
+  // Get the raw redeem tx
+  const redeemTx = cctx.buildRedeemTx(opts);
+  redeemTx.nonce = web3eth.utils.toHex(txCount);
+
+  // Sign and send the tx
+  const transaction = new EthTx(redeemTx);
+  transaction.sign(ethPrivateKey);
+  const serializedTx = transaction.serialize().toString('hex');
+
+  // Send the redeem transaction on Ethereum
+  return web3eth.eth.sendSignedTransaction('0x' + serializedTx);
+
+}).then(receipt => {
+
+  console.log('Redeem submitted and now pending on storeman');
+  console.log(receipt);
+
+  // Get the current block number on Wanchain
+  return web3wan.eth.getBlockNumber();
+
+}).then(blockNumber => {
+
+  // Scan for the redeem confirmation from the storeman
+  return cctx.listenRedeem(opts, blockNumber);
+
+}).then(log => {
+
+  console.log('Redeem confirmed', log);
   console.log('COMPLETE!!!');
 
 }).catch(err => {
