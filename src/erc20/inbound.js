@@ -506,7 +506,7 @@ class ERC20_Inbound extends CrosschainBase {
     ! skipValidation && this.validate(ScanOptsSchema, opts);
 
     const { redeemKey } = opts;
-    const { InboundRedeemLogger } = this.config.signatures.HTLCWAN_ERC20;
+    const { InboundRedeemLogger } = this.config.signatures.HTLCETH_ERC20;
 
     return {
       blockNumber,
