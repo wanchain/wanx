@@ -301,7 +301,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       data: lockNoticeData,
@@ -327,7 +327,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
@@ -351,7 +351,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + BTC2WBTCLock,
         null,
@@ -378,7 +378,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + BTC2WBTCRedeem,
         null,

@@ -45,7 +45,7 @@ describe('erc20 inbound data', () => {
     const tx = new ERC20_Inbound(conf);
 
     const approveData = tx.buildApproveData(inboundOpts);
-    const expected = '0x095ea7b3000000000000000000000000' + hex.stripPrefix(conf.ethHtlcAddrE20) + '0000000000000000000000000000000000000000000000000007f7164d962000';
+    const expected = '0x095ea7b3000000000000000000000000' + hex.stripPrefix(conf.addresses.HTLCETH_ERC20) + '0000000000000000000000000000000000000000000000000007f7164d962000';
 
     expect(approveData).to.equal(expected);
   });
@@ -200,7 +200,7 @@ describe('erc20 outbound data', () => {
     const tx = new ERC20_Outbound(conf);
 
     const approveData = tx.buildApproveData(inboundOpts);
-    const expected = '0x095ea7b3000000000000000000000000' + hex.stripPrefix(conf.wanHtlcAddrE20) + '0000000000000000000000000000000000000000000000000007f7164d962000';
+    const expected = '0x095ea7b3000000000000000000000000' + hex.stripPrefix(conf.addresses.HTLCWAN_ERC20) + '0000000000000000000000000000000000000000000000000007f7164d962000';
 
     expect(approveData).to.equal(expected);
   });

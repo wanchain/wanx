@@ -319,7 +319,7 @@ class ETH_Inbound extends CrosschainBase {
 
     return {
       from: opts.from,
-      to: this.config.ethHtlcAddr,
+      to: this.config.addresses.HTLCETH,
       value: hex.fromNumber(opts.value),
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
@@ -346,7 +346,7 @@ class ETH_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddr,
+      to: this.config.addresses.HTLCWETH,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
@@ -371,7 +371,7 @@ class ETH_Inbound extends CrosschainBase {
 
     return {
       from: from,
-      to: this.config.ethHtlcAddr,
+      to: this.config.addresses.HTLCETH,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: revokeData,
@@ -395,7 +395,7 @@ class ETH_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddr,
+      address: this.config.addresses.HTLCWETH,
       topics: [
         '0x' + ETH2WETHLock,
         null,
@@ -422,7 +422,7 @@ class ETH_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.ethHtlcAddr,
+      address: this.config.addresses.HTLCETH,
       topics: [
         '0x' + ETH2WETHRefund,
         null,

@@ -404,7 +404,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     return {
       from: from,
-      to: this.config.ethHtlcAddrE20,
+      to: this.config.addresses.HTLCETH_ERC20,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(100e9),
       data: lockData,
@@ -432,7 +432,7 @@ class ERC20_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddrE20,
+      to: this.config.addresses.HTLCWAN_ERC20,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
@@ -459,7 +459,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     return {
       from: from,
-      to: this.config.ethHtlcAddrE20,
+      to: this.config.addresses.HTLCETH_ERC20,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: revokeData,
@@ -483,7 +483,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrE20,
+      address: this.config.addresses.HTLCWAN_ERC20,
       topics: [
         '0x' + InboundLockLogger,
         null,
@@ -510,7 +510,7 @@ class ERC20_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.ethHtlcAddrE20,
+      address: this.config.addresses.HTLCETH_ERC20,
       topics: [
         '0x' + InboundRedeemLogger,
         null,
@@ -535,7 +535,7 @@ class ERC20_Inbound extends CrosschainBase {
     const { approve } = this.config.signatures.ERC20;
 
     return '0x' + approve.substr(0, 8)
-      + types.hex2Bytes32(this.config.ethHtlcAddrE20)
+      + types.hex2Bytes32(this.config.addresses.HTLCETH_ERC20)
       + types.num2Bytes32(value);
   }
 

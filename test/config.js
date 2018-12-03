@@ -30,18 +30,18 @@ describe('configuration', () => {
   it('should load the config from network', () => {
     let conf = config.get('testnet');
 
-    expect(conf.wanHtlcAddr).to.equal(config.testnetConfig.wanHtlcAddr);
+    expect(conf.addresses.HTLCWETH).to.equal(config.testnetConfig.addresses.HTLCWETH);
 
     conf = config.get('mainnet');
 
-    expect(conf.wanHtlcAddr).to.equal(config.mainnetConfig.wanHtlcAddr);
+    expect(conf.addresses.HTLCWETH).to.equal(config.mainnetConfig.addresses.HTLCWETH);
   });
 
   it('should allow overrides to be passed to config', () => {
-    const wanHtlcAddr = '0x123456';
-    let conf = config.get('testnet', { wanHtlcAddr });
+    const HTLCWETH = '0x123456';
+    let conf = config.get('testnet', { addresses: { HTLCWETH }});
 
-    expect(conf.wanHtlcAddr).to.equal(wanHtlcAddr);
+    expect(conf.addresses.HTLCWETH).to.equal(HTLCWETH);
   });
 
 });

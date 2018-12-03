@@ -356,7 +356,7 @@ class ETH_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
 
-    const to = this.config.wanHtlcAddr;
+    const to = this.config.addresses.HTLCWETH;
     const data = this.buildOutboundFeeData(opts, true);
 
     return { to, data };
@@ -388,7 +388,7 @@ class ETH_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.addresses.HTLCWETH,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(outboundFee),
@@ -414,7 +414,7 @@ class ETH_Outbound extends CrosschainBase {
 
     return {
       from: to,
-      to: this.config.ethHtlcAddr,
+      to: this.config.addresses.HTLCETH,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: redeemData,
@@ -440,7 +440,7 @@ class ETH_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddr,
+      to: this.config.addresses.HTLCWETH,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: revokeData,
@@ -464,7 +464,7 @@ class ETH_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.ethHtlcAddr,
+      address: this.config.addresses.HTLCETH,
       topics: [
         '0x' + WETH2ETHLock,
         null,
@@ -491,7 +491,7 @@ class ETH_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddr,
+      address: this.config.addresses.HTLCWETH,
       topics: [
         '0x' + WETH2ETHRefund,
         null,

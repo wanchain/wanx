@@ -3,25 +3,29 @@ const path = require('path');
 const testnetConfig = {
   network: 'testnet',
   chainId: 3,
-  wethTokenAddress: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
-  wbtcTokenAddress: '0x89a3e1494bc3db81dadc893ded7476d33d47dcbd',
-  ethHtlcAddr: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
-  wanHtlcAddr: '0xfbaffb655906424d501144eefe35e28753dea037',
-  ethHtlcAddrE20: '0x149f1650f0ff097bca88118b83ed58fb1cfc68ef',
-  wanHtlcAddrE20: '0x27feb1785f61504619a105faa00f57c49cc4d9c3',
-  wanHtlcAddrBtc: '0xb248ed04e1f1bbb661b56f210e4b0399b2899d16',
+  addresses: {
+    WETH: '0x46397994a7e1e926ea0de95557a4806d38f10b0d',
+    WBTC: '0x89a3e1494bc3db81dadc893ded7476d33d47dcbd',
+    HTLCETH: '0x358b18d9dfa4cce042f2926d014643d4b3742b31',
+    HTLCWETH: '0xfbaffb655906424d501144eefe35e28753dea037',
+    HTLCETH_ERC20: '0x149f1650f0ff097bca88118b83ed58fb1cfc68ef',
+    HTLCWAN_ERC20: '0x27feb1785f61504619a105faa00f57c49cc4d9c3',
+    HTLCWBTC: '0xb248ed04e1f1bbb661b56f210e4b0399b2899d16',
+  },
 };
 
 const mainnetConfig = {
   network: 'mainnet',
   chainId: 1,
-  wethTokenAddress: '0x28362cd634646620ef2290058744f9244bb90ed9',
-  wbtcTokenAddress: '0xd15e200060fc17ef90546ad93c1c61bfefdc89c7',
-  ethHtlcAddr: '0x78eb00ec1c005fec86a074060cc1bc7513b1ee88',
-  wanHtlcAddr: '0x7a333ba427fce2e0c6dd6a2d727e5be6beb13ac2',
-  ethHtlcAddrE20: '0xa4becceba748f8a2b0e6c2ed69e1079a9a5062ab',
-  wanHtlcAddrE20: '0x71d23563729f81fc535cbb772e52660ca5be755e',
-  wanHtlcAddrBtc: '0x50c53a4f6702c2713b3535fc896bc21597534906',
+  addresses: {
+    WETH: '0x28362cd634646620ef2290058744f9244bb90ed9',
+    WBTC: '0xd15e200060fc17ef90546ad93c1c61bfefdc89c7',
+    HTLCETH: '0x78eb00ec1c005fec86a074060cc1bc7513b1ee88',
+    HTLCWETH: '0x7a333ba427fce2e0c6dd6a2d727e5be6beb13ac2',
+    HTLCETH_ERC20: '0xa4becceba748f8a2b0e6c2ed69e1079a9a5062ab',
+    HTLCWAN_ERC20: '0x71d23563729f81fc535cbb772e52660ca5be755e',
+    HTLCWBTC: '0x50c53a4f6702c2713b3535fc896bc21597534906',
+  },
 };
 
 const defaultConfig = {

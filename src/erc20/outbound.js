@@ -420,7 +420,7 @@ class ERC20_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
 
-    const to = this.config.wanHtlcAddrE20;
+    const to = this.config.addresses.HTLCWAN_ERC20;
     const data = this.buildOutboundFeeData(opts, true);
 
     return { to, data };
@@ -482,7 +482,7 @@ class ERC20_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddrE20,
+      to: this.config.addresses.HTLCWAN_ERC20,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(outboundFee),
@@ -509,7 +509,7 @@ class ERC20_Outbound extends CrosschainBase {
 
     return {
       from: opts.to,
-      to: this.config.ethHtlcAddrE20,
+      to: this.config.addresses.HTLCETH_ERC20,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(100e9),
       data: redeemData,
@@ -536,7 +536,7 @@ class ERC20_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: opts.from,
-      to: this.config.wanHtlcAddrE20,
+      to: this.config.addresses.HTLCWAN_ERC20,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: revokeData,
@@ -560,7 +560,7 @@ class ERC20_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.ethHtlcAddrE20,
+      address: this.config.addresses.HTLCETH_ERC20,
       topics: [
         '0x' + OutboundLockLogger,
         null,
@@ -587,7 +587,7 @@ class ERC20_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrE20,
+      address: this.config.addresses.HTLCWAN_ERC20,
       topics: [
         '0x' + OutboundRedeemLogger,
         null,
@@ -612,7 +612,7 @@ class ERC20_Outbound extends CrosschainBase {
     const { approve } = this.config.signatures.ERC20;
 
     return '0x' + approve.substr(0, 8)
-      + types.hex2Bytes32(this.config.wanHtlcAddrE20)
+      + types.hex2Bytes32(this.config.addresses.HTLCWAN_ERC20)
       + types.num2Bytes32(value);
   }
 
