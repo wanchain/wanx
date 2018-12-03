@@ -716,8 +716,8 @@ generated and sent funds to an HTLC lock address
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Revoker btc address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.lockTime | <code>string</code> | LockTime used to generate lock address |
@@ -741,8 +741,8 @@ generated and sent funds to an HTLC lock address
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Revoker btc address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.lockTime | <code>string</code> | LockTime used to generate lock address |
@@ -765,7 +765,7 @@ Redeem transaction and confirmation
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.to | <code>string</code> | Destination address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
 | skipValidation | <code>boolean</code> |  |
@@ -781,8 +781,8 @@ Send lock tx on Wanchain
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Revoker btc address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.lockTime | <code>string</code> | LockTime used to generate lock address |
@@ -805,7 +805,7 @@ Send redeem tx on Wanchain
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.to | <code>string</code> | Destination address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
 | skipValidation | <code>boolean</code> |  |
@@ -851,8 +851,8 @@ Build lock tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Revoker btc address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.lockTime | <code>string</code> | LockTime used to generate lock address |
@@ -875,7 +875,7 @@ Build redeem tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.to | <code>string</code> | Destination address |
+| opts.to | <code>string</code> | Destination wan address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
 | skipValidation | <code>boolean</code> |  |
@@ -956,7 +956,7 @@ Build new P2SH lock contract address
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Revoker btc address |
 | opts.lockTime | <code>number</code> | LockTime for lock address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
@@ -974,7 +974,8 @@ Build the hash for signature for revoke tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Revoker btc address |
+| opts.payTo | <code>string</code> | Address to revoke funds to (optional, defaults to revoker) |
 | opts.value | <code>string</code> | Tx value (minus miner fee) |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.lockTime | <code>number</code> | LockTime for lock address |
@@ -999,6 +1000,7 @@ Build revoke tx from sigHash
 | opts.redeemScript | <code>string</code> | Lock address redeemScript |
 | opts.publicKey | <code>string</code> | Public key of the revoker |
 | opts.sigHash | <code>string</code> | Signed hash for signature |
+| opts.payTo | <code>string</code> | Address to revoke funds to (optional, defaults to revoker) |
 
 <a name="BTC_Inbound+buildRevokeTxFromWif"></a>
 
@@ -1018,6 +1020,7 @@ Build revoke tx from WIF
 | opts.lockTime | <code>number</code> | LockTime for lock address |
 | opts.redeemScript | <code>string</code> | Lock address redeemScript |
 | opts.wif | <code>string</code> | Private key of the revoker |
+| opts.payTo | <code>string</code> | Address to revoke funds to (optional, defaults to revoker) |
 
 <a name="BTC_Outbound"></a>
 
@@ -1058,8 +1061,8 @@ Complete crosschain transaction (lock + redeem)
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Sender wan address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.value | <code>string</code> | Tx value |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
@@ -1080,8 +1083,8 @@ Lock transaction and confirmation
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Sender wan address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.value | <code>string</code> | Tx value |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
@@ -1102,7 +1105,7 @@ Get outbound fee amount
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Sender wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.storeman | <code>Object</code> | Storeman address pair |
 | opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
@@ -1119,8 +1122,8 @@ Send lock tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Sender wan address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.value | <code>string</code> | Tx value |
 | opts.outboundFee | <code>string</code> | Tx outbound fee |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
@@ -1142,7 +1145,7 @@ Send revoke tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Sender wan address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
 | skipValidation | <code>boolean</code> |  |
@@ -1188,7 +1191,7 @@ Build outboundFee tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Sender wan address |
 | opts.value | <code>string</code> | Tx value |
 | opts.storeman | <code>Object</code> | Storeman address pair |
 | opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
@@ -1205,8 +1208,8 @@ Build lock tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
-| opts.to | <code>string</code> | Destination address |
+| opts.from | <code>string</code> | Sender wan address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.value | <code>string</code> | Tx value |
 | opts.outboundFee | <code>string</code> | Tx outbound fee |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
@@ -1228,7 +1231,7 @@ Build revoke tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.from | <code>string</code> | Sender address |
+| opts.from | <code>string</code> | Sender wan address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
 | skipValidation | <code>boolean</code> |  |
@@ -1278,7 +1281,7 @@ Get data hex string for lock call
 | opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
 | opts.storeman | <code>Object</code> | Storeman addr pair |
 | opts.storeman.wan | <code>string</code> | Storeman wan addr |
-| opts.to | <code>string</code> | Destination btc addr |
+| opts.to | <code>string</code> | Redeemer btc addr |
 | opts.value | <code>string</code> | Tx value |
 | skipValidation | <code>boolean</code> |  |
 
@@ -1324,7 +1327,7 @@ Build P2SH lock contract address
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.to | <code>string</code> | Destination address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.lockTime | <code>number</code> | LockTime for lock address |
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
@@ -1342,7 +1345,7 @@ Build the hash for signature for redeem tx
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Tx options |
-| opts.to | <code>string</code> | Destination address |
+| opts.to | <code>string</code> | Redeemer btc address |
 | opts.value | <code>string</code> | Tx value (minus miner fee) |
 | opts.txid | <code>string</code> | Id of funding btc tx |
 | opts.redeemScript | <code>string</code> | Lock address redeemScript |
@@ -1363,8 +1366,9 @@ Build redeem tx from sigHash
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
 | opts.redeemScript | <code>string</code> | Lock address redeemScript |
-| opts.publicKey | <code>string</code> | Public key of the revoker |
+| opts.publicKey | <code>string</code> | Public key of the redeemer |
 | opts.sigHash | <code>string</code> | Signed hash for signature |
+| opts.payTo | <code>string</code> | Address to redeem funds to (optional, defaults to redeemer) |
 
 <a name="BTC_Outbound+buildRedeemTxFromWif"></a>
 
@@ -1382,7 +1386,8 @@ Build redeem tx from WIF
 | opts.redeemKey | <code>Object</code> | Redeem key pair |
 | opts.redeemKey.x | <code>string</code> | Redeem key x |
 | opts.redeemScript | <code>string</code> | Lock address redeemScript |
-| opts.wif | <code>string</code> | Private key of the revoker |
+| opts.wif | <code>string</code> | Private key of the redeemer |
+| opts.payTo | <code>string</code> | Address to redeem funds to (optional, defaults to redeemer) |
 
 <a name="ERC20_Inbound"></a>
 
