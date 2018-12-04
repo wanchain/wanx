@@ -21,7 +21,7 @@
 ### Redeem fields
 
 - `to` - the redeeming Bitcoin address (legacy type only)
-- `payTo` - the Bitcoin address where to send funds (optional, defaults to `to`; legacy or P2SH)
+- `payTo` - the Bitcoin address where to send funds (optional, defaults to `to`; type legacy, P2SH, or bech32)
 - `value` - the value to be transferred (in satoshis, excluding the mining fee)
 - `storeman` - the storeman btc account
 - `redeemKey` - the tx redeem key, including x and xHash

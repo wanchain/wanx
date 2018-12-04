@@ -97,6 +97,7 @@ const hex = { '$ref': 'defs.json#/definitions/hex' };
 const hash = { '$ref': 'defs.json#/definitions/hash' };
 const hash160Address = { '$ref': 'defs.json#/definitions/hash160Address' };
 const base58Address = { '$ref': 'defs.json#/definitions/base58Address' };
+const bitcoinAddress = { '$ref': 'defs.json#/definitions/bitcoinAddress' };
 
 module.exports = {
   storemanEthWan,
@@ -120,4 +121,5 @@ module.exports = {
   hash,
   hash160Address,
   base58Address,
+  bitcoinAddress,
 };

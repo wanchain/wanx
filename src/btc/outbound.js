@@ -288,7 +288,7 @@ class BTC_Outbound extends CrosschainBase {
 
     ! skipValidation && this.validate(OutboundFeeSchema, opts);
 
-    const to = this.config.wanHtlcAddrBtc;
+    const to = this.config.addresses.HTLCWBTC;
     const data = this.buildOutboundFeeData(opts, true);
 
     return { to, data };
@@ -320,7 +320,7 @@ class BTC_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       value: hex.fromNumber(outboundFee),
@@ -347,7 +347,7 @@ class BTC_Outbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: from,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: revokeData,
@@ -371,7 +371,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + WBTC2BTCLockNotice,
         null,
@@ -398,7 +398,7 @@ class BTC_Outbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + WBTC2BTCRedeem,
         null,

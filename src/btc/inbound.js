@@ -33,7 +33,8 @@ class BTC_Inbound extends CrosschainBase {
 
   /**
    * Complete crosschain transaction (lock + redeem); Assumes you have already
-   * generated and sent funds to an HTLC lock address
+   * generated a new HTLC lock address with `buildHashTimeLockContract` and
+   * have funded the address
    * @param {Object} opts - Tx options
    * @param {string} opts.from - Revoker btc address
    * @param {string} opts.to - Destination wan address
@@ -66,8 +67,9 @@ class BTC_Inbound extends CrosschainBase {
   }
 
   /**
-   * Lock transaction and confirmation; Assumes you have already
-   * generated and sent funds to an HTLC lock address
+   * Lock transaction and confirmation; Assumes you have already generated a
+   * new HTLC lock address with `buildHashTimeLockContract` and have funded the
+   * address
    * @param {Object} opts - Tx options
    * @param {string} opts.from - Revoker btc address
    * @param {string} opts.to - Destination wan address
@@ -301,7 +303,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(360000),
       gasPrice: hex.fromNumber(180e9),
       data: lockNoticeData,
@@ -327,7 +329,7 @@ class BTC_Inbound extends CrosschainBase {
     return {
       Txtype: '0x01',
       from: to,
-      to: this.config.wanHtlcAddrBtc,
+      to: this.config.addresses.HTLCWBTC,
       gas: hex.fromNumber(120000),
       gasPrice: hex.fromNumber(180e9),
       data: redeemData,
@@ -351,7 +353,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + BTC2WBTCLock,
         null,
@@ -378,7 +380,7 @@ class BTC_Inbound extends CrosschainBase {
 
     return {
       blockNumber,
-      address: this.config.wanHtlcAddrBtc,
+      address: this.config.addresses.HTLCWBTC,
       topics: [
         '0x' + BTC2WBTCRedeem,
         null,
@@ -459,10 +461,8 @@ class BTC_Inbound extends CrosschainBase {
     let { lockTime } = opts;
 
     // auto-calculate lockTime if not set
-    // FIXME: define default locktime interval in settings,
-    // or better, add a method to get it from the contracts
     if (lockTime === undefined || lockTime === null) {
-      lockTime = new moment().add(8, 'h').unix();
+      lockTime = new moment().add(this.config.bitcoin.lockTime, 'h').unix();
     }
 
     return btcUtil.buildHashTimeLockContract(

@@ -3,6 +3,7 @@ const {
   hash,
   hash160Address,
   base58Address,
+  bitcoinAddress,
   value,
   lockTime,
   redeemKeyAll,
@@ -186,7 +187,7 @@ const HashForRevokeSchema = {
   properties: {
     txid: hash,
     from: base58Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     lockTime: lockTime,
     value: value,
     redeemKey: redeemKeyX,
@@ -201,7 +202,7 @@ const HashForRedeemSchema = {
   properties: {
     txid: hash,
     to: base58Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     value: value,
     redeemKey: redeemKeyX,
   },
@@ -214,7 +215,7 @@ const InboundRevokeSchema = {
   ],
   properties: {
     to: hash160Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -232,7 +233,7 @@ const InboundRevokeFromWifSchema = {
   ],
   properties: {
     to: hash160Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -249,7 +250,7 @@ const OutboundRedeemSchema = {
   ],
   properties: {
     to: base58Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     txid: hash,
     value: value,
     redeemScript: hex,
@@ -267,7 +268,7 @@ const OutboundRedeemFromWifSchema = {
   ],
   properties: {
     to: base58Address,
-    payTo: base58Address,
+    payTo: bitcoinAddress,
     txid: hash,
     value: value,
     redeemScript: hex,
