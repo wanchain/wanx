@@ -9,7 +9,7 @@
     "bech32": {
       "$id": "#bech32",
       "type": "string",
-      "pattern": "(bc|tb)1^[23456789acdefghjklmnpqrstuvwxyz]+$"
+      "pattern": "^(bc|tb)1[234567890acdefghjklmnpqrstuvwxyz]+$"
     },
     "hex": {
       "$id": "#hex",
