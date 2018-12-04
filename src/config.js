@@ -12,6 +12,9 @@ const testnetConfig = {
     HTLCWAN_ERC20: '0x27feb1785f61504619a105faa00f57c49cc4d9c3',
     HTLCWBTC: '0xb248ed04e1f1bbb661b56f210e4b0399b2899d16',
   },
+  bitcoin: {
+    lockTime: 8, // hours
+  },
 };
 
 const mainnetConfig = {
@@ -25,6 +28,9 @@ const mainnetConfig = {
     HTLCETH_ERC20: '0xa4becceba748f8a2b0e6c2ed69e1079a9a5062ab',
     HTLCWAN_ERC20: '0x71d23563729f81fc535cbb772e52660ca5be755e',
     HTLCWBTC: '0x50c53a4f6702c2713b3535fc896bc21597534906',
+  },
+  bitcoin: {
+    lockTime: 72, // hours
   },
 };
 
