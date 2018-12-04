@@ -6,6 +6,11 @@
       "type": "string",
       "pattern": "^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$"
     },
+    "bech32": {
+      "$id": "#bech32",
+      "type": "string",
+      "pattern": "(bc|tb)1^[23456789acdefghjklmnpqrstuvwxyz]+$"
+    },
     "hex": {
       "$id": "#hex",
       "type": "string",
@@ -46,6 +51,13 @@
           "minLength": 34,
           "maxLength": 35
         }
+      ]
+    },
+    "bitcoinAddress": {
+      "$id": "#bitcoinAddress",
+      "oneOf": [
+        { "$ref": "#base58Address" },
+        { "$ref": "#bech32" }
       ]
     },
     "hash160Address": {
