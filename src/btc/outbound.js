@@ -1,7 +1,7 @@
 const moment = require('moment');
 const BigNumber = require('bignumber.js');
 
-const CrosschainBase = require('../base');
+const BTC_Base = require('./base');
 const btcUtil = require('./utils');
 const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
@@ -26,7 +26,7 @@ const {
 /**
  * Bitcoin Outbound
  */
-class BTC_Outbound extends CrosschainBase {
+class BTC_Outbound extends BTC_Base {
 
   constructor(config) {
     super(config);

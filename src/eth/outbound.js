@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 
-const CrosschainBase = require('../base');
+const ETH_Base = require('./base');
 const web3Shim = require('../lib/web3');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -21,7 +21,7 @@ const {
 /**
  * Ethereum Outbound
  */
-class ETH_Outbound extends CrosschainBase {
+class ETH_Outbound extends ETH_Base {
 
   constructor(config) {
     super(config);

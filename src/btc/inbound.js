@@ -1,7 +1,6 @@
 const moment = require('moment');
-// const validate = require('validate.js');
 
-const CrosschainBase = require('../base');
+const BTC_Base = require('./base');
 const btcUtil = require('./utils');
 const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
@@ -25,7 +24,7 @@ const {
 /**
  * Bitcoin Inbound
  */
-class BTC_Inbound extends CrosschainBase {
+class BTC_Inbound extends BTC_Base {
 
   constructor(config) {
     super(config);

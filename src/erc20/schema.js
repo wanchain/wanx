@@ -217,6 +217,17 @@ const RevokeDataSchema = {
   },
 };
 
+const StoremanQuotaSchema = {
+  type: 'object',
+  required: [
+    'token', 'storeman',
+  ],
+  properties: {
+    token: tokenEth,
+    storeman: storemanWan,
+  },
+};
+
 const ScanOptsSchema = {
   type: 'object',
   required: ['redeemKey'],
@@ -244,5 +255,7 @@ module.exports = {
   OutboundLockDataSchema,
   RedeemDataSchema,
   RevokeDataSchema,
+
+  StoremanQuotaSchema,
   ScanOptsSchema,
 };

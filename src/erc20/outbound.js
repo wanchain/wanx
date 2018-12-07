@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 
-const CrosschainBase = require('../base');
+const ERC20_Base = require('./base');
 const web3Shim = require('../lib/web3');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -23,7 +23,7 @@ const {
 /**
  * ERC20 Outbound
  */
-class ERC20_Outbound extends CrosschainBase {
+class ERC20_Outbound extends ERC20_Base {
 
   constructor(config) {
     super(config);

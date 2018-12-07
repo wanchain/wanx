@@ -1,4 +1,4 @@
-const CrosschainBase = require('../base');
+const ETH_Base = require('./base');
 const web3Shim = require('../lib/web3');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -16,7 +16,7 @@ const {
 /**
  * Ethereum Inbound
  */
-class ETH_Inbound extends CrosschainBase {
+class ETH_Inbound extends ETH_Base {
 
   constructor(config) {
     super(config);
