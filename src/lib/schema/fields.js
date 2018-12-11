@@ -65,6 +65,14 @@ const tokenWan = {
   },
 };
 
+const tokenKey = {
+  type: 'object',
+  required: ['key'],
+  properties: {
+    key: { '$ref': 'defs.json#/definitions/hash' },
+  },
+};
+
 const redeemKeyAll = {
   type: 'object',
   required: ['x', 'xHash'],
@@ -109,6 +117,7 @@ module.exports = {
   tokenEthWan,
   tokenEth,
   tokenWan,
+  tokenKey,
 
   redeemKeyAll,
   redeemKeyX,
