@@ -179,8 +179,10 @@ with signing handled outside of WanX.
 - [Bitcoin Inbound](docs/btc-inbound.md)
 - [Bitcoin Outbound](docs/btc-outbound.md)
 
-#### References
-- [API Reference](docs/api-reference.md)
+#### API References
+- [Ethereum](docs/api-reference-eth.md)
+- [ERC20](docs/api-reference-erc20.md)
+- [Bitcoin](docs/api-reference-btc.md)
 
 #### Examples
 

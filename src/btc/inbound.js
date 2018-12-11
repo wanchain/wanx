@@ -1,7 +1,6 @@
 const moment = require('moment');
-// const validate = require('validate.js');
 
-const CrosschainBase = require('../base');
+const BTC_Base = require('./base');
 const btcUtil = require('./utils');
 const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
@@ -24,8 +23,9 @@ const {
 
 /**
  * Bitcoin Inbound
+ * @augments BTC_Base
  */
-class BTC_Inbound extends CrosschainBase {
+class BTC_Inbound extends BTC_Base {
 
   constructor(config) {
     super(config);
@@ -100,7 +100,7 @@ class BTC_Inbound extends CrosschainBase {
 
       return this.listenLock(opts, receipt.blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'locked' });
@@ -137,7 +137,7 @@ class BTC_Inbound extends CrosschainBase {
 
       return this.listenRedeem(opts, receipt.blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'redeemed' });
@@ -235,17 +235,18 @@ class BTC_Inbound extends CrosschainBase {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(lockScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWBTC', 'BTC2WBTCLock', log);
+        this.emit('info', { status: 'locked', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
@@ -263,17 +264,18 @@ class BTC_Inbound extends CrosschainBase {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(redeemScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWBTC', 'BTC2WBTCRedeem', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWBTC', 'BTC2WBTCRedeem', log);
+        this.emit('info', { status: 'redeemed', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**

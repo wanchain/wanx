@@ -166,6 +166,16 @@ const RevokeDataSchema = {
   },
 };
 
+const StoremanQuotaSchema = {
+  type: 'object',
+  required: [
+    'storeman',
+  ],
+  properties: {
+    storeman: storemanWan,
+  },
+};
+
 const ScanOptsSchema = {
   type: 'object',
   required: ['redeemKey'],
@@ -191,5 +201,6 @@ module.exports = {
   RedeemDataSchema,
   RevokeDataSchema,
 
+  StoremanQuotaSchema,
   ScanOptsSchema,
 };

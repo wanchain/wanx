@@ -102,19 +102,14 @@ Promise.resolve([]).then(() => {
   // Scan for the lock confirmation from the storeman
   return cctx.listenLock(opts, receipt.blockNumber);
 
-}).then(log => {
+}).then(({ log, inputs }) => {
 
   console.log('Lock confirmed by storeman');
-  console.log(log);
-
-  // Parse the LockNotice log
-  const values = cctx.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
-
-  console.log(values);
+  console.log(log, inputs);
 
   // Add lockTime and txid to opts
-  opts.lockTime = Number(values.lockedTimestamp);
-  opts.txid = values.txHash;
+  opts.lockTime = Number(inputs.lockedTimestamp);
+  opts.txid = inputs.txHash;
 
   // Build the contract to get the redeemScript
   const contract = cctx.buildHashTimeLockContract(opts);

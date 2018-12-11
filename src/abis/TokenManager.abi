@@ -1,0 +1,654 @@
+module.exports = [
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapCandidateInfo",
+    "outputs": [
+      {
+        "name": "isApproved",
+        "type": "bool"
+      },
+      {
+        "name": "name",
+        "type": "bytes"
+      },
+      {
+        "name": "symbol",
+        "type": "bytes"
+      },
+      {
+        "name": "decimals",
+        "type": "uint8"
+      },
+      {
+        "name": "token2WanRatio",
+        "type": "uint256"
+      },
+      {
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "name": "withdrawDelayTime",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapPenaltyReceiver",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "MIN_WITHDRAW_WINDOW",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "DEFAULT_BONUS_PERIOD_BLOCKS",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "quotaLedger",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "storemanGroupAdmin",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "DEFAULT_BONUS_RATIO_FOR_DEPOSIT",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "halted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "DEFAULT_PRECISE",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "mapTokenInfo",
+    "outputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "tokenWanAddr",
+        "type": "address"
+      },
+      {
+        "name": "token2WanRatio",
+        "type": "uint256"
+      },
+      {
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "name": "withdrawDelayTime",
+        "type": "uint256"
+      },
+      {
+        "name": "useWhiteList",
+        "type": "bool"
+      },
+      {
+        "name": "startBonusBlk",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusTotal",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusPeriodBlks",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusRatio",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "newOwner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "wanHtlc",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "MIN_DEPOSIT",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "halt",
+        "type": "bool"
+      }
+    ],
+    "name": "setHalt",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "origHtlc",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapKey",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tokenWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "ratio",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "origHtlc",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "wanHtlc",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "withdrawDelayTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "tokenHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "TokenAddedLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "ratio",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "withdrawDelayTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "name",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "symbol",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "decimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "CandidateAddedLogger",
+    "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "isTokenRegistered",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "storemanGroupAdminAddr",
+        "type": "address"
+      },
+      {
+        "name": "quotaLedgerAddr",
+        "type": "address"
+      },
+      {
+        "name": "origHtlcAddr",
+        "type": "address"
+      },
+      {
+        "name": "wanHtlcAddr",
+        "type": "address"
+      }
+    ],
+    "name": "injectDependencies",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "ratio",
+        "type": "uint256"
+      },
+      {
+        "name": "minDeposit",
+        "type": "uint256"
+      },
+      {
+        "name": "withdrawDelayTime",
+        "type": "uint256"
+      },
+      {
+        "name": "name",
+        "type": "bytes"
+      },
+      {
+        "name": "symbol",
+        "type": "bytes"
+      },
+      {
+        "name": "decimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "addCandidate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "removeCandidate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "addToken",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "ratio",
+        "type": "uint256"
+      },
+      {
+        "name": "delayTime",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusRatio",
+        "type": "uint256"
+      },
+      {
+        "name": "penaltyReceiver",
+        "type": "address"
+      }
+    ],
+    "name": "setTokenEconomics",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "enableUserWhiteList",
+        "type": "bool"
+      }
+    ],
+    "name": "setSmgEnableUserWhiteList",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "isSystemBonusPeriod",
+        "type": "bool"
+      },
+      {
+        "name": "systemBonusPeriod",
+        "type": "uint256"
+      }
+    ],
+    "name": "setSystemEnableBonus",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "bonus",
+        "type": "uint256"
+      },
+      {
+        "name": "isAdded",
+        "type": "bool"
+      }
+    ],
+    "name": "updateTotalBonus",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "kill",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

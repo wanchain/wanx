@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 
-const CrosschainBase = require('../base');
+const ETH_Base = require('./base');
 const web3Shim = require('../lib/web3');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -20,8 +20,9 @@ const {
 
 /**
  * Ethereum Outbound
+ * @augments ETH_Base
  */
-class ETH_Outbound extends CrosschainBase {
+class ETH_Outbound extends ETH_Base {
 
   constructor(config) {
     super(config);
@@ -96,7 +97,7 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'locked' });
@@ -137,7 +138,7 @@ class ETH_Outbound extends CrosschainBase {
 
       return this.listenRedeem(opts, blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'redeemed' });
@@ -170,20 +171,20 @@ class ETH_Outbound extends CrosschainBase {
     const callOpts = this.buildOutboundFeeTx(opts, true);
     const action = web3Shim(this.wanchain.web3).call(callOpts);
 
-    action.then(res => {
-      res = res === '0x' ? '0x0' : res;
+    return new Promise((resolve, reject) => {
+      action.then(res => {
+        res = res === '0x' ? '0x0' : res;
 
-      const outboundFee = new BigNumber(res).toString();
-      this.emit('info', { status: 'outboundFee', outboundFee });
+        const outboundFee = new BigNumber(res).toString();
+        this.emit('info', { status: 'outboundFee', outboundFee });
+        resolve(outboundFee);
+      })
 
-      return outboundFee;
-    })
-
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
@@ -301,17 +302,18 @@ class ETH_Outbound extends CrosschainBase {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.ethereum.web3).watchLogs(lockScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCETH', 'WETH2ETHLock', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCETH', 'WETH2ETHLock', log);
+        this.emit('info', { status: 'locked', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
@@ -329,17 +331,18 @@ class ETH_Outbound extends CrosschainBase {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(redeemScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWETH', 'WETH2ETHRefund', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWETH', 'WETH2ETHRefund', log);
+        this.emit('info', { status: 'redeemed', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**

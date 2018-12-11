@@ -1,7 +1,7 @@
 const moment = require('moment');
 const BigNumber = require('bignumber.js');
 
-const CrosschainBase = require('../base');
+const BTC_Base = require('./base');
 const btcUtil = require('./utils');
 const web3Shim = require('../lib/web3');
 const crypto = require('../lib/crypto');
@@ -25,8 +25,9 @@ const {
 
 /**
  * Bitcoin Outbound
+ * @augments BTC_Base
  */
-class BTC_Outbound extends CrosschainBase {
+class BTC_Outbound extends BTC_Base {
 
   constructor(config) {
     super(config);
@@ -99,7 +100,7 @@ class BTC_Outbound extends CrosschainBase {
 
       return this.listenLock(opts, receipt.blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'locked' });
@@ -133,20 +134,20 @@ class BTC_Outbound extends CrosschainBase {
     const callOpts = this.buildOutboundFeeTx(opts, true);
     const action = web3Shim(this.wanchain.web3).call(callOpts);
 
-    action.then(res => {
-      res = res === '0x' ? '0x0' : res;
+    return new Promise((resolve, reject) => {
+      action.then(res => {
+        res = res === '0x' ? '0x0' : res;
 
-      const outboundFee = new BigNumber(res).toString();
-      this.emit('info', { status: 'outboundFee', outboundFee });
+        const outboundFee = new BigNumber(res).toString();
+        this.emit('info', { status: 'outboundFee', outboundFee });
+        resolve(outboundFee);
+      });
 
-      return outboundFee;
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    action.catch(err => {
-      this.emit('error', err);
-    });
-
-    return action;
   }
 
   /**
@@ -233,17 +234,18 @@ class BTC_Outbound extends CrosschainBase {
     const lockNoticeScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(lockNoticeScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWBTC', 'WBTC2BTCLockNotice', log);
+        this.emit('info', { status: 'locked', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
@@ -261,17 +263,18 @@ class BTC_Outbound extends CrosschainBase {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(redeemScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWBTC', 'WBTC2BTCRedeem', log);
+        this.emit('info', { status: 'redeemed', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**

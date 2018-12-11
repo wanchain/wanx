@@ -12,6 +12,7 @@ const {
   tokenEthWan,
   tokenEth,
   tokenWan,
+  tokenKey,
 } = require('../lib/schema/fields');
 
 const InboundApproveSchema = {
@@ -217,6 +218,37 @@ const RevokeDataSchema = {
   },
 };
 
+const TokenKeySchema = {
+  type: 'object',
+  required: [
+    'token',
+  ],
+  properties: {
+    token: tokenEth,
+  },
+};
+
+const TokenInfoSchema = {
+  type: 'object',
+  required: [
+    'token',
+  ],
+  properties: {
+    token: tokenKey,
+  },
+};
+
+const StoremanQuotaSchema = {
+  type: 'object',
+  required: [
+    'token', 'storeman',
+  ],
+  properties: {
+    token: tokenEth,
+    storeman: storemanWan,
+  },
+};
+
 const ScanOptsSchema = {
   type: 'object',
   required: ['redeemKey'],
@@ -244,5 +276,9 @@ module.exports = {
   OutboundLockDataSchema,
   RedeemDataSchema,
   RevokeDataSchema,
+
+  TokenKeySchema,
+  TokenInfoSchema,
+  StoremanQuotaSchema,
   ScanOptsSchema,
 };

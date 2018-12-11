@@ -142,7 +142,7 @@ const hashForSignature = cctx.hashForRedeemSig(opts);
 
 // sign hash
 const keyPair = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.testnet);
-const sigHash = keyPair.sign(new Buffer.from(sigHash, 'hex'));
+const sigHash = keyPair.sign(new Buffer.from(hashForSignature, 'hex'));
 
 // build redeem tx
 const signedTx = cctx.buildRedeemTx(Object.assign({}, opts, { sigHash, publicKey }));

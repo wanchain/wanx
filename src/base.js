@@ -31,16 +31,19 @@ class CrosschainBase extends EventEmitter {
     // decodeLog returns addresses with ethereum checksum; to avoid confusion
     // with ethereum vs wanchain address checksums, force lowercase on string
     // properties
-    const keys = Object.keys(parsed);
+    return forceLowerCase(parsed);
+  }
 
-    for (let i = 0, l = keys.length; i < l; i++) {
-      const key = keys[i];
-      if (typeof parsed[key] === 'string') {
-        parsed[key] = parsed[key].toLowerCase();
-      }
-    }
+  parseOutput(abiName, funcName, data) {
+    const abi = abis[abiName];
+    const { outputs } = find(abi, { type: 'function', name: funcName });
 
-    return parsed;
+    const parsed = web3.eth.abi.decodeParameters(outputs, data);
+
+    // decodeParameters returns addresses with ethereum checksum; to avoid confusion
+    // with ethereum vs wanchain address checksums, force lowercase on string
+    // properties
+    return forceLowerCase(parsed);
   }
 
   validate(schema, opts) {
@@ -51,6 +54,23 @@ class CrosschainBase extends EventEmitter {
       throw new Error('Invalid opts: ' + ajv.errorsText(validate.errors));
     }
   }
+}
+
+function forceLowerCase(obj) {
+  const keys = Object.keys(obj);
+  const newObj = {};
+
+  for (let i = 0, l = keys.length; i < l; i++) {
+    const key = keys[i];
+    if (typeof obj[key] === 'string') {
+      newObj[key] = obj[key].toLowerCase();
+    }
+    else {
+      newObj[key] = obj[key];
+    }
+  }
+
+  return newObj;
 }
 
 module.exports = CrosschainBase;

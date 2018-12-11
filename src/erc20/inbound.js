@@ -1,4 +1,4 @@
-const CrosschainBase = require('../base');
+const ERC20_Base = require('./base');
 const web3Shim = require('../lib/web3');
 const types = require('../lib/types');
 const hex = require('../lib/hex');
@@ -17,8 +17,9 @@ const {
 
 /**
  * ERC20 Inbound
+ * @augments ERC20_Base
  */
-class ERC20_Inbound extends CrosschainBase {
+class ERC20_Inbound extends ERC20_Base {
 
   constructor(config) {
     super(config);
@@ -101,7 +102,7 @@ class ERC20_Inbound extends CrosschainBase {
 
       return this.listenLock(opts, blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'locked' });
@@ -144,7 +145,7 @@ class ERC20_Inbound extends CrosschainBase {
 
       return this.listenRedeem(opts, blockNumber, true);
 
-    }).then(log => {
+    }).then(res => {
 
       // notify complete
       this.emit('complete', { status: 'redeemed' });
@@ -310,17 +311,18 @@ class ERC20_Inbound extends CrosschainBase {
     const lockScanOpts = this.buildLockScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.wanchain.web3).watchLogs(lockScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCWAN_ERC20', 'InboundLockLogger', log);
-      this.emit('info', { status: 'locked', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCWAN_ERC20', 'InboundLockLogger', log);
+        this.emit('info', { status: 'locked', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
@@ -338,17 +340,18 @@ class ERC20_Inbound extends CrosschainBase {
     const redeemScanOpts = this.buildRedeemScanOpts(opts, blockNumber, true);
     const action = web3Shim(this.ethereum.web3).watchLogs(redeemScanOpts);
 
-    action.then(log => {
-      const values = this.parseLog('HTLCETH_ERC20', 'InboundRedeemLogger', log);
-      this.emit('info', { status: 'redeemed', log, values });
-      return log;
-    });
+    return new Promise((resolve, reject) => {
+      action.then(log => {
+        const inputs = this.parseLog('HTLCETH_ERC20', 'InboundRedeemLogger', log);
+        this.emit('info', { status: 'redeemed', log, inputs });
+        resolve({ log, inputs });
+      });
 
-    action.catch(err => {
-      this.emit('error', err);
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
     });
-
-    return action;
   }
 
   /**
