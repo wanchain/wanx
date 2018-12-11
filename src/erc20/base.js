@@ -14,6 +14,16 @@ class ERC20_Base extends CrosschainBase {
     super(config);
   }
 
+  /**
+   * Make storeman quota call on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise returning object
+   */
   storemanQuota(opts, skipValidation) {
 
     ! skipValidation && this.validate(StoremanQuotaSchema, opts);
