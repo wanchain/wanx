@@ -14,6 +14,7 @@ const testnetConfig = {
     WETHManager: '0x670847a824974b4cd5555d6b46228749e44242a3',
     WBTCManager: '0x8f690a643edf67f663c4ba3655a95b8e66b3a076',
     QuotaLedger: '0x2cb2e6a944536ba82e663ab215779991bc089b29',
+    TokenManager: '0x2fc1a4085ea7b8482ccb7bf8d8f0b4d5353547dc',
   },
   bitcoin: {
     lockTime: 8, // hours
@@ -35,6 +36,7 @@ const mainnetConfig = {
     WETHManager: '0xa30f995538d576db5640241c7e3f5c216cfebf95',
     WBTCManager: '0x7edd545087ce70fbaefa7b278e5e81b00970f8fa',
     QuotaLedger: '0xddb09c3af165b83fa8f280225a6866786cc38971',
+    TokenManager: '0xf30dd94e98ba93d2465bc403ff9c923f49044193',
   },
   bitcoin: {
     lockTime: 72, // hours
@@ -266,6 +268,27 @@ const defaultConfig = {
       tokenManager: '2a709b14a4a9d9b2f0f15bae3ddf9164ab236df830b818ed86ab507149764435',
       unlockQuota: 'ea2b43c530192dab898893605fc04da5c3e57f07c6630c69ee5811a3be0447e0',
       unlockToken: '39ba8188e38f24e898d2477934f1fd6c3db80888390f93b63ec0c19309a151a5',
+    },
+    TokenManager: {
+      CandidateAddedLogger: '4588b7bb13bad7af5920ca4a6c972e36ceaa37638df67a1a4452c3c750f7f9c8',
+      DEFAULT_BONUS_PERIOD_BLOCKS: '3e363fc57efa7e0b6e36d39d20c1d4387e0d41421510e5b15c4414dde318dce0',
+      DEFAULT_BONUS_RATIO_FOR_DEPOSIT: '9d3a77fad28904f0a068c4dbbb0508e6dee81d5a60a866a67f0270250fe646f7',
+      DEFAULT_PRECISE: 'bd490167ea0ba19ca7e4e93eac827911f26db72ad55f7f5d707b7512ead6709c',
+      MIN_DEPOSIT: 'e1e158a58218546ea119bd1693a889257588e4c64b9f6591bd9d325d6351f4e1',
+      MIN_WITHDRAW_WINDOW: '36936380a7bfaa112244a4b00d0fd1355ae5a4da9efa6e1aab2a155f5aefa0ca',
+      TokenAddedLogger: '3662e9e3dcd91ede39c017a90af1706bd2fb405f52ced022ef94ba448cc5ff9b',
+      addCandidate: '216c4f18c3011356887e5a4436b18ac268de99fc7ac47c062d0268773a2eaf52',
+      addToken: 'd48bfca77c1c8a493ffa97c292a53d8c42ff94728df4dab260e86bc742b6160e',
+      isTokenRegistered: '26aa101f1248bca8e3b69126ef10dc1571db0d3067301e04d87f1aacc534aa4e',
+      mapCandidateInfo: '04169f36d7659e8110bc8b22fe5613f9dded60553c8e4bb8c539e097568319e6',
+      mapKey: 'ff63e84b7696b662b1bac62ca64d66dfe220b7b9580994fa755f1a39e6676dbb',
+      mapPenaltyReceiver: '27022cafe014bec362f5d7a0b41735dc9c591f7958abbbb84952fb5368aca012',
+      mapTokenInfo: 'bfbcb91820a10ce2a17f2a0264ce3b58d6b98ee0889923f292a2da9cc1e30d43',
+      origHtlc: 'fa9e3480106b80e17153c90bff247a272e612a889f321ac612ec35ce064e3176',
+      quotaLedger: '40254165771fd18e5f9b7d47ff3e676dce22ef9f17a1a11a948e6647965d2062',
+      removeCandidate: '6dd091f9ee0095fd7f1eecda246b5766d3a6c5129d4f62483000f70a2fac98d7',
+      storemanGroupAdmin: '820413f35662c85e6fa65903ec21906291f0d3dd5a8ee034bd79e33eeb56332b',
+      wanHtlc: 'dee8287e4d6e1f8a07cb7971f904b4bcedf1fcb18f711c51b45d6571dee38492',
     },
   },
 };
