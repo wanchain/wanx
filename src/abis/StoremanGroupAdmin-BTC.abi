@@ -1,0 +1,679 @@
+module.exports = [
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "coinAminAddr",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "wanExponent",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapCoinSmgInfo",
+    "outputs": [
+      {
+        "name": "deposit",
+        "type": "uint256"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "unregisterApplyTime",
+        "type": "uint256"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusBlockNumber",
+        "type": "uint256"
+      },
+      {
+        "name": "initiator",
+        "type": "address"
+      },
+      {
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "bonusTotal",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapSmgWhiteList",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "halted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "newOwner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "halt",
+        "type": "bool"
+      }
+    ],
+    "name": "setHalt",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "smgOriginalChainAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "wancoin",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "tokenQuota",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "txFeeratio",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgRegister",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "orgSCAddr",
+        "type": "bytes"
+      }
+    ],
+    "name": "SmgSetOrigSC",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "proxySCAddr",
+        "type": "address"
+      }
+    ],
+    "name": "SmgSetProxySC",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "applyTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgApplyUnRegister",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "actualReturn",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "deposit",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgWithdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "bonus",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgClaimSystemBonus",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgPunished",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "destAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "deposit",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgTranferDeposit",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "setCoinAdmin",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupRegister",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupRegisterByDelegate",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      }
+    ],
+    "name": "depositSmgBonus",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      }
+    ],
+    "name": "setSmgWhiteList",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "storemanAddr",
+        "type": "address"
+      }
+    ],
+    "name": "getStoremanTxFeeRatio",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupApplyUnregister",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      }
+    ],
+    "name": "smgApplyUnregisterByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupWithdrawDeposit",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      }
+    ],
+    "name": "smgWithdrawDepositByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupClaimSystemBonus",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      }
+    ],
+    "name": "smgClaimSystemBonusByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      },
+      {
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "punishStoremanGroup",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "kill",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "coin",
+        "type": "uint256"
+      },
+      {
+        "name": "smgAddr",
+        "type": "address"
+      },
+      {
+        "name": "destAddress",
+        "type": "address"
+      },
+      {
+        "name": "isTransferAll",
+        "type": "bool"
+      }
+    ],
+    "name": "transferSmgDeposit",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
