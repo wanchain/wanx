@@ -21,8 +21,11 @@ Ethereum Base
 
 * [ETH_Base](#ETH_Base)
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ETH_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ETH_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ETH_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -31,6 +34,24 @@ Ethereum Base
 
 ### ETH_Base.storemanQuota(opts, skipValidation) ⇒ <code>Promise</code>
 Make storeman quota call on Wanchain
+
+**Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ETH_Base+storemanInfo"></a>
+
+### ETH_Base.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
 
 **Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
 **Returns**: <code>Promise</code> - Promise returning object
@@ -63,10 +84,46 @@ Build storeman quota call
 
 * * *
 
+<a name="ETH_Base+buildStoremanInfoTx"></a>
+
+### ETH_Base.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
 ### ETH_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ETH_Base+buildStoremanInfoData"></a>
+
+### ETH_Base.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
 **Returns**: <code>string</code> - Data hex string
@@ -107,8 +164,11 @@ Ethereum Inbound
     * [.buildRedeemData(opts, skipValidation)](#ETH_Inbound+buildRedeemData) ⇒ <code>string</code>
     * [.buildRevokeData(opts, skipValidation)](#ETH_Inbound+buildRevokeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ETH_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ETH_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ETH_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -455,6 +515,24 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="ETH_Base+storemanInfo"></a>
+
+### ETH_Inbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
+
+**Kind**: instance method of [<code>ETH\_Inbound</code>](#ETH_Inbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ETH_Base+buildStoremanQuotaTx"></a>
 
 ### ETH_Inbound.buildStoremanQuotaTx(opts, skipValidation) ⇒ <code>Object</code>
@@ -473,10 +551,46 @@ Build storeman quota call
 
 * * *
 
+<a name="ETH_Base+buildStoremanInfoTx"></a>
+
+### ETH_Inbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>ETH\_Inbound</code>](#ETH_Inbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
 ### ETH_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>ETH\_Inbound</code>](#ETH_Inbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ETH_Base+buildStoremanInfoData"></a>
+
+### ETH_Inbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>ETH\_Inbound</code>](#ETH_Inbound)
 **Returns**: <code>string</code> - Data hex string
@@ -520,8 +634,11 @@ Ethereum Outbound
     * [.buildRevokeData(opts, skipValidation)](#ETH_Outbound+buildRevokeData) ⇒ <code>string</code>
     * [.buildOutboundFeeData(opts, skipValidation)](#ETH_Outbound+buildOutboundFeeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ETH_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ETH_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ETH_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -929,6 +1046,24 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="ETH_Base+storemanInfo"></a>
+
+### ETH_Outbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
+
+**Kind**: instance method of [<code>ETH\_Outbound</code>](#ETH_Outbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ETH_Base+buildStoremanQuotaTx"></a>
 
 ### ETH_Outbound.buildStoremanQuotaTx(opts, skipValidation) ⇒ <code>Object</code>
@@ -947,10 +1082,46 @@ Build storeman quota call
 
 * * *
 
+<a name="ETH_Base+buildStoremanInfoTx"></a>
+
+### ETH_Outbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>ETH\_Outbound</code>](#ETH_Outbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
 ### ETH_Outbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>ETH\_Outbound</code>](#ETH_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ETH_Base+buildStoremanInfoData"></a>
+
+### ETH_Outbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>ETH\_Outbound</code>](#ETH_Outbound)
 **Returns**: <code>string</code> - Data hex string

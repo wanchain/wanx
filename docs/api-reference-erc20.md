@@ -21,13 +21,16 @@ ERC20 Base
 
 * [ERC20_Base](#ERC20_Base)
     * [.storemanQuota(opts, skipValidation)](#ERC20_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ERC20_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.tokenInfo(opts, skipValidation)](#ERC20_Base+tokenInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
     * [.buildTokenKeyTx(opts, skipValidation)](#ERC20_Base+buildTokenKeyTx) ⇒ <code>Object</code>
     * [.buildTokenInfoTx(opts, skipValidation)](#ERC20_Base+buildTokenInfoTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ERC20_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaData) ⇒ <code>string</code>
     * [.buildTokenInfoData(opts, skipValidation)](#ERC20_Base+buildTokenInfoData) ⇒ <code>string</code>
     * [.buildTokenKeyData(opts, skipValidation)](#ERC20_Base+buildTokenKeyData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ERC20_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -36,6 +39,26 @@ ERC20 Base
 
 ### ERC20_Base.storemanQuota(opts, skipValidation) ⇒ <code>Promise</code>
 Make storeman quota call on Wanchain
+
+**Kind**: instance method of [<code>ERC20\_Base</code>](#ERC20_Base)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ERC20_Base+storemanInfo"></a>
+
+### ERC20_Base.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
 
 **Kind**: instance method of [<code>ERC20\_Base</code>](#ERC20_Base)
 **Returns**: <code>Promise</code> - Promise returning object
@@ -126,6 +149,26 @@ Build token manager mapTokenInfo call
 
 * * *
 
+<a name="ERC20_Base+buildStoremanInfoTx"></a>
+
+### ERC20_Base.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman group admin mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Base</code>](#ERC20_Base)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token info |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Base+buildStoremanQuotaData"></a>
 
 ### ERC20_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
@@ -182,6 +225,26 @@ Get data hex string for token mapKey call
 
 * * *
 
+<a name="ERC20_Base+buildStoremanInfoData"></a>
+
+### ERC20_Base.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Base</code>](#ERC20_Base)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Inbound"></a>
 
 ## ERC20\_Inbound ⇐ [<code>ERC20\_Base</code>](#ERC20_Base)
@@ -211,13 +274,16 @@ ERC20 Inbound
     * [.buildRedeemData(opts, skipValidation)](#ERC20_Inbound+buildRedeemData) ⇒ <code>string</code>
     * [.buildRevokeData(opts, skipValidation)](#ERC20_Inbound+buildRevokeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ERC20_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ERC20_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.tokenInfo(opts, skipValidation)](#ERC20_Base+tokenInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
     * [.buildTokenKeyTx(opts, skipValidation)](#ERC20_Base+buildTokenKeyTx) ⇒ <code>Object</code>
     * [.buildTokenInfoTx(opts, skipValidation)](#ERC20_Base+buildTokenInfoTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ERC20_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaData) ⇒ <code>string</code>
     * [.buildTokenInfoData(opts, skipValidation)](#ERC20_Base+buildTokenInfoData) ⇒ <code>string</code>
     * [.buildTokenKeyData(opts, skipValidation)](#ERC20_Base+buildTokenKeyData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ERC20_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -652,6 +718,26 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="ERC20_Base+storemanInfo"></a>
+
+### ERC20_Inbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
+
+**Kind**: instance method of [<code>ERC20\_Inbound</code>](#ERC20_Inbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Base+tokenInfo"></a>
 
 ### ERC20_Inbound.tokenInfo(opts, skipValidation) ⇒ <code>Promise</code>
@@ -726,6 +812,26 @@ Build token manager mapTokenInfo call
 
 * * *
 
+<a name="ERC20_Base+buildStoremanInfoTx"></a>
+
+### ERC20_Inbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman group admin mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Inbound</code>](#ERC20_Inbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token info |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Base+buildStoremanQuotaData"></a>
 
 ### ERC20_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
@@ -782,6 +888,26 @@ Get data hex string for token mapKey call
 
 * * *
 
+<a name="ERC20_Base+buildStoremanInfoData"></a>
+
+### ERC20_Inbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Inbound</code>](#ERC20_Inbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Outbound"></a>
 
 ## ERC20\_Outbound ⇐ [<code>ERC20\_Base</code>](#ERC20_Base)
@@ -814,13 +940,16 @@ ERC20 Outbound
     * [.buildRevokeData(opts, skipValidation)](#ERC20_Outbound+buildRevokeData) ⇒ <code>string</code>
     * [.buildOutboundFeeData(opts, skipValidation)](#ERC20_Outbound+buildOutboundFeeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ERC20_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#ERC20_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.tokenInfo(opts, skipValidation)](#ERC20_Base+tokenInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
     * [.buildTokenKeyTx(opts, skipValidation)](#ERC20_Base+buildTokenKeyTx) ⇒ <code>Object</code>
     * [.buildTokenInfoTx(opts, skipValidation)](#ERC20_Base+buildTokenInfoTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#ERC20_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#ERC20_Base+buildStoremanQuotaData) ⇒ <code>string</code>
     * [.buildTokenInfoData(opts, skipValidation)](#ERC20_Base+buildTokenInfoData) ⇒ <code>string</code>
     * [.buildTokenKeyData(opts, skipValidation)](#ERC20_Base+buildTokenKeyData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#ERC20_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -1324,6 +1453,26 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="ERC20_Base+storemanInfo"></a>
+
+### ERC20_Outbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman info call on Wanchain
+
+**Kind**: instance method of [<code>ERC20\_Outbound</code>](#ERC20_Outbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Base+tokenInfo"></a>
 
 ### ERC20_Outbound.tokenInfo(opts, skipValidation) ⇒ <code>Promise</code>
@@ -1398,6 +1547,26 @@ Build token manager mapTokenInfo call
 
 * * *
 
+<a name="ERC20_Base+buildStoremanInfoTx"></a>
+
+### ERC20_Outbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman group admin mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Outbound</code>](#ERC20_Outbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| opts.token | <code>Object</code> | Token info |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="ERC20_Base+buildStoremanQuotaData"></a>
 
 ### ERC20_Outbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
@@ -1447,6 +1616,26 @@ Get data hex string for token mapKey call
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>Object</code> | Data options |
+| opts.token | <code>Object</code> | Token pair |
+| opts.token.eth | <code>string</code> | Token address on Ethereum |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="ERC20_Base+buildStoremanInfoData"></a>
+
+### ERC20_Outbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman mapStoremanGroup call
+
+**Kind**: instance method of [<code>ERC20\_Outbound</code>](#ERC20_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
 | opts.token | <code>Object</code> | Token pair |
 | opts.token.eth | <code>string</code> | Token address on Ethereum |
 | skipValidation | <code>boolean</code> |  |
