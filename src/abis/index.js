@@ -7,6 +7,7 @@ const WETHManager = require('./WETHManager.abi');
 const HTLCETH_ERC20 = require('./HTLCETH-ERC20.abi');
 const HTLCWAN_ERC20 = require('./HTLCWAN-ERC20.abi');
 const QuotaLedger = require('./QuotaLedger.abi');
+const TokenManager = require('./TokenManager.abi');
 
 // Bitcoin
 const HTLCWBTC = require('./HTLCWBTC.abi');
@@ -19,6 +20,7 @@ module.exports = {
   HTLCETH_ERC20,
   HTLCWAN_ERC20,
   QuotaLedger,
+  TokenManager,
   HTLCWBTC,
   WBTCManager,
 };
