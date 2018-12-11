@@ -15,6 +15,7 @@ const {
 
 /**
  * Ethereum Inbound
+ * @augments ETH_Base
  */
 class ETH_Inbound extends ETH_Base {
 

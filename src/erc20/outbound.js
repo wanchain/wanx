@@ -22,6 +22,7 @@ const {
 
 /**
  * ERC20 Outbound
+ * @augments ERC20_Base
  */
 class ERC20_Outbound extends ERC20_Base {
 

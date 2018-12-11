@@ -23,6 +23,7 @@ const {
 
 /**
  * Bitcoin Inbound
+ * @augments BTC_Base
  */
 class BTC_Inbound extends BTC_Base {
 

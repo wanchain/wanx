@@ -25,6 +25,7 @@ const {
 
 /**
  * Bitcoin Outbound
+ * @augments BTC_Base
  */
 class BTC_Outbound extends BTC_Base {
 

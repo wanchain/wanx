@@ -20,6 +20,7 @@ const {
 
 /**
  * Ethereum Outbound
+ * @augments ETH_Base
  */
 class ETH_Outbound extends ETH_Base {
 
