@@ -3,10 +3,8 @@
 [![GitHub License][license]][license-url]
 [![NPM][npm]][npm-url]
 
-### Utility for making crosschain transactions on the Wanchain network
-
-NB: the Wanchain integrations to Bitcoin and ERC20 tokens are still in beta.
-Currently only Ethereum can be used on mainnet.
+WanX is a utility package for making crosschain transactions into and out of
+the Wanchain network.
 
 ## Install
 
