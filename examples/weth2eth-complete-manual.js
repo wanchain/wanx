@@ -50,23 +50,19 @@ const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
 // Do outbound lock transaction
-Promise.resolve([]).then(() => {
+Promise.resolve([]).then(async () => {
 
   console.log('Starting eth outbound lock', opts);
 
   // Get the outbound fee on Wanchain
-  return cctx.getOutboundFee(opts);
-
-}).then(async (fee) => {
+  const fee = await cctx.getOutboundFee(opts);
 
   // Get the tx count to determine next nonce
   const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   return Promise.resolve([ fee, txCount ]);
 
-}).then(res => {
-
-  const [ fee, txCount ] = res;
+}).then(([ fee, txCount ]) => {
 
   opts.outboundFee = fee;
 
