@@ -155,7 +155,7 @@ class ERC20_Base extends CrosschainBase {
    * @param {Object} opts.token - Token pair
    * @param {string} opts.token.eth - Token address on Ethereum
    * @param {boolean} skipValidation
-   * @returns {Object} Storeman quota info
+   * @returns {string} Data hex string
    */
   buildStoremanQuotaData(opts, skipValidation) {
 
@@ -175,7 +175,7 @@ class ERC20_Base extends CrosschainBase {
    * @param {Object} opts.token - Token info
    * @param {string} opts.token.key - Token key
    * @param {boolean} skipValidation
-   * @returns {Object} Storeman quota info
+   * @returns {string} Data hex string
    */
   buildTokenInfoData(opts, skipValidation) {
 
@@ -194,7 +194,7 @@ class ERC20_Base extends CrosschainBase {
    * @param {Object} opts.token - Token pair
    * @param {string} opts.token.eth - Token address on Ethereum
    * @param {boolean} skipValidation
-   * @returns {Object} Storeman quota info
+   * @returns {string} Data hex string
    */
   buildTokenKeyData(opts, skipValidation) {
 

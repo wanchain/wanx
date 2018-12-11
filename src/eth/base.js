@@ -68,7 +68,7 @@ class ETH_Base extends CrosschainBase {
    * @param {Object} opts.storeman - Storeman address pair
    * @param {string} opts.storeman.wan - Storeman Wanchain address
    * @param {boolean} skipValidation
-   * @returns {Object} Storeman quota info
+   * @returns {string} Data hex string
    */
   buildStoremanQuotaData(opts, skipValidation) {
 

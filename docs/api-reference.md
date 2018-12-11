@@ -40,7 +40,7 @@ Ethereum Base
 * [ETH_Base](#ETH_Base)
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -83,11 +83,11 @@ Build storeman quota call
 
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
-### ETH_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>Object</code>
+### ETH_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
 
 **Kind**: instance method of [<code>ETH\_Base</code>](#ETH_Base)
-**Returns**: <code>Object</code> - Storeman quota info
+**Returns**: <code>string</code> - Data hex string
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -126,7 +126,7 @@ Ethereum Inbound
     * [.buildRevokeData(opts, skipValidation)](#ETH_Inbound+buildRevokeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -493,11 +493,11 @@ Build storeman quota call
 
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
-### ETH_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>Object</code>
+### ETH_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
 
 **Kind**: instance method of [<code>ETH\_Inbound</code>](#ETH_Inbound)
-**Returns**: <code>Object</code> - Storeman quota info
+**Returns**: <code>string</code> - Data hex string
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -539,7 +539,7 @@ Ethereum Outbound
     * [.buildOutboundFeeData(opts, skipValidation)](#ETH_Outbound+buildOutboundFeeData) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#ETH_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#ETH_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#ETH_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -967,11 +967,11 @@ Build storeman quota call
 
 <a name="ETH_Base+buildStoremanQuotaData"></a>
 
-### ETH_Outbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>Object</code>
+### ETH_Outbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
 
 **Kind**: instance method of [<code>ETH\_Outbound</code>](#ETH_Outbound)
-**Returns**: <code>Object</code> - Storeman quota info
+**Returns**: <code>string</code> - Data hex string
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -993,7 +993,7 @@ Bitcoin Base
 * [BTC_Base](#BTC_Base)
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -1036,11 +1036,11 @@ Build storeman quota call
 
 <a name="BTC_Base+buildStoremanQuotaData"></a>
 
-### BTC_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>Object</code>
+### BTC_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
 
 **Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
-**Returns**: <code>Object</code> - Storeman quota info
+**Returns**: <code>string</code> - Data hex string
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1080,7 +1080,7 @@ Bitcoin Inbound
     * [.buildRevokeTxFromWif(opts)](#BTC_Inbound+buildRevokeTxFromWif) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -1494,11 +1494,11 @@ Build storeman quota call
 
 <a name="BTC_Base+buildStoremanQuotaData"></a>
 
-### BTC_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>Object</code>
+### BTC_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
 
 **Kind**: instance method of [<code>BTC\_Inbound</code>](#BTC_Inbound)
-**Returns**: <code>Object</code> - Storeman quota info
+**Returns**: <code>string</code> - Data hex string
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1540,7 +1540,7 @@ Bitcoin Outbound
     * [.buildRedeemTxFromWif(opts)](#BTC_Outbound+buildRedeemTxFromWif) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
-    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>Object</code>
+    * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
 
 
 * * *
@@ -1783,3 +1783,126 @@ Build lock scan opts
 
 ### BTC_Outbound.buildRedeemScanOpts(opts, skipValidation) ⇒ <code>Object</code>
 Build redeem scan opts
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>Object</code> - Call opts object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.redeemKey | <code>Object</code> | Redeem key pair |
+| opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Outbound+buildLockData"></a>
+
+### BTC_Outbound.buildLockData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for lock call
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.redeemKey | <code>Object</code> | Redeem key pair |
+| opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
+| opts.storeman | <code>Object</code> | Storeman addr pair |
+| opts.storeman.wan | <code>string</code> | Storeman wan addr |
+| opts.to | <code>string</code> | Redeemer btc addr |
+| opts.value | <code>string</code> | Tx value |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Outbound+buildRevokeData"></a>
+
+### BTC_Outbound.buildRevokeData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for revoke call
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.redeemKey | <code>Object</code> | Redeem key pair |
+| opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Outbound+buildOutboundFeeData"></a>
+
+### BTC_Outbound.buildOutboundFeeData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for outboundFee call
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman addr pair |
+| opts.storeman.wan | <code>string</code> | Storeman wan addr |
+| opts.value | <code>string</code> | Tx value |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Outbound+buildHashTimeLockContract"></a>
+
+### BTC_Outbound.buildHashTimeLockContract(opts) ⇒ <code>Object</code>
+Build P2SH lock contract address
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>Object</code> - Contract object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.to | <code>string</code> | Redeemer btc address |
+| opts.lockTime | <code>number</code> | LockTime for lock address |
+| opts.redeemKey | <code>Object</code> | Redeem key pair |
+| opts.redeemKey.xHash | <code>string</code> | Redeem key xHash |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.btc | <code>string</code> | Storeman Bitcoin address |
+
+
+* * *
+
+<a name="BTC_Outbound+hashForRedeemSig"></a>
+
+### BTC_Outbound.hashForRedeemSig(opts) ⇒ <code>string</code>
+Build the hash for signature for redeem tx
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Hash string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.to | <code>string</code> | Redeemer btc address |
+| opts.value | <code>string</code> | Tx value (minus miner fee) |
+| opts.txid | <code>string</code> | Id of funding btc tx |
+| opts.redeemScript | <code>string</code> | Lock address redeemScript |
+
+
+* * *
+
+<a name="BTC_Outbound+buildRedeemTx"></a>
+
+### BTC_Outbound.buildRedeemTx(opts) ⇒ <code>string</code>
+Build redeem tx from sigHash
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Signed tx as hex string
+
+| Param | Type | Description |
+| --- | --- | --
