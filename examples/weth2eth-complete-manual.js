@@ -49,7 +49,7 @@ const wanDatadir = '/home/user/.wanchain/testnet/';
 const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
-// Do inbound lock transaction
+// Do outbound lock transaction
 Promise.resolve([]).then(() => {
 
   console.log('Starting eth outbound lock', opts);
