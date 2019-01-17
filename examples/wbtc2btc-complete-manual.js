@@ -33,8 +33,9 @@ const cctx = wanx.newChain('btc', false);
 
 // Define the transaction opts
 const opts = {
-  from: 'mvTfNujpcQwHaefMxfJRix4vhfNBxSFbBe',
-  to: '0x017ab346a4bb19f46c99bf19b6592828435540b0',
+  from: '0x017ab346a4bb19f46c99bf19b6592828435540b0',
+  to: 'mvTfNujpcQwHaefMxfJRix4vhfNBxSFbBe',
+  payTo: 'tb1q6krpca6w7trcez3y466stp636rzh6wct0tzyyw',
   value: '210000',
   storeman: {
     wan: '0x9ebf2acd509e0d5f9653e755f26d9a3ddce3977c',
