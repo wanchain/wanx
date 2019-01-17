@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
 const EthTx = require('ethereumjs-tx');

@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const bitcoinRpc = require('node-bitcoin-rpc');
 const BigNumber = require('bignumber.js');

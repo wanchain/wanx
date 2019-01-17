@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 
 /**
  * Requirements:
