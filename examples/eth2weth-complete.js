@@ -8,8 +8,8 @@ const WanX = require('../');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
-  ethereum: { url: 'http://localhost:18545' },
+  wanchain: { url: 'http://localhost:18545' },
+  ethereum: { url: 'http://localhost:28545' },
 };
 
 const wanx = new WanX('testnet', config);

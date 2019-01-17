@@ -11,7 +11,7 @@ const btcUtils = require('./btc-utils');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
+  wanchain: { url: 'http://localhost:18545' },
 };
 
 const wanx = new WanX('testnet', config);
