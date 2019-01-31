@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
 const WanTx = require('wanchainjs-tx');
@@ -11,8 +11,8 @@ const WanTx = require('wanchainjs-tx');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
-  ethereum: { url: 'http://localhost:18545'},
+  wanchain: { url: 'http://localhost:18545' },
+  ethereum: { url: 'http://localhost:28545'},
 };
 
 const web3wan = new Web3(new Web3.providers.HttpProvider(config.wanchain.url));
@@ -49,24 +49,20 @@ const wanDatadir = '/home/user/.wanchain/testnet/';
 const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
-// Do inbound lock transaction
-Promise.resolve([]).then(() => {
+// Do outbound lock transaction
+Promise.resolve([]).then(async () => {
 
   console.log('Starting eth outbound lock', opts);
 
   // Get the outbound fee on Wanchain
-  return cctx.getOutboundFee(opts);
-
-}).then(async (fee) => {
+  const fee = await cctx.getOutboundFee(opts);
 
   // Get the tx count to determine next nonce
   const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   return Promise.resolve([ fee, txCount ]);
 
-}).then(res => {
-
-  const [ fee, txCount ] = res;
+}).then(([ fee, txCount ]) => {
 
   opts.outboundFee = fee;
 

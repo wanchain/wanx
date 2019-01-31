@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
 const EthTx = require('ethereumjs-tx');
@@ -9,8 +9,8 @@ const EthTx = require('ethereumjs-tx');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
-  ethereum: { url: 'http://localhost:18545'},
+  wanchain: { url: 'http://localhost:18545' },
+  ethereum: { url: 'http://localhost:28545'},
 };
 
 const web3wan = new Web3(new Web3.providers.HttpProvider(config.wanchain.url));

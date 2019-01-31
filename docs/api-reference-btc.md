@@ -21,8 +21,11 @@ Bitcoin Base
 
 * [BTC_Base](#BTC_Base)
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#BTC_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#BTC_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#BTC_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -31,6 +34,24 @@ Bitcoin Base
 
 ### BTC_Base.storemanQuota(opts, skipValidation) ⇒ <code>Promise</code>
 Make storeman quota call on Wanchain
+
+**Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Base+storemanInfo"></a>
+
+### BTC_Base.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman quota info on Wanchain
 
 **Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
 **Returns**: <code>Promise</code> - Promise returning object
@@ -63,10 +84,46 @@ Build storeman quota call
 
 * * *
 
+<a name="BTC_Base+buildStoremanInfoTx"></a>
+
+### BTC_Base.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="BTC_Base+buildStoremanQuotaData"></a>
 
 ### BTC_Base.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Base+buildStoremanInfoData"></a>
+
+### BTC_Base.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>BTC\_Base</code>](#BTC_Base)
 **Returns**: <code>string</code> - Data hex string
@@ -108,8 +165,11 @@ Bitcoin Inbound
     * [.buildRevokeTx(opts)](#BTC_Inbound+buildRevokeTx) ⇒ <code>string</code>
     * [.buildRevokeTxFromWif(opts)](#BTC_Inbound+buildRevokeTxFromWif) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#BTC_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#BTC_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#BTC_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -503,6 +563,24 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="BTC_Base+storemanInfo"></a>
+
+### BTC_Inbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman quota info on Wanchain
+
+**Kind**: instance method of [<code>BTC\_Inbound</code>](#BTC_Inbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="BTC_Base+buildStoremanQuotaTx"></a>
 
 ### BTC_Inbound.buildStoremanQuotaTx(opts, skipValidation) ⇒ <code>Object</code>
@@ -521,10 +599,46 @@ Build storeman quota call
 
 * * *
 
+<a name="BTC_Base+buildStoremanInfoTx"></a>
+
+### BTC_Inbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>BTC\_Inbound</code>](#BTC_Inbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="BTC_Base+buildStoremanQuotaData"></a>
 
 ### BTC_Inbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>BTC\_Inbound</code>](#BTC_Inbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Base+buildStoremanInfoData"></a>
+
+### BTC_Inbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>BTC\_Inbound</code>](#BTC_Inbound)
 **Returns**: <code>string</code> - Data hex string
@@ -568,8 +682,11 @@ Bitcoin Outbound
     * [.buildRedeemTx(opts)](#BTC_Outbound+buildRedeemTx) ⇒ <code>string</code>
     * [.buildRedeemTxFromWif(opts)](#BTC_Outbound+buildRedeemTxFromWif) ⇒ <code>string</code>
     * [.storemanQuota(opts, skipValidation)](#BTC_Base+storemanQuota) ⇒ <code>Promise</code>
+    * [.storemanInfo(opts, skipValidation)](#BTC_Base+storemanInfo) ⇒ <code>Promise</code>
     * [.buildStoremanQuotaTx(opts, skipValidation)](#BTC_Base+buildStoremanQuotaTx) ⇒ <code>Object</code>
+    * [.buildStoremanInfoTx(opts, skipValidation)](#BTC_Base+buildStoremanInfoTx) ⇒ <code>Object</code>
     * [.buildStoremanQuotaData(opts, skipValidation)](#BTC_Base+buildStoremanQuotaData) ⇒ <code>string</code>
+    * [.buildStoremanInfoData(opts, skipValidation)](#BTC_Base+buildStoremanInfoData) ⇒ <code>string</code>
 
 
 * * *
@@ -988,6 +1105,24 @@ Make storeman quota call on Wanchain
 
 * * *
 
+<a name="BTC_Base+storemanInfo"></a>
+
+### BTC_Outbound.storemanInfo(opts, skipValidation) ⇒ <code>Promise</code>
+Make storeman quota info on Wanchain
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>Promise</code> - Promise returning object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="BTC_Base+buildStoremanQuotaTx"></a>
 
 ### BTC_Outbound.buildStoremanQuotaTx(opts, skipValidation) ⇒ <code>Object</code>
@@ -1006,10 +1141,46 @@ Build storeman quota call
 
 * * *
 
+<a name="BTC_Base+buildStoremanInfoTx"></a>
+
+### BTC_Outbound.buildStoremanInfoTx(opts, skipValidation) ⇒ <code>Object</code>
+Build storeman info call
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>Object</code> - Tx object
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Tx options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
 <a name="BTC_Base+buildStoremanQuotaData"></a>
 
 ### BTC_Outbound.buildStoremanQuotaData(opts, skipValidation) ⇒ <code>string</code>
 Get data hex string for storeman quota call
+
+**Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
+**Returns**: <code>string</code> - Data hex string
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>Object</code> | Data options |
+| opts.storeman | <code>Object</code> | Storeman address pair |
+| opts.storeman.wan | <code>string</code> | Storeman Wanchain address |
+| skipValidation | <code>boolean</code> |  |
+
+
+* * *
+
+<a name="BTC_Base+buildStoremanInfoData"></a>
+
+### BTC_Outbound.buildStoremanInfoData(opts, skipValidation) ⇒ <code>string</code>
+Get data hex string for storeman info call
 
 **Kind**: instance method of [<code>BTC\_Outbound</code>](#BTC_Outbound)
 **Returns**: <code>string</code> - Data hex string

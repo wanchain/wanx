@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
 const WanTx = require('wanchainjs-tx');
@@ -15,7 +15,7 @@ const btcUtils = require('./btc-utils');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
+  wanchain: { url: 'http://localhost:18545' },
 };
 
 const wanx = new WanX('testnet', config);

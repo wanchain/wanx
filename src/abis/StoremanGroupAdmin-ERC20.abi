@@ -1,0 +1,631 @@
+module.exports = [
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "tokenManager",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "quotaLedger",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapStoremanGroup",
+    "outputs": [
+      {
+        "name": "deposit",
+        "type": "uint256"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "unregisterApplyTime",
+        "type": "uint256"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      },
+      {
+        "name": "bonusBlockNumber",
+        "type": "uint256"
+      },
+      {
+        "name": "initiator",
+        "type": "address"
+      },
+      {
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      },
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapSmgWhiteList",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "halted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "newOwner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "halt",
+        "type": "bool"
+      }
+    ],
+    "name": "setHalt",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "smgOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "wanDeposit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "quota",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "txFeeRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupRegistrationLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "wancoin",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupDepositBonusLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "SmgEnableWhiteListLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "applyTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupApplyUnRegistrationLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "actualReturn",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "deposit",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupWithdrawLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "bonusRecipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "bonus",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupClaimSystemBonusLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "smgWanAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupPunishedLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "smgAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "destAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "deposit",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgTranferDepositLogger",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tm",
+        "type": "address"
+      },
+      {
+        "name": "ql",
+        "type": "address"
+      }
+    ],
+    "name": "injectDependencies",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      }
+    ],
+    "name": "setSmgWhiteList",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupRegister",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      },
+      {
+        "name": "originalChainAddr",
+        "type": "address"
+      },
+      {
+        "name": "txFeeRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupRegisterByDelegate",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "storemanGroupApplyUnregister",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      }
+    ],
+    "name": "smgApplyUnregisterByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "storemanGroupWithdrawDeposit",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      }
+    ],
+    "name": "smgWithdrawDepositByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "storemanGroupClaimSystemBonus",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      }
+    ],
+    "name": "smgClaimSystemBonusByDelegate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      }
+    ],
+    "name": "depositSmgBonus",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      },
+      {
+        "name": "punishPercent",
+        "type": "uint256"
+      }
+    ],
+    "name": "punishStoremanGroup",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAddr",
+        "type": "address"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "address"
+      },
+      {
+        "name": "destAddress",
+        "type": "address"
+      },
+      {
+        "name": "isTransferAll",
+        "type": "bool"
+      }
+    ],
+    "name": "transferSmgDeposit",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "kill",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

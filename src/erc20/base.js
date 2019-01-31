@@ -4,6 +4,7 @@ const CrosschainBase = require('../base');
 
 const {
   StoremanQuotaSchema,
+  StoremanInfoSchema,
   TokenInfoSchema,
   TokenKeySchema,
 } = require('./schema');
@@ -39,6 +40,39 @@ class ERC20_Base extends CrosschainBase {
         this.emit('info', { status: 'storemanQuota', storemanQuota });
 
         resolve(storemanQuota);
+      })
+
+      action.catch(err => {
+        this.emit('error', err);
+        reject(err);
+      });
+    });
+  }
+
+  /**
+   * Make storeman info call on Wanchain
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {Promise} Promise returning object
+   */
+  storemanInfo(opts, skipValidation) {
+
+    ! skipValidation && this.validate(StoremanInfoSchema, opts);
+
+    const callOpts = this.buildStoremanInfoTx(opts, true);
+    const action = web3Shim(this.wanchain.web3).call(callOpts);
+
+    return new Promise((resolve, reject) => {
+      action.then(res => {
+        console.log(res);
+        const storemanInfo = this.parseOutput('StoremanGroupAdmin_ERC20', 'mapStoremanGroup', res);
+        this.emit('info', { status: 'storemanInfo', storemanInfo });
+
+        resolve(storemanInfo);
       })
 
       action.catch(err => {
@@ -148,6 +182,26 @@ class ERC20_Base extends CrosschainBase {
   }
 
   /**
+   * Build storeman group admin mapStoremanGroup call
+   * @param {Object} opts - Tx options
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {Object} opts.token - Token info
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {Object} Tx object
+   */
+  buildStoremanInfoTx(opts, skipValidation) {
+
+    ! skipValidation && this.validate(StoremanInfoSchema, opts);
+
+    const to = this.config.addresses.StoremanGroupAdmin_ERC20;
+    const data = this.buildStoremanInfoData(opts, true);
+
+    return { to, data };
+  }
+
+  /**
    * Get data hex string for storeman quota call
    * @param {Object} opts - Data options
    * @param {Object} opts.storeman - Storeman address pair
@@ -205,6 +259,28 @@ class ERC20_Base extends CrosschainBase {
 
     return '0x' + mapKey.substr(0, 8)
       + types.hex2Bytes32(token.eth);
+  }
+
+  /**
+   * Get data hex string for storeman mapStoremanGroup call
+   * @param {Object} opts - Data options
+   * @param {Object} opts.storeman - Storeman address pair
+   * @param {string} opts.storeman.wan - Storeman Wanchain address
+   * @param {Object} opts.token - Token pair
+   * @param {string} opts.token.eth - Token address on Ethereum
+   * @param {boolean} skipValidation
+   * @returns {string} Data hex string
+   */
+  buildStoremanInfoData(opts, skipValidation) {
+
+    ! skipValidation && this.validate(StoremanInfoSchema, opts);
+
+    const { token, storeman } = opts;
+    const { mapStoremanGroup } = this.config.signatures.StoremanGroupAdmin_ERC20;
+
+    return '0x' + mapStoremanGroup.substr(0, 8)
+      + types.hex2Bytes32(token.eth)
+      + types.hex2Bytes32(storeman.wan);
   }
 }
 

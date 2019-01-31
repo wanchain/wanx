@@ -1,4 +1,4 @@
-const WanX = require('wanx');
+const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
 const WanTx = require('wanchainjs-tx');
@@ -15,7 +15,7 @@ const btcUtils = require('./btc-utils');
  */
 
 const config = {
-  wanchain: { url: 'http://localhost:8545' },
+  wanchain: { url: 'http://localhost:18545' },
 };
 
 const wanx = new WanX('testnet', config);
@@ -33,8 +33,9 @@ const cctx = wanx.newChain('btc', false);
 
 // Define the transaction opts
 const opts = {
-  from: 'mvTfNujpcQwHaefMxfJRix4vhfNBxSFbBe',
-  to: '0x017ab346a4bb19f46c99bf19b6592828435540b0',
+  from: '0x017ab346a4bb19f46c99bf19b6592828435540b0',
+  to: 'mvTfNujpcQwHaefMxfJRix4vhfNBxSFbBe',
+  payTo: 'tb1q6krpca6w7trcez3y466stp636rzh6wct0tzyyw',
   value: '210000',
   storeman: {
     wan: '0x9ebf2acd509e0d5f9653e755f26d9a3ddce3977c',
@@ -57,23 +58,19 @@ const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
 // Do outbound WBTC to BTC transaction
-Promise.resolve([]).then(() => {
+Promise.resolve([]).then(async () => {
 
   console.log('Starting btc outbound lock', opts);
 
   // Get the outbound fee
-  return cctx.getOutboundFee(opts);
-
-}).then(async (fee) => {
+  const fee = await cctx.getOutboundFee(opts);
 
   // Get the tx count to determine next nonce
   const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   return Promise.resolve([ fee, txCount ]);
 
-}).then(res => {
-
-  const [ fee, txCount ] = res;
+}).then(([ fee, txCount ]) => {
 
   // Attach outboundFee to opts
   opts.outboundFee = fee;
