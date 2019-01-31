@@ -6,7 +6,9 @@ const { find } = require('lodash');
 const abis = require('./abis');
 const defsSchema = require('./lib/schema/defs.json');
 
-const web3 = new Web3();
+// FIXME: web3 now requires that a provider be passed upon initialization, but
+// here we don't need to connect to any specific node
+const web3 = new Web3('http://localhost:8545');
 
 class CrosschainBase extends EventEmitter {
 
