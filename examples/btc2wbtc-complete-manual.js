@@ -6,7 +6,7 @@ const moment = require('moment');
 const bitcoinRpc = require('node-bitcoin-rpc');
 const BigNumber = require('bignumber.js');
 
-const btcUtils = require('./btc-utils');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -81,7 +81,7 @@ async function lockBitcoin() {
   console.log('Send amount', sendAmount);
 
   // Send BTC to P2SH lock address
-  const txid = await btcUtils.sendBtc(bitcoinRpc, contract.address, sendAmount, opts.from);
+  const txid = await utils.sendBtc(bitcoinRpc, contract.address, sendAmount, opts.from);
 
   // Add txid to opts
   opts.txid = txid;

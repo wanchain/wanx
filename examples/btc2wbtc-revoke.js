@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const bitcoinRpc = require('node-bitcoin-rpc');
 const BigNumber = require('bignumber.js');
 
-const btcUtils = require('./btc-utils');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -74,7 +74,7 @@ Promise.resolve([]).then(() => {
   console.log('Signed revoke tx:', signedTx);
 
   // Send the revoke tx to the network
-  return btcUtils.sendRawBtcTx(bitcoinRpc, signedTx);
+  return utils.sendRawBtcTx(bitcoinRpc, signedTx);
 
 }).then(txid => {
 

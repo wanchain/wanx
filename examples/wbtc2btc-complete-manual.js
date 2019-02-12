@@ -6,7 +6,7 @@ const moment = require('moment');
 const bitcoinRpc = require('node-bitcoin-rpc');
 const BigNumber = require('bignumber.js');
 
-const btcUtils = require('./btc-utils');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -133,7 +133,7 @@ async function redeemBitcoin() {
   console.log('Signed redeem tx:', signedTx);
 
   // Send the redeem tx to the network
-  const txid = await btcUtils.sendRawBtcTx(bitcoinRpc, signedTx);
+  const txid = await utils.sendRawBtcTx(bitcoinRpc, signedTx);
 
   console.log('Redeem sent to network');
   console.log('TXID:', txid);
