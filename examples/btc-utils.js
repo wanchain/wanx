@@ -1,9 +1,9 @@
 module.exports = {
   sendBtc,
-  sendRawTx,
+  sendRawBtcTx,
 };
 
-function callRpc(bitcoinRpc, method, args) {
+function callBitcoinRpc(bitcoinRpc, method, args) {
   return new Promise((resolve, reject) => {
     bitcoinRpc.call(method, args, (err, res) => {
       if (err) {
@@ -17,14 +17,14 @@ function callRpc(bitcoinRpc, method, args) {
   });
 }
 
-function sendRawTx(bitcoinRpc, signedTx) {
-  return callRpc(bitcoinRpc, 'sendrawtransaction', [signedTx]);
+function sendRawBtcTx(bitcoinRpc, signedTx) {
+  return callBitcoinRpc(bitcoinRpc, 'sendrawtransaction', [signedTx]);
 }
 
 function sendBtc(bitcoinRpc, toAddress, toAmount, changeAddress) {
   return Promise.resolve([]).then(() => {
 
-    return callRpc(bitcoinRpc, 'createrawtransaction', [[], { [toAddress]: toAmount }]);
+    return callBitcoinRpc(bitcoinRpc, 'createrawtransaction', [[], { [toAddress]: toAmount }]);
 
   }).then(rawTx => {
 
@@ -34,15 +34,15 @@ function sendBtc(bitcoinRpc, toAddress, toAmount, changeAddress) {
       fundArgs.changeAddress = changeAddress;
     }
 
-    return callRpc(bitcoinRpc, 'fundrawtransaction', [rawTx, fundArgs]);
+    return callBitcoinRpc(bitcoinRpc, 'fundrawtransaction', [rawTx, fundArgs]);
 
   }).then(fundedTx => {
 
-    return callRpc(bitcoinRpc, 'signrawtransactionwithwallet', [fundedTx.hex]);
+    return callBitcoinRpc(bitcoinRpc, 'signrawtransactionwithwallet', [fundedTx.hex]);
 
   }).then(signedTx => {
 
-    return callRpc(bitcoinRpc, 'sendrawtransaction', [signedTx.hex]);
+    return callBitcoinRpc(bitcoinRpc, 'sendrawtransaction', [signedTx.hex]);
 
   });
 }

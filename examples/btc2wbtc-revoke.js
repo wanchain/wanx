@@ -74,7 +74,7 @@ Promise.resolve([]).then(() => {
   console.log('Signed revoke tx:', signedTx);
 
   // Send the revoke tx to the network
-  return btcUtils.sendRawTx(bitcoinRpc, signedTx);
+  return btcUtils.sendRawBtcTx(bitcoinRpc, signedTx);
 
 }).then(txid => {
 

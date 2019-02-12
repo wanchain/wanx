@@ -133,7 +133,7 @@ async function redeemBitcoin() {
   console.log('Signed redeem tx:', signedTx);
 
   // Send the redeem tx to the network
-  const txid = await btcUtils.sendRawTx(bitcoinRpc, signedTx);
+  const txid = await btcUtils.sendRawBtcTx(bitcoinRpc, signedTx);
 
   console.log('Redeem sent to network');
   console.log('TXID:', txid);
