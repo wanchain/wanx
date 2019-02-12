@@ -76,20 +76,11 @@ async function sendLock() {
   // Attach outboundFee to opts
   opts.outboundFee = fee;
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3wan.eth.getTransactionCount(opts.from);
-
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
-  lockTx.nonce = web3wan.utils.toHex(txCount);
-
-  // Sign and serialize the tx
-  const transaction = new WanTx(lockTx);
-  transaction.sign(wanPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
 
   // Send the lock transaction on Wanchain
-  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await utils.sendRawWanTx(web3wan, lockTx, opts.from, wanPrivateKey);
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);

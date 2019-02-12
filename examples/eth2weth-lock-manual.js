@@ -1,7 +1,7 @@
 const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
-const EthTx = require('ethereumjs-tx');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -54,20 +54,11 @@ async function sendLock() {
 
   console.log('Starting eth inbound lock', opts);
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3eth.eth.getTransactionCount(opts.from);
-
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
-  lockTx.nonce = web3eth.utils.toHex(txCount);
-
-  // Sign and serialize the tx
-  const transaction = new EthTx(lockTx);
-  transaction.sign(ethPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
 
   // Send the lock transaction on Ethereum
-  const receipt = await web3eth.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await utils.sendRawEthTx(web3eth, lockTx, opts.from, ethPrivateKey)
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);

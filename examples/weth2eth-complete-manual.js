@@ -1,7 +1,7 @@
 const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
-const WanTx = require('wanchainjs-tx');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -67,20 +67,11 @@ async function sendLock() {
   const fee = await cctx.getOutboundFee(opts);
   opts.outboundFee = fee;
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3wan.eth.getTransactionCount(opts.from);
-
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
-  lockTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign and serialize the tx
-  const transaction = new WanTx(lockTx);
-  transaction.sign(wanPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
-
-  // Send the lock transaction on Ethereum
-  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  // Send the lock transaction on Wanchain
+  const receipt = await utils.sendRawWanTx(web3wan, lockTx, opts.from, wanPrivateKey);
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);
@@ -88,8 +79,8 @@ async function sendLock() {
 
 async function confirmLock() {
 
-  // Get the current block number on Wanchain
-  const blockNumber = await web3wan.eth.getBlockNumber();
+  // Get the current block number on Ethereum
+  const blockNumber = await web3eth.eth.getBlockNumber();
 
   // Scan for the lock confirmation from the storeman
   const log = await cctx.listenLock(opts, blockNumber);
@@ -101,20 +92,11 @@ async function sendRedeem() {
 
   console.log('Starting eth outbound redeem', opts);
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3eth.eth.getTransactionCount(opts.to);
-
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
-  redeemTx.nonce = web3eth.utils.toHex(txCount);
-
-  // Sign and serialize the tx
-  const transaction = new EthTx(redeemTx);
-  transaction.sign(ethPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
 
   // Send the redeem transaction on Ethereum
-  const receipt = await web3eth.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await utils.sendRawEthTx(web3eth, redeemTx, opts.to, ethPrivateKey);
 
   console.log('Redeem submitted and now pending on storeman');
   console.log(receipt);

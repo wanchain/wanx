@@ -1,7 +1,7 @@
 const WanX = require('../');
 const Web3 = require('web3');
 const keythereum = require('keythereum');
-const WanTx = require('wanchainjs-tx');
+const utils = require('./utils');
 
 /**
  * Requirements:
@@ -54,20 +54,11 @@ async function sendRedeem() {
 
   console.log('Starting eth inbound redeem', opts);
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3wan.eth.getTransactionCount(opts.to);
-
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
-  redeemTx.nonce = web3wan.utils.toHex(txCount);
-
-  // Sign and serialize the tx
-  const transaction = new WanTx(redeemTx);
-  transaction.sign(wanPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
 
   // Send the redeem transaction on Wanchain
-  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await utils.sendRawWanTx(web3wan, redeemTx, opts.to, wanPrivateKey);
 
   console.log('Redeem submitted and now pending on storeman');
   console.log(receipt);

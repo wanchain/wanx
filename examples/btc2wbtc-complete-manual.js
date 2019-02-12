@@ -91,20 +91,11 @@ async function lockBitcoin() {
 
 async function sendLock() {
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3wan.eth.getTransactionCount(opts.to);
-
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
-  lockTx.nonce = web3wan.utils.toHex(txCount);
-
-  // Sign and serialize the tx
-  const transaction = new WanTx(lockTx);
-  transaction.sign(wanPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
 
   // Send the lock transaction on Wanchain
-  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await utils.sendRawWanTx(web3wan, lockTx, opts.to, wanPrivateKey);
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);
@@ -123,20 +114,11 @@ async function listenLock(receipt) {
 
 async function sendRedeem() {
 
-  // Get the tx count to determine next nonce
-  const txCount = await web3wan.eth.getTransactionCount(opts.to);
-
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
-  redeemTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign and serialize the tx
-  const transaction = new WanTx(redeemTx);
-  transaction.sign(wanPrivateKey);
-  const serializedTx = transaction.serialize().toString('hex');
-
-  // Send the lock transaction on Wanchain
-  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  // Send the redeem transaction on Wanchain
+  const receipt = await utils.sendRawWanTx(web3wan, redeemTx, opts.to, wanPrivateKey);
 
   console.log('Redeem submitted and now pending on storeman');
   console.log(receipt);
