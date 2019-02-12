@@ -55,128 +55,127 @@ const wanDatadir = '/home/user/.wanchain/testnet/';
 const wanKeyObject = keythereum.importFromFile(opts.from, wanDatadir);
 const wanPrivateKey = keythereum.recover('mypassword', wanKeyObject);
 
-// Do outbound lock transaction
-Promise.resolve([]).then(() => {
+// Do outbound WMKR to MKR transaction
+Promise.resolve([])
+  // .then(sendApproveZero)
+  .then(sendApprove)
+  .then(sendLock)
+  .then(confirmLock)
+  .then(sendRedeem)
+  .then(confirmRedeem)
+  .catch(err => {
+    console.log(err);
+  });
+
+// Note: An approval will fail if a non-zero amount is already approved for
+// that account, in which case it is necessary to first zero out the approval.
+async function sendApproveZero() {
 
   console.log('Starting erc20 outbound', opts);
 
   // Get the tx count to determine next nonce
-  return web3wan.eth.getTransactionCount(opts.from);
-
-}).then(txCount => {
-
-  // It may be necessary to zero out the approval of the WRC20 token. An
-  // approval will fail if a non-zero amount is already approved.
+  const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   // Get the raw approve tx with 0 value
   const approveTx = cctx.buildApproveTx(Object.assign({}, opts, { value: '0' }));
   approveTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign and send the tx
+  // Sign and serialize the tx
   const transaction = new WanTx(approveTx);
   transaction.sign(wanPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the approve transaction on Wanchain
-  return web3wan.eth.sendSignedTransaction('0x' + serializedTx);
+  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
 
-}).then(receipt => {
+  console.log('Token approval removed');
+  console.log(receipt);
+}
+
+async function sendApprove() {
 
   // Get the tx count to determine next nonce
-  return web3wan.eth.getTransactionCount(opts.from);
-
-}).then(txCount => {
+  const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   // Get the raw approve tx
   const approveTx = cctx.buildApproveTx(opts);
   approveTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign and send the tx
+  // Sign and serialize the tx
   const transaction = new WanTx(approveTx);
   transaction.sign(wanPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the approve transaction on Wanchain
-  return web3wan.eth.sendSignedTransaction('0x' + serializedTx);
-
-}).then(receipt => {
+  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
 
   console.log('Token approved for transfer');
   console.log(receipt);
+}
+
+async function sendLock() {
 
   // Get the tx count to determine next nonce
-  return web3wan.eth.getTransactionCount(opts.from);
-
-}).then(txCount => {
+  const txCount = await web3wan.eth.getTransactionCount(opts.from);
 
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
   lockTx.nonce = web3wan.utils.toHex(txCount);
 
-  // Sign and send the tx
+  // Sign and serialize the tx
   const transaction = new WanTx(lockTx);
   transaction.sign(wanPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the lock transaction on Wanchain
-  return web3wan.eth.sendSignedTransaction('0x' + serializedTx);
-
-}).then(receipt => {
+  const receipt = await web3wan.eth.sendSignedTransaction('0x' + serializedTx);
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);
+}
+
+async function confirmLock() {
 
   // Get the current block number on Ethereum
-  return web3eth.eth.getBlockNumber();
-
-}).then(blockNumber => {
+  const blockNumber = await web3eth.eth.getBlockNumber();
 
   // Scan for the lock confirmation from the storeman
-  return cctx.listenLock(opts, blockNumber);
-
-}).then(log => {
+  const log = await cctx.listenLock(opts, blockNumber);
 
   console.log('Lock confirmed by storeman');
   console.log(log);
+}
+
+async function sendRedeem() {
 
   // Get the tx count to determine next nonce
-  return web3eth.eth.getTransactionCount(opts.to);
-
-}).then(txCount => {
+  const txCount = await web3eth.eth.getTransactionCount(opts.to);
 
   // Get the raw redeem tx
   const redeemTx = cctx.buildRedeemTx(opts);
   redeemTx.nonce = web3eth.utils.toHex(txCount);
 
-  // Sign and send the tx
+  // Sign and serialize the tx
   const transaction = new EthTx(redeemTx);
   transaction.sign(ethPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the redeem transaction on Ethereum
-  return web3eth.eth.sendSignedTransaction('0x' + serializedTx);
-
-}).then(receipt => {
+  const receipt = await web3eth.eth.sendSignedTransaction('0x' + serializedTx);
 
   console.log('Redeem confirmed and is now pending on storeman');
   console.log(receipt);
+}
+
+async function confirmRedeem() {
 
   // Get the current block number on Wanchain
-  return web3wan.eth.getBlockNumber();
-
-}).then(blockNumber => {
+  const blockNumber = await web3wan.eth.getBlockNumber();
 
   // Scan for the redeem confirmation from the storeman
-  return cctx.listenRedeem(opts, blockNumber);
-
-}).then(log => {
+  const log = await cctx.listenRedeem(opts, blockNumber);
 
   console.log('Redeem confirmed by storeman');
   console.log(log);
   console.log('COMPLETE!!!');
-
-}).catch(err => {
-
-  console.log('Error:', err);
-
-});
+}

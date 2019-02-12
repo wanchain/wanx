@@ -42,48 +42,45 @@ const ethDatadir = '/home/user/.ethereum/testnet/';
 const ethKeyObject = keythereum.importFromFile(opts.from, ethDatadir);
 const ethPrivateKey = keythereum.recover('mypassword', ethKeyObject);
 
-// Do inbound lock transaction
-Promise.resolve([]).then(() => {
+// Do inbound ETH to WETH lock transaction
+Promise.resolve([])
+  .then(sendLock)
+  .then(confirmLock)
+  .catch(err => {
+    console.log('Error:', err);
+  });
+
+async function sendLock() {
 
   console.log('Starting eth inbound lock', opts);
 
   // Get the tx count to determine next nonce
-  return web3eth.eth.getTransactionCount(opts.from);
-
-}).then(txCount => {
+  const txCount = await web3eth.eth.getTransactionCount(opts.from);
 
   // Get the raw lock tx
   const lockTx = cctx.buildLockTx(opts);
   lockTx.nonce = web3eth.utils.toHex(txCount);
 
-  // Sign and send the tx
+  // Sign and serialize the tx
   const transaction = new EthTx(lockTx);
   transaction.sign(ethPrivateKey);
   const serializedTx = transaction.serialize().toString('hex');
 
   // Send the lock transaction on Ethereum
-  return web3eth.eth.sendSignedTransaction('0x' + serializedTx);
-
-}).then(receipt => {
+  const receipt = await web3eth.eth.sendSignedTransaction('0x' + serializedTx);
 
   console.log('Lock submitted and now pending on storeman');
   console.log(receipt);
+}
+
+async function confirmLock() {
 
   // Get the current block number on Wanchain
-  return web3wan.eth.getBlockNumber();
-
-}).then(blockNumber => {
+  const blockNumber = await web3wan.eth.getBlockNumber();
 
   // Scan for the lock confirmation from the storeman
-  return cctx.listenLock(opts, blockNumber);
-
-}).then(log => {
+  const log = await cctx.listenLock(opts, blockNumber);
 
   console.log(log);
   console.log('COMPLETE!!!');
-
-}).catch(err => {
-
-  console.log('Error:', err);
-
-});
+}

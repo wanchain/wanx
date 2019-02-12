@@ -33,7 +33,7 @@ const opts = {
   redeemKey,
 };
 
-// Do a complete crosschain transaction
+// Do inbound ETH to WETH transaction
 // send = lock + redeem:
 cctx.send(opts);
 
