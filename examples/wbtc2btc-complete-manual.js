@@ -45,7 +45,7 @@ const opts = {
   // Generate a new redeemKey
   redeemKey: wanx.newRedeemKey('sha256'),
 
-  // private key of from address
+  // private key of to address
   wif: 'cNggJXP2mMNSHA1r9CRd1sv65uykZNyeH8wkH3ZPZVUL1nLfTxRM',
 };
 

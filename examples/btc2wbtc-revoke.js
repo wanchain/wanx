@@ -44,6 +44,9 @@ const opts = {
   // Add lockTime used for P2SH address, and txid that funded it
   lockTime: 1542322930,
   txid: '34cbc29ec4edde4415260800561cb318b883b98629881a7d75ed85aa6eb41b03',
+
+  // private key of from address
+  wif: 'cNggJXP2mMNSHA1r9CRd1sv65uykZNyeH8wkH3ZPZVUL1nLfTxRM',
 };
 
 // Total miner fee for revoke (in satoshis)
